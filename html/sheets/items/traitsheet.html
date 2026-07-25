@@ -1,0 +1,10 @@
+<div class="form-group stacked">
+  <input type="text" name="name" value="{{item.name}}" />
+  <label class = "trait-label">{{localize "sheets.all.labels.json.label"}}</label>
+  
+  <div class="code-editor-container">
+    <input type="hidden" name="system.customJSON" value="{{customJSONString}}">
+    <pre class="v13-code-editor"><code class="code-highlight-enabled" data-name="system.customJSON" contenteditable="true" spellcheck="false">{{jsonString}}</code>
+    </pre>
+  </div>
+</div>

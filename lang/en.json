@@ -1,0 +1,252 @@
+{
+    "sheets":{
+        "all":{
+            "labels":{
+                "json":{
+                    "label":"JSON Editor",
+                    "save":"Save JSON Configuration"
+                }
+            }
+        },
+        "character":{
+            "labels":{
+                "GMCreationLabel":"This Sheet is in Creation Mode!"
+            }
+        },
+        "archetype":{
+            "actions":{
+                "characteristicBonus":"Add Characteristic Bonus"
+            },
+            "labels":{
+                "wounds":"Starting Wounds:",
+                "specialAbility": "Archetype Special Ability:",
+                "characteristicBonus":"Characteristic Bonus:"
+            }
+        },
+        "armor":{
+            "labels":{
+                "nav":{
+                    "armor-stat":"Armor Statistics",
+                    "view": "Armor"
+                }
+            },
+            "stats":{
+                "_":"Stats",
+                "availability":"Availability",
+                "weight":"Weight",
+                "name":"Armour Name",
+                "type":"Armour Type",
+                "head":"Head",
+                "leftarm":"Left Arm",
+                "rightarm":"Right Arm",
+                "body":"Body",
+                "leftleg":"Left Leg",
+                "rightleg":"Right Leg",
+                "headvalues":"1-10",
+                "rightarmvalues":"11-20",
+                "leftarmvalues":"21-30",
+                "bodyvalues":"31-70",
+                "rightlegvalues":"71-85",
+                "leftlegvalues":"86-00"
+            }
+        },
+        "weapon":{
+            "stats":{
+                "_":"Stats",
+                "class":"Class",
+                "range":"Range",
+                "reload":"Reload",
+                "clip":"clip",
+                "half":"Half",
+                "full":"Full",
+                "damage":"Damage",
+                "pen":"Pen",
+                "rof":"Rate of Fire",
+                "craftsmanship":"Craftsmanship",
+                "availability":"Availability",
+                "weight":"Weight",
+                "special":"Special",
+                "attack":"Attack"
+            }
+        }
+    },
+    "sys-const": {
+        "armortype":{
+            "primative":"Primative",
+            "flak": "Flak",
+            "mesh":"Mesh",
+            "carapice":"Carapice",
+            "power":"Power",
+            "exotic":"Exotic"
+        },
+        "availability":{
+            "ubiquitous": "Ubiquitous",
+            "abundant":"Abundant",
+            "plentiful":"Plentiful",
+            "common":"Common",
+            "average":"Average",
+            "scarce":"Scarce",
+            "rare":"Rare",
+            "veryRare":"Very Rare",
+            "extremelyRare":"Extremely Rare",
+            "nearUnique":"Near Unique",
+            "unique":"Unique"
+        },
+        "characteristic":{
+            "weaponSkill":"Weapon Skill",
+            "weaponSkill_short":"WS",
+            "ballisticSkill":"Ballistic Skill",
+            "ballisticSkill_short":"BS",
+            "strength":"Strength",
+            "strength_short":"S",
+            "toughness":"Toughness",
+            "toughness_short":"T",
+            "agility":"Agility",
+            "agility_short":"AG",
+            "intelligence":"Intelligence",
+            "intelligence_short":"INT",
+            "perception":"Perception",
+            "perception_short":"PER",
+            "willpower":"Willpower",
+            "willpower_short":"WP",
+            "fellowship":"Fellowship",
+            "fellowship_short":"FEL",
+            "infamy":"Infamy",
+            "infamy_short":"INF"
+        },
+        "damageType":{
+            "energy":{
+                "short":"E",
+                "full":"Energy"
+            },
+            "explosive":{
+                "short":"X",
+                "full":"Explosive"
+            },
+            "impact":{
+                "short":"I",
+                "full":"Explosive"
+            },
+            "rending":{
+                "short":"R",
+                "full":"Rending"
+            }
+        },
+        "skills":{
+            "acrobatics":"Acrobatics",
+            "athletics":"Athletics",
+            "awareness":"Awareness",
+            "charm":"Charm",
+            "command":"Command",
+            "commerce":"Commerce",
+            "commonLore":"Common Lore",
+            "deceive":"Deceive",
+            "dodge":"Dodge",
+            "forbiddenLore":"Forbidden Lore",
+            "inquiry":"Inquiry",
+            "intimidate":"Intimidate",
+            "linguistics":"Linguistics",
+            "logic":"Logic",
+            "medicae":"Medicae",
+            "navigationSurface":"Navigation (Surface)",
+            "navigationStellar":"Navigation (Stellar)",
+            "navigationWarp":"Navigation (Warp)",
+            "operateAeronautica":"Operate (Aeronautica)",
+            "operateSurface":"Operate (Surface)",
+            "operateVoidship":"Operate (Voidship)",
+            "parry":"Parry",
+            "psyniscience":"Psyniscience",
+            "scholasticLore":"Scholastic Lore",
+            "scrutiny":"Scrutiny",
+            "security":"Security",
+            "slightOfHand":"Slight of Hand",
+            "stealth":"Stealth",
+            "techUse":"Tech Use",
+            "tracking":"Tracking",
+            "trade": "Trade"
+        },
+        "quality":{
+            "poor":"Poor",
+            "common":"Common",
+            "good":"Good",
+            "best":"Best"
+        },
+        "weaponclass":{
+            "melee":"Melee",
+            "thrown":"Thrown",
+            "pistol":"Pistol",
+            "basic":"Basic",
+            "heavy":"Heavy",
+            "launch":"Launched",
+            "place":"Placed",
+            "vehicle":"Vehicle"
+        },
+        "weapontype":{
+            "las":"Las",
+            "solid":"Solid",
+            "bolt":"Bolt",
+            "melta":"Melta",
+            "plasma":"Plasma",
+            "flame":"Flamer",
+            "launcher":"Launcher",
+            "grenade":"Grenade",
+            "exotic":"Exotic",
+            "chain":"Chain",
+            "power":"Power",
+            "force":"Force",
+            "shock":"Shock",
+            "primary":"Primative"
+        }
+    },
+    "TYPES":{
+        "Item":{
+            "talent":{
+                "label":"Talent"
+            },
+            "trait":{
+                "label":"Trait"
+            },
+            "weapon":{
+                "label":        "Weapon",
+                "wName":        "Name",
+                "rateOfFire":   "RoF",
+                "range":        "Range",
+                "class":        "Class",
+                "damage":       "Dam",
+                "pen":          "Pen",
+                "clip":         "Clip",
+                "reload":       "Rld",
+                "special":      "Special",
+                "weight":       "Wt.",
+                "availability": "Availability",
+                "isMelee":      "Is Melee",
+                "melee":        "Melee",
+                "ranged":       "Ranged"
+            },
+            "ammo":{
+                "label":"Ammunition"
+            },
+            "armor":{
+                "label":"Armour"
+            },
+            "spell":{"label":"Spell"},
+            "pride":{"label":"Pride"},
+            "disgrace":{"label":"Disgrace"},
+            "godgift":{"label":"Gift of the Gods"},
+            "motivation":{"label":"Motivation"},
+            "gear":{"label":"Gear"},
+            "archetype":{"label":"Archetype"}
+        },
+        "Actor":{
+            "character":{
+                "label":"Character"
+            },
+            "npc":{
+                "label":"Non Player Character"
+            },
+            "vehicle":{
+                "label":"Vehicle"
+            }
+        }
+    }
+}

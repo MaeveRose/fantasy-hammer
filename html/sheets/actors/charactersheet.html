@@ -1,0 +1,248 @@
+<div class="flexcol" autocomplete="off">
+  <nav class="character-sheet-tabs tabs" data-group="actor-character-primary-tabs">
+    {{#if isEditable}}
+    <a class="item" data-tab="attributes" data-group="actor-character-primary-tabs"><i class="fas fa-shield-alt"></i>
+      Attributes</a>
+    <a class="item" data-tab="combat" data-group="actor-character-primary-tabs"><i class="fas fa-swords"></i> Combat</a>
+    <a class="item" data-tab="psychic" data-group="actor-character-primary-tabs"><i class="fas fa-brain"></i>
+      Psychic</a>
+    <a class="item" data-tab="advancements" data-group="actor-character-primary-tabs"><i class="fas fa-chart-line"></i>
+      Progress</a>
+    {{/if}}
+
+    <a class="item" data-tab="biography" data-group="actor-character-primary-tabs"><i class="fas fa-scroll"></i>
+      Biography</a>
+    {{#if (or isGM isCreationActive)}}
+    <a class="flipmode" data-action="flipToPlay"><i class="fa-solid fa-triangle-exclamation"></i>Turn off Character
+      Creation</a>
+    {{else}}
+    <span class="xp-notice">Sheet locked. Add items via the Advancements tab.</span>
+    {{/if}}
+  </nav>
+  <section class="character-sheet-body">
+    {{#if (and isGM isCreationActive)}}
+    <header class = "creation-mode-header">
+      <label class = "creation-mode-warning"><i class="fa-solid fa-triangle-exclamation"></i>THIS SHEET IS IN CREATION MODE</label>
+    </header>
+    {{/if}}
+    <section class="tab" data-tab="biography" data-groups="actor-character-primary-tabs">
+      <section class="biography">
+        <h2 class="bio-label">Biography</h2>
+        <div class="bio-content">
+          {{this.characterBio}}
+        </div>
+      </section>
+    </section>
+    {{#if isEditable}}
+    <section class="tab" data-tab="attributes" data-groups="actor-character-primary-tabs">
+      <section class=" sheet-header">
+        <section>
+          <div class="sheet-header-ledger">
+            <!-- ROW 1: Character Name & Player Name -->
+            <div class="ledger-row">
+              <div class="ledger-field flex-2">
+                <label class="ledger-label">Character Name</label>
+                <input type="text" name="name" value="{{actor.name}}" class="ledger-input" />
+              </div>
+              <div class="ledger-field flex-1">
+                <label class="ledger-label">Player Name</label>
+                <input type="text" name="system.playername" value="{{system.playername}}" class="ledger-input" />
+              </div>
+            </div>
+
+            <!-- ROW 2: Archetype, Rank, & Warband Name -->
+            <div class="ledger-row">
+              <div class="ledger-field flex-3">
+                <label class="ledger-label">Archetype</label>
+                <input readonly type="text" name="system.archetype" value="{{system.archetype}}" class="ledger-input" />
+              </div>
+              <div class="ledger-field width-60">
+                <label class="ledger-label">Rank</label>
+                <input type="number" name="system.rank" value="{{system.rank}}" class="ledger-input center-text" />
+              </div>
+              <div class="ledger-field flex-3">
+                <label class="ledger-label">Warband Name</label>
+                <input type="text" name="system.warbandName" value="{{system.warbandName}}" class="ledger-input" />
+              </div>
+            </div>
+
+            <!-- ROW 3: Pride & Disgrace (Your new manifest types!) -->
+            <div class="ledger-row">
+              <div class="ledger-field flex-1">
+                <label class="ledger-label">Pride</label>
+                <input readonly type="text" name="system.prideText" value="{{system.prideText}}" class="ledger-input" />
+              </div>
+              <div class="ledger-field flex-1">
+                <label class="ledger-label">Disgrace</label>
+                <input readonly type="text" name="system.disgraceText" value="{{system.disgraceText}}"
+                  class="ledger-input" />
+              </div>
+            </div>
+
+            <!-- ROW 4: Motivation & Description Snippet Line -->
+            <div class="ledger-row">
+              <div class="ledger-field flex-1">
+                <label class="ledger-label">Motivation</label>
+                <input readonly type="text" name="system.motivationText" value="{{system.motivationText}}"
+                  class="ledger-input" />
+              </div>
+              <div class="ledger-field flex-2">
+                <label class="ledger-label">Description</label>
+                <input type="text" name="system.shortDescription" value="{{system.shortDescription}}"
+                  class="ledger-input" />
+              </div>
+            </div>
+
+          </div>
+        </section>
+      </section>
+      <div class="flexrow">
+        <!--<div class="stat-box">
+          <label>Wounds</label>
+          <input type="number" name="system.wounds.value" value="{{system.wounds.value}}" />
+          <span> / </span>
+          <input type="number" name="system.wounds.max" value="{{system.wounds.max}}" />
+        </div>-->
+      </div>
+      <div class="characteristic-panel">
+        <label class="title">Characteristics</label>
+        {{#each characteristicsList}}
+        <div class="characteristic-block {{this.key}}">
+          <div class="characteristic-header js-roll-stat" data-action="rollCharacteristic"
+            data-path="system.characteristics.{{this.key}}.value" data-name="{{this.name}}" style="cursor: pointer;">
+            <label class="characteristic-name">{{this.name}}</label>
+            <label class="characteristic-short">({{this.short}})</label>
+          </div>
+          <div class="bonus-box read-only">
+            <span class="bonus-text">{{getStatDigit this.value 'bonus'}}</span>
+          </div>
+          <div class="digit-container">
+            <div class="digit-display tens">{{getStatDigit this.value 'tens'}}</div>
+            <div class="digit-display ones">{{getStatDigit this.value 'ones'}}</div>
+
+            <input class="invisible-stat-input" min="0" max="99" type="number"
+              name="system.characteristics.{{this.key}}.value" data-path="{{this.key}}" value="{{this.value}}" />
+          </div>
+        </div>
+        {{/each}}
+      </div>
+      <div class="sheet-main-layout-row">
+        <!-- LEFT PANEL: The Column-Sorted Skill Grid Box -->
+        <div class="skills-panel-section">
+          <h3 class="panel-title-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <span>Skills</span>
+            <a data-action="addSpecializedSkill" class="js-add-specialized-skill" title="Add Custom Specialization"
+              style="cursor: pointer; font-size: 0.95rem;">
+              <i class="fas fa-plus-circle"></i> Add Custom
+            </a>
+          </h3>
+          <div class="skills-grid-container">
+            {{#each displaySkills}}
+            <div class="skill-flex-row">
+              <div class="skill-name-col">
+                <a class="js-roll-skill" data-action="rollSkill" data-name="{{this.label}}"
+                  data-target="system.skills.{{this.propertyKey}}.targetNumber">
+                  <strong>{{this.label}}</strong>
+                </a>
+                <span class="skill-char-abbreviation">({{this.shortCharacteristic}})</span>
+                {{#if this.isCustom}}
+                <a class="js-delete-specialized-skill" data-action="deleteSpecializedSkill"
+                  data-custom-id="{{this.customId}}" data-name="{{this.label}}" title="Delete Specialization"
+                  style="cursor: pointer; margin-left: 6px; color: #c92a2a;">
+                  <i class="fas fa-trash"></i>
+                </a>
+                {{/if}}
+              </div>
+              <div class="skill-checkboxes-col skill-training-boxes" data-skill="{{this.propertyKey}}"
+                data-is-custom="{{this.isCustom}}" data-custom-id="{{this.customId}}">
+                {{#each this.checkboxes}}
+                <input type="checkbox" class="skill-checkbox" data-action="toggleSkillCheckbox"
+                  data-level="{{this.level}}" {{checked this.isChecked}} />
+                {{/each}}
+              </div>
+            </div>
+            {{/each}}
+          </div>
+        </div>
+        <div class="talents-panel-section">
+          <h3 class="panel-title-header">Talents & Traits</h3>
+          <div class="talents-list-wrapper">
+            <!-- 
+          Loop directly through every embedded item owned by the actor.
+          ApplicationV2 automatically populates actor.items natively on the page root!
+          -->
+            {{#each actor.items}}
+            <!-- Use conditional tags to cleanly isolate talents and traits out of general inventory -->
+            {{#if (or (eq this.type "talent") (eq this.type "trait"))}}
+            <div class="talent-item-row js-talent-card" data-item-id="{{this.id}}">
+              <div class="talent-main-line" data-action="toggleTalentExpand">
+                <!-- Click to trigger our new open action method smoothly! -->
+                <a data-action="openEmbeddedItem" title="Click to view details" style="cursor: pointer;">
+                  <i class="fas fa-bookmark"></i> <strong>{{this.name}}</strong>
+                </a>
+                <div class="talent-utility-controls"
+                  style="margin-left: auto; display: flex; gap: 8px; align-items: center;">
+                  <!-- Optional Edit Button if you want to open the V13 window from the sheet -->
+
+                  <a class="js-prevent-toggle" data-action="printToChat" title="Print To Chat"
+                    style="cursor: pointer; color: #EDE8B2;">
+                    <i class="fa-sharp fa-solid fa-message"></i>
+                  </a>
+                  <a class="js-prevent-toggle" data-action="openEmbeddedItem" title="Edit Talent Details"
+                    style="cursor: pointer; color: #a19385;">
+                    <i class="fas fa-edit"></i>
+                  </a>
+                  <a class="js-prevent-toggle" data-action="deleteEmbeddedItem" title="Delete Talent"
+                    style="cursor: pointer; color: #c92a2a;">
+                    <i class="fas fa-trash"></i>
+                  </a>
+                </div>
+              </div>
+
+              <!-- If you have an active system description paragraph box written, show a snippet -->
+              {{#if this.system.description}}
+              <div class="talent-short-desc">
+                {{{this.system.description}}}
+                <!-- Using 3 curly braces allows HTML formatting tags inside descriptions to pass safely -->
+              </div>
+              {{/if}}
+            </div>
+            {{/if}}
+            {{else}}
+            <!-- Fallback presentation block revealed ONLY if actor.items array initializes empty -->
+            <p class="empty-notice-text"
+              style="font-size: 0.85rem; opacity: 0.5; font-style: italic; text-align: center; margin-top: 25px;">
+              Drag Talents or Traits from the sidebar or a compendium here...
+            </p>
+            {{/each}}
+          </div>
+        </div>
+    </section>
+    {{/if}}
+    {{#if isEditable}}
+    <section class="tab" data-tab="combat" data-group="actor-character-primary-tabs">
+      <div class="combat-log-pane">
+        <h3>Weapons & Armaments</h3>
+        <p class="empty-notice-text">Drag Weapon or Armor item documents here to equip gear profiles...</p>
+        <!-- (We will map through actor.items type "weapon" or "armor" here next!) -->
+      </div>
+    </section>
+    {{/if}}
+    {{#if isEditable}}
+    <section class="tab" data-tab="psychic" data-group="actor-character-primary-tabs">
+      <div class="psychic-powers-pane">
+        <h3>Psychic Disciplines & Powers</h3>
+        <p class="empty-notice-text">Drag Spells here to log active psy-phenomena disciplines...</p>
+      </div>
+    </section>
+    {{/if}}
+    {{#if isEditable}}
+    <section class="tab" data-tab="advancements" data-group="actor-character-primary-tabs">
+      <div class="advancements-pane">
+        <h3>Character Advancements & Chaos Alignment</h3>
+        <!-- (Tracks earned XP expenditures or pride/disgrace metrics!) -->
+      </div>
+    </section>
+    {{/if}}
+  </section>
+</div>

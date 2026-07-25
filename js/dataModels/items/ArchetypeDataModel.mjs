@@ -1,0 +1,69 @@
+const {BooleanField, ArrayField, HTMLField, NumberField, SchemaField, StringField, MappingField, ObjectField} = foundry.data.fields;
+import { CHARACTERISTIC_MANIFEST, SKILL_MANIFEST } from "../../sys-const.mjs";
+
+export class ArchetypeDataModel extends foundry.abstract.TypeDataModel {
+    static defineSchema() {
+        
+        return{
+            description: new HTMLField({required: true, initial:"<p></p>"}),
+            characteristicsBonus: new ArrayField(
+                new SchemaField({
+                    characteristic: new StringField({
+                        required:true, 
+                        initial:"weaponSkill", 
+                        choices: Object.keys(CHARACTERISTIC_MANIFEST)
+                    }),
+                    value: new NumberField({required: true, initial:0})
+                })
+            ),
+            skillBonus: new ArrayField(
+                new SchemaField({
+                    id: new StringField({required:true, initial:"forbiddenLore", choices: Object.keys(SKILL_MANIFEST)}),
+                    isAdvanced: new BooleanField({required:true, initial: false})
+                })
+            ),
+            skillChoices: new ArrayField(
+                new ArrayField(
+                    new SchemaField({
+                    id: new StringField({required:true, initial:"forbiddenLore", choices: Object.keys(SKILL_MANIFEST)}),
+                    isAdvanced: new BooleanField({required:true, initial: false})
+                    })
+                )
+            ),
+            talentsGranted: new ArrayField(
+                new StringField({
+                    required: true,
+                    initial: ""
+                })
+            ),
+            talentChoices: new ArrayField(
+                new ArrayField(
+                    new StringField({
+                        required:true,
+                        initial: ""
+                    })
+                )
+            ),
+            gearGranted: new ArrayField(
+                new StringField({
+                    required: true,
+                    iniitlal: ""
+                })
+            ),
+            gearChoices: new ArrayField(
+                new ArrayField(
+                    new StringField({
+                        required: true,
+                        initial: ""
+                    })
+                )
+            ),
+            wounds: new StringField({required:true, initial:"0d10+0"}),
+            specialAbility: new SchemaField({
+                name: new StringField({required:true, initial:""}),
+                description: new HTMLField({required:true, initial:"<p></p>"})
+            }),
+            customJSON : new JSONField({required:true, initial:{}})
+        }
+    }
+}

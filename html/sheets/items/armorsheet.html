@@ -1,0 +1,130 @@
+<div class="armor-sheet-background">
+    <div class="armor-sheet-header">
+        <div class="armor-type-block">
+            <img src="{{item.img}}" data-action="editImage" data-field="img" alt="{{item.name}}" />
+            <div class="armor-type-fields">
+                <label class="armor-name-label">{{localize "sheets.armor.stats.name"}}</label>
+                <input type="text" name="name" value="{{item.name}}" placeholder="Item Name" />
+                <label class="armor-type-label">{{localize "sheets.armor.stats.type"}}</label>
+                <select name="system.type">
+                    {{selectOptions armorTypeOptions selected=system.type valueAttr="id" labelAttr="label"}}
+                </select>
+            </div>
+        </div>
+        <nav class="armor-sheet-tabs tabs" data-group="item-armor-primary-tabs">
+            {{#if isEditable}}
+            <a class="item" data-tab="armor-stat" data-group="item-armor-primary-tabs">
+                <i class="fas fa-shield-alt"></i>{{localize "sheets.armor.labels.nav.armor-stat"}}</a>
+            {{/if}}
+            <a class="item" data-tab="view-noedit" data-group="item-armor-primary-tabs">
+                <i class="fas fa-swords"></i>{{localize "sheets.armor.labels.nav.view"}}</a>
+            {{#if isEditable}}
+            <a class="item" data-tab="json-entry" data-group="item-armor-primary-tabs">
+                <i class="fa-solid fa-brackets-curly"></i>{{localize "sheets.armor.labels.nav.json"}}</a>
+            {{/if}}
+        </nav>
+    </div>
+    <section class="armor-sheet-body">
+        <section class="tab" data-tab="armor-stat" data-group="item-armor-primary-tabs">
+            <div class="armor-sheet sheet-body">
+                <div class="armor-stat-block head-block">
+                    <label class="armor-header">{{localize "sheets.armor.stats.head"}}</label>
+                    <label class="armor-numbers">{{localize "sheets.armor.stats.headvalues"}}</label>
+                    <input type="number" name="system.coverage.head" value="{{system.coverage.head}}" />
+                </div>
+                <div class="armor-stat-block rarm-block">
+                    <label class="armor-header">{{localize "sheets.armor.stats.rightarm"}}</label>
+                    <label class="armor-numbers">{{localize "sheets.armor.stats.rightarmvalues"}}</label>
+                    <input type="number" name="system.coverage.rightarm" value="{{system.coverage.rightarm}}" />
+                </div>
+                <div class="armor-stat-block body-block">
+                    <label class="armor-header">{{localize "sheets.armor.stats.body"}}</label>
+                    <label class="armor-numbers">{{localize "sheets.armor.stats.bodyvalues"}}</label>
+                    <input type="number" name="system.coverage.body" value="{{system.coverage.body}}" />
+                </div>
+                <div class="armor-stat-block larm-block">
+                    <label class="armor-header">{{localize "sheets.armor.stats.leftarm"}}</label>
+                    <label class="armor-numbers">{{localize "sheets.armor.stats.leftarmvalues"}}</label>
+                    <input type="number" name="system.coverage.leftarm" value="{{system.coverage.leftarm}}" />
+                </div>
+                <div class="armor-stat-block rleg-block">
+                    <label class="armor-header">{{localize "sheets.armor.stats.rightleg"}}</label>
+                    <label class="armor-numbers">{{localize "sheets.armor.stats.rightlegvalues"}}</label>
+                    <input type="number" name="system.coverage.rightleg" value="{{system.coverage.rightleg}}" />
+                </div>
+                <div class="armor-stat-block lleg-block">
+                    <label class="armor-header">{{localize "sheets.armor.stats.leftleg"}}</label>
+                    <label class="armor-numbers">{{localize "sheets.armor.stats.leftlegvalues"}}</label>
+                    <input type="number" name="system.coverage.leftleg" value="{{system.coverage.leftleg}}" />
+                </div>
+            </div>
+            <div class="armor-sheet-footer">
+                <div class="availability-block">
+                    <label class="availability-label">{{localize "sheets.armor.stats.availability"}}</label>
+                    <select name="system.availability" {{disabled isReadOnly}}>
+                        {{selectOptions availabilityOptions selected=system.availability valueAttr="id"
+                        labelAttr="label"}}
+                    </select>
+                </div>
+                <div class="weight-block">
+                    <label class="weight-label">{{localize "sheets.armor.stats.weight"}}</label>
+                    <input type="number" name="system.weight" value="{{system.weight}}" />
+                </div>
+            </div>
+        </section>
+        <section class="tab" data-tab="view-noedit" data-group="item-armor-primary-tabs">
+            <div class="armor-sheet sheet-body">
+                <div class="armor-stat-block head-block">
+                    <label class="armor-header">{{localize "sheets.armor.stats.head"}}</label>
+                    <label class="armor-numbers">{{localize "sheets.armor.stats.headvalues"}}</label>
+                    <input type="number" value="{{system.coverage.head}}" disabled />
+                </div>
+                <div class="armor-stat-block rarm-block">
+                    <label class="armor-header">{{localize "sheets.armor.stats.rightarm"}}</label>
+                    <label class="armor-numbers">{{localize "sheets.armor.stats.rightarmvalues"}}</label>
+                    <input type="number" value="{{system.coverage.rightarm}}" disabled />
+                </div>
+                <div class="armor-stat-block body-block">
+                    <label class="armor-header">{{localize "sheets.armor.stats.body"}}</label>
+                    <label class="armor-numbers">{{localize "sheets.armor.stats.bodyvalues"}}</label>
+                    <input type="number" value="{{system.coverage.body}}" disabled />
+                </div>
+                <div class="armor-stat-block larm-block">
+                    <label class="armor-header">{{localize "sheets.armor.stats.leftarm"}}</label>
+                    <label class="armor-numbers">{{localize "sheets.armor.stats.leftarmvalues"}}</label>
+                    <input type="number" value="{{system.coverage.leftarm}}" disabled />
+                </div>
+                <div class="armor-stat-block rleg-block">
+                    <label class="armor-header">{{localize "sheets.armor.stats.rightleg"}}</label>
+                    <label class="armor-numbers">{{localize "sheets.armor.stats.rightlegvalues"}}</label>
+                    <input type="number" value="{{system.coverage.rightleg}}" disabled />
+                </div>
+                <div class="armor-stat-block lleg-block">
+                    <label class="armor-header">{{localize "sheets.armor.stats.leftleg"}}</label>
+                    <label class="armor-numbers">{{localize "sheets.armor.stats.leftlegvalues"}}</label>
+                    <input type="number" value="{{system.coverage.leftleg}}" disabled />
+                </div>
+            </div>
+            <div class="armor-sheet-footer">
+                <div class="availability-block">
+                    <label class="availability-label">{{localize "sheets.armor.stats.availability"}}</label>
+                    <label class="availability-value">{{system.availability}}</label>
+                </div>
+                <div class="weight-block">
+                    <label class="weight-label">{{localize "sheets.armor.stats.weight"}}</label>
+                    <input type="number" value="{{system.weight}}" disabled />
+                </div>
+            </div>
+        </section>
+        <section class="tab" data-tab="json-entry" data-group="item-armor-primary-tabs">
+            <label class= "code-editor-label">{{localize "sheets.all.labels.json.label"}}</label>
+            <div class="code-editor-container">
+                <input type="hidden" name="system.customJSON" value="{{jsonString}}">
+                <pre class="v13-code-editor"><code class="code-highlight-enabled" data-name="system.customJSON" contenteditable="true" spellcheck="false">{{jsonString}}</code></pre>
+                <button type="button" data-action="saveJSON" class="save-json-btn">
+                    <i class="fas fa-save"></i>{{localize "sheets.all.labels.json.save"}}
+                </button>
+            </div>
+        </section>
+    </section>
+</div>

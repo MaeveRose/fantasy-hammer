@@ -1,0 +1,96 @@
+<div class="weapon-editor-container" style="display: flex; flex-direction: column; height: 100%; gap: 10px;">
+  <div class="sheet-body" style="flex: 1; overflow-y: auto; padding-right: 4px;">
+    <section class = "weapon-window" style="display: flex; flex-direction: column; gap: 12px;">
+      <div class = "weapon-title-header">
+        <div class = "image-container">
+          <img src="{{item.img}}" data-action="editImage" data-field="img" alt="{{item.name}}"/>
+        </div>
+        <div class = "title-container">
+          <input type="text" name="name" value="{{item.name}}" placeholder="Item Name" />
+        </div>
+      </div>
+      <div class="weapon-details-noedit">
+        <div class="stats-block">
+          <div class="stats-block-header">
+            <label>{{localize "sheets.weapon.stats._"}}</label>
+          </div>
+          <div class = "form-group stats-class">
+            <label>{{localize "sheets.weapon.stats.class"}}</label>
+            <select name="system.class" {{disabled isReadOnly}}>
+              {{selectOptions weaponClassOptions selected=system.class valueAttr="id" labelAttr="label"}}
+            </select>
+            <select name="system.type" {{disabled isReadOnly}}>
+              {{selectOptions weaponTypeOptions selected=system.type valueAttr="id" labelAttr="label"}}
+            </select>
+          </div>
+          <div class = "form-group stats-range">
+            <label>{{localize "sheets.weapon.stats.range"}}</label>
+            <input type="number" name="system.range" value="{{system.range}}" />
+          </div>
+          <div class = "form-group stats-reload">
+            <label>{{localize "sheets.weapon.stats.reload"}}</label>
+            <select name = "system.reload">
+              <option value = "half" {{#if (eq system.reload "half")}}selected{{/if}}>{{localize "sheets.weapon.stats.half"}}</option>
+              <option value = "full" {{#if (eq system.reload "full")}}selected{{/if}}>{{localize "sheets.weapon.stats.full"}}</option>
+              <option value = "2 full" {{#if (eq system.reload "2 full")}}selected{{/if}}>2 {{localize "sheets.weapon.stats.full"}}</option>
+              <option value = "3 full" {{#if (eq system.reload "3 full")}}selected{{/if}}>3 {{localize "sheets.weapon.stats.full"}}</option>
+              <option value = "4 full" {{#if (eq system.reload "4 full")}}selected{{/if}}>4 {{localize "sheets.weapon.stats.full"}}</option>
+              <option value = "5 full" {{#if (eq system.reload "5 full")}}selected{{/if}}>5 {{localize "sheets.weapon.stats.full"}}</option>
+            </select> 
+          </div>
+          <div class = "form-group stats-clip">
+            <label>{{localize "sheets.weapon.stats.clip"}}</label>
+            <div class="input-split">
+              <input type="number" name="system.clip.current" value="{{system.clip.current}}"/>
+              <label> / </label>
+              <input type="number" name="system.clip.max" value="{{system.clip.max}}"/>
+            </div>
+          </div>
+          <div class = "form-group stats-damage">
+            <label>{{localize "sheets.weapon.stats.damage"}}</label>
+            <input type="text" name="system.damage.value" value="{{system.damage.value}}" />
+            <select name="system.damage.type">
+              {{selectOptions damageTypeOptions selected=system.damage.type valueAttr="id" labelAttr="label"}}
+            </select>
+          </div>
+          <div class = "form-group stats-pen">
+            <label>{{localize "sheets.weapon.stats.pen"}}</label>
+            <input type="number" name="system.pen" value="{{system.pen}}" />
+          </div>
+          <div class = "form-group stats-rof">
+            <label>{{localize "sheets.weapon.stats.rof"}}</label>
+            <div class="input-split-triple">
+              <input type="text" name="system.rateOfFire.single" value="{{system.rateOfFire.single}}" />
+              <span>/</span>
+              <input type="number" name="system.rateOfFire.semi" value="{{system.rateOfFire.semi}}" />
+              <span>/</span>
+              <input type="number" name="system.rateOfFire.full" value="{{system.rateOfFire.full}}" />
+            </div>
+          </div>
+          <div class = "form-group stats-craftsmanship">
+            <label>{{localize "sheets.weapon.stats.craftsmanship"}}</label>
+            <select name="system.craftsmanship">
+              {{selectOptions craftsmanshipOptions selected=system.craftsmanship valueAttr="id" labelAttr="label"}}
+            </select>
+          </div>
+          <div class = "form-group stats-avail">
+            <label>{{localize "sheets.weapon.stats.availability"}}</label>
+            <select name="system.avilability">
+              {{selectOptions craftsmanshipOptions selected=system.availability valueAttr="id" labelAttr="label"}}
+            </select>
+          </div>
+          <div class = "form-group stats-weight">
+            <label>{{localize "sheets.weapon.stats.weight"}}</label>
+            <input type="number" name="system.weight" value="{{system.weight}}" />
+          </div>
+          <div class = "form-group stats-special">
+            <label>{{localize "sheets.weapon.stats.special"}}</label>
+          </div>
+          <div class = "stats-attack">
+            <label>{{localize "sheets.weapon.stats.attack"}}</label>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

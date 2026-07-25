@@ -1,0 +1,149 @@
+<div class="talent-editor-container " draggable="true" data-uuid="{{this.uuid}}" style="display: flex; flex-direction: column; height: 100%; gap: 10px;">
+
+  <nav class="sheet-tabs tabs" style="display: flex; gap: 15px; border-bottom: 2px solid #5c4e43; padding-bottom: 4px; margin-bottom: 10px;">
+    <a class="item" data-tab="view" style="cursor: pointer; font-weight: bold; font-size: 0.9rem;">
+      <i class="fas fa-eye"></i> Description
+    </a>
+    {{#if isEditable}}
+      <a class="item" data-tab="edit" style="cursor: pointer; font-weight: bold; font-size: 0.9rem;">
+        <i class="fas fa-cog"></i> Edit Properties
+      </a>
+    {{/if}}
+  </nav>
+
+  <div class="sheet-body" style="flex: 1; overflow-y: auto; padding-right: 4px;">
+
+    <section class="tab" data-tab="view" style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="border-bottom: 1px solid rgba(255,255,255,0.07); padding-bottom: 6px;">
+        <h2 style="margin: 0; font-size: 1.4rem; color: #ffbc00; font-weight: bold;">
+          {{item.name}}
+          {{#if system.specializationName}}
+            <span style="color: #e0e0e0; font-weight: normal; font-size: 1.1rem;">({{system.specializationName}})</span>
+          {{/if}}
+        </h2>
+        <div style="font-size: 0.8rem; opacity: 0.6; margin-top: 2px; font-style: italic;">
+          {{system.tier}} | Type: {{item.type}}
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: rgba(0,0,0,0.15); padding: 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.03);">
+        <div>
+          <h5 style="margin: 0 0 4px 0; font-weight: bold; font-size: 0.8rem; text-transform: uppercase; color: #a19385;">Prerequisites:</h5>
+          <ul style="margin: 0; padding-left: 14px; font-size: 0.82rem; display: flex; flex-direction: column; gap: 2px;">
+            {{#each system.prerequisites}}
+              <li>
+                {{#if (eq this.type "characteristic")}}Minimum {{this.targetKey}} score of <strong>{{this.minValue}}+</strong>{{/if}}
+                {{#if (eq this.type "talent")}}Requires the talent: <strong>"{{this.targetKey}}"</strong>{{/if}}
+                {{#if (eq this.type "actorSubtype")}}Restricted to <strong>{{this.targetKey}}</strong> profile types{{/if}}
+              </li>
+            {{else}}
+              <li style="opacity: 0.5; list-style-type: none; margin-left: -14px; font-style: italic;">No specific requirements listed.</li>
+            {{/each}}
+          </ul>
+        </div>
+        <div>
+          <h5 style="margin: 0 0 4px 0; font-weight: bold; font-size: 0.8rem; text-transform: uppercase; color: #a19385;">Automation Effects:</h5>
+          <ul style="margin: 0; padding-left: 14px; font-size: 0.82rem; display: flex; flex-direction: column; gap: 2px;">
+            {{#each system.modifiers}}
+              <li>Grants a <strong>{{#if (gte this.modifierValue 0)}}+{{/if}}{{this.modifierValue}}</strong> bonus to <strong>{{this.targetKey}}</strong> tests.</li>
+            {{else}}
+              <li style="opacity: 0.5; list-style-type: none; margin-left: -14px; font-style: italic;">No dynamic modifiers embedded.</li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+
+      <div style="font-size: 0.92rem; line-height: 1.4; padding: 4px 0;">
+        {{{system.description}}}
+      </div>
+    </section>
+
+    {{#if isEditable}}
+    <section class="tab" data-tab="edit" style="display: flex; flex-direction: column; gap: 15px;">
+      <div style="display: flex; gap: 10px;">
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+          <label style="font-weight: bold; font-size: 0.85rem;">{{localize "TYPES.Item.talent.label"}}:</label>
+          <input type="text" name="name" value="{{item.name}}" placeholder="Item Name" />
+        </div>
+        <div style="width: 100px; display: flex; flex-direction: column; gap: 4px;">
+          <label style="font-weight: bold; font-size: 0.85rem;">Tier Bracket:</label>
+          <input type="text" name="system.tier" value="{{system.tier}}" placeholder="Tier 1" style="text-align: center;" />
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 20px; background: rgba(255,255,255,0.02); padding: 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05);">
+        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.85rem;">
+          <input type="checkbox" name="system.specialized" {{checked system.specialized}} />
+          <strong>Is Specialized?</strong>
+        </label>
+        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.85rem;">
+          <input type="checkbox" name="system.allowsDuplication" {{checked system.allowsDuplication}} />
+          <strong>Allows Duplication?</strong>
+        </label>
+      </div>
+
+      {{#if system.specialized}}
+        <div style="display: flex; flex-direction: column; gap: 4px; background: rgba(255,188,0,0.03); padding: 8px; border: 1px solid rgba(255,188,0,0.1); border-radius: 4px;">
+          <label style="font-weight: bold; font-size: 0.85rem; color: #ffbc00;">Initial Specialization Sub-Name:</label>
+          <input type="text" name="system.specializationName" value="{{system.specializationName}}" placeholder="e.g., Sight, Heavy Weapons, Plasma" />
+        </div>
+      {{/if}}
+
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <label style="font-weight: bold; font-size: 0.85rem;">Rule Description Text:</label>
+        {{formInput fields.description value=system.description height=160 enriched=true}}
+      </div>
+
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <h4 style="margin: 0; font-weight: bold; font-size: 0.9rem;">Prerequisite Requirements</h4>
+          <a data-action="addArrayEntry" data-array-path="system.prerequisites" data-entry-type="prereq" style="cursor: pointer; font-size: 0.8rem; color: #ffbc00;">
+            <i class="fas fa-plus-circle"></i> Add Prereq
+          </a>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          {{#each system.prerequisites}}
+            <div style="display: flex; gap: 6px; align-items: center; background: rgba(0,0,0,0.1); padding: 4px; border-radius: 3px;">
+              <select name="system.prerequisites.{{@index}}.type" style="width: 110px; font-size: 0.8rem;">
+                <option value="characteristic" {{#if (eq this.type "characteristic")}}selected{{/if}}>Characteristic</option>
+                <option value="talent" {{#if (eq this.type "talent")}}selected{{/if}}>Prior Talent</option>
+                <option value="actorSubtype" {{#if (eq this.type "actorSubtype")}}selected{{/if}}>Actor Sheet Type</option>
+              </select>
+              <input type="text" name="system.prerequisites.{{@index}}.targetKey" value="{{this.targetKey}}" placeholder="Target Key / Name" style="flex: 1; font-size: 0.8rem;" />
+              <input type="number" name="system.prerequisites.{{@index}}.minValue" value="{{this.minValue}}" placeholder="Min" style="width: 50px; text-align: center; font-size: 0.8rem;" />
+              <a data-action="deleteArrayEntry" data-array-path="system.prerequisites" data-index="{{@index}}" style="cursor: pointer; color: #fa5252; padding: 0 4px;">
+                <i class="fas fa-times-circle"></i>
+              </a>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; margin-top: 5px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <h4 style="margin: 0; font-weight: bold; font-size: 0.9rem;">Automatic Roll Modifiers</h4>
+          <a data-action="addArrayEntry" data-array-path="system.modifiers" data-entry-type="modifier" style="cursor: pointer; font-size: 0.8rem; color: #ffbc00;">
+            <i class="fas fa-plus-circle"></i> Add Modifier
+          </a>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          {{#each system.modifiers}}
+            <div style="display: flex; gap: 6px; align-items: center; background: rgba(0,0,0,0.1); padding: 4px; border-radius: 3px;">
+              <select name="system.modifiers.{{@index}}.targetType" style="width: 100px; font-size: 0.8rem;">
+                <option value="skill" {{#if (eq this.targetType "skill")}}selected{{/if}}>Skill Test</option>
+                <option value="characteristic" {{#if (eq this.targetType "characteristic")}}selected{{/if}}>Stat Test</option>
+              </select>
+              <input type="text" name="system.modifiers.{{@index}}.targetKey" value="{{this.targetKey}}" placeholder="e.g. athletics, toughness" style="flex: 1; font-size: 0.8rem;" />
+              <input type="number" name="system.modifiers.{{@index}}.modifierValue" value="{{this.modifierValue}}" placeholder="Value" style="width: 50px; text-align: center; font-size: 0.8rem;" />
+              <a data-action="deleteArrayEntry" data-array-path="system.modifiers" data-index="{{@index}}" style="cursor: pointer; color: #fa5252; padding: 0 4px;">
+                <i class="fas fa-times-circle"></i>
+              </a>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+    </section>
+    {{/if}}
+
+  </div>
+</div>

@@ -1,0 +1,141 @@
+/* Container holding the background silhouette image */
+.armor-sheet.sheet-body {
+    position: relative;
+    width: 500px; /* Adjust width to fit your sheet size */
+    height: 450px; /* Matches the exact aspect ratio of the layout */
+    background: url("../ui/assets/Armor_BKG.png") no-repeat center center;
+    background-size: contain;
+    margin: 0 auto;
+    border: 1px solid  #444;
+}
+.armor-type-block {
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    margin-bottom:20px;
+}
+
+.armor-sheet-header img {
+    width:64px;
+    height:64px;
+    object-fit: cover;
+    border: 1px solid #444;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.armor-type-fields {
+    display: flex;
+    flex-direction: column;
+    flex: 1;            
+    gap: 4px;           
+}
+.armor-type-fields input,
+.armor-type-fields select {
+    width: 100%;
+    height: 28px;
+    box-sizing: border-box;
+}
+
+.armor-name-label,
+.armor-type-label {
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #a3a3a3;
+    margin-top: 4px;
+}
+/* Base style for every box component to look like the image layout */
+.armor-stat-block {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.5); /* Semi-transparent white box */
+    border: 1px solid #111;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    padding: 6px;
+    width: 110px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Typography styles matching old-school game layouts */
+.armor-sheet-header {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 11px;
+    color: #000;
+}
+
+.armor-numbers {
+    font-size: 10px;
+    color: #222;
+    margin-bottom: 4px;
+    font-weight:bold;
+}
+
+/* Input boxes fitted inside the layout boxes */
+.armor-stat-block input[type="number"] {
+    width: 100%;
+    text-align: center;
+    border: 1px solid #777;
+    background: rgba(255,255,255,0.25);
+    color: #000000;
+    font-size:1.25rem;
+    height: 24px;
+}
+.armor-stat-block .armor-header{
+    color:#222 !important;
+    font-weight:bold;
+}
+
+/* --- Absolute Grid Positions matching the image blueprint --- */
+
+.head-block {
+    top: 35px;
+    left: 195px; /* Centered top */
+}
+
+.body-block {
+    top: 165px;
+    left: 195px; /* Centered middle */
+}
+
+.rarm-block {
+    top: 135px;
+    left: 45px; /* Flanked Left (Character's Right) */
+}
+
+.larm-block {
+    top: 135px;
+    right: 45px; /* Flanked Right (Character's Left) */
+}
+
+.rleg-block {
+    bottom: 35px;
+    left: 90px; /* Bottom column shift */
+}
+
+.lleg-block {
+    bottom: 35px;
+    right: 90px; /* Bottom column shift */
+}
+.armor-sheet-footer {
+    padding-top:0.5rem;
+    display:flex;
+    flex-direction: row;
+    gap: 5px;
+}
+.armor-sheet-footer .availability-block {
+    width:100%;
+    box-sizing: border-box;
+}
+.armor-sheet-footer .weight-block {
+    width:100%;
+    box-sizing: border-box;
+}
+.availability-block select,
+.weight-block select{
+    padding-top: 0.5rem;
+}

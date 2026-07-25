@@ -1,0 +1,295 @@
+.fantasy-hammer.sheet.actor .creation-mode-header{
+  display:block;
+  align-items:center;
+  border: 2px solid #fae652;
+  background-color: #463e00;
+  margin-bottom: 1em;
+}
+.fantasy-hammer.sheet.actor .creation-mode-header .creation-mode-warning{
+  font-weight: bold;
+  font-size:2em;
+  color:#FFF;
+  display:block;
+  text-align:center;
+}
+.fantasy-hammer.sheet.actor .skill-name-col {
+  display: inline-flex;
+  align-items: center;  /* Vertically aligns the text, badge, and trashcan perfectly down their centers */
+  gap: 6px;             /* Spacing between the text string, abbreviation, and icon */
+  flex: 1 1 auto;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 0.75rem;
+}
+.fantasy-hammer.sheet.actor .skill-flex-row:hover .js-delete-specialized-skill {
+  opacity: 1;
+  pointer-events: auto;   /* Re-enables mouse clicks when visible */
+}
+/* Ensure the trashcan icon shrinks and scales snuggly next to the words */
+.fantasy-hammer.sheet.actor .js-delete-specialized-skill {
+  position: absolute;     /* Pop it out of the normal layout flow completely */
+  left: 2px;               /* Snap it directly against the far-right border wall */
+  top: 50%;
+  transform: translateY(-50%); /* Centers it vertically down the middle axis */
+  
+  opacity: 0;             /* Completely invisible by default */
+  pointer-events: none;   /* Stops it from intercepting random mouse clicks while hidden */
+  padding-left: 6px;      /* Slight padding gap so text behind it doesn't bleed through */
+  color: #fa5252;
+  font-size: 0.8rem;
+    transition: opacity 0.15s ease, transform 0.15s ease; 
+  z-index: 2;   
+  
+  /* FORCE PURE TRANSPARENCY: Removes any box outlines or backgrounds */
+  background: transparent !important; 
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  outline: none !important;
+  
+  -webkit-text-stroke: 1px #000000; 
+  
+  /* Fallback/Addition: Add a subtle ambient dark glow directly behind the silhouette */
+  text-shadow: 0 0 2px #000000;
+}
+
+/* Optional Java-style Polish: Give it a nice hover state interaction */
+.fantasy-hammer.sheet.actor .js-delete-specialized-skill:hover {
+  transform: translateY(-50%) scale(1.2); 
+  color: #ff8787 !important;
+}
+.fantasy-hammer.sheet.actor .sheet-main-layout-row {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  gap: 20px; /* Physical whitespace dividing the Skill blocks from the Talent blocks */
+}
+.fantasy-hammer.sheet.actor .skills-panel-section {
+  flex: 0 0 auto; /* Stop the skill area from expanding horizontally */
+  width: 580px;   /* Explicitly accounts for 2 columns of 280px + gaps and borders */
+}
+
+/* 3. Adjust the internal layout generator to enforce the 280px limits */
+.fantasy-hammer.sheet.actor .skills-grid-container {
+  column-count: 2;
+  column-gap: 20px; /* Explicit horizontal spacing down the center gap */
+  width: 100%;
+}
+
+.fantasy-hammer.sheet.actor .skill-flex-row {
+  position:relative;
+  display: flex;
+  break-inside: avoid;
+  width: 280px;      /* CRUCIAL LOOK: Locks every individual skill row box to exactly 280px */
+  max-width: 280px;  /* Forbids any screen spreading behavior */
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* 4. THE SIDEBAR AREA: This expands automatically to soak up all remaining screen room */
+.fantasy-hammer.sheet.actor .talents-panel-section {
+  flex: 1 1 auto; /* Fill all remaining horizontal workspace on the right */
+  border-left: 1px dashed #5c4e43;
+  padding-left: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.fantasy-hammer.sheet.actor .panel-title-header {
+  font-family: 'WarhammerTitle', serif;
+  border-bottom: 2px solid #5c4e43;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+.fantasy-hammer.sheet.actor .talents-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.fantasy-hammer.sheet.actor .talent-item-row {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  margin-bottom: 6px;
+  transition: border-color 0.15s ease;
+}
+.fantasy-hammer.sheet.actor .talent-item-row:hover {
+  border-color: rgba(255, 188, 0, 0.2);
+}
+.fantasy-hammer.sheet.actor .talent-item-row.is-expanded {
+  border-color: #ffbc00; /* Locks onto solid gold when expanded! */
+}
+.fantasy-hammer.sheet.actor .talent-title-text-zone{
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.fantasy-hammer.sheet.actor .talent-utility-controls{
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 10px;                         /* Uniform gutter spacing between your edit and trash buttons */
+  margin-left: auto !important;      /* Extra security rule to snap them against the right wall boundary */
+  padding: 0;
+}
+.talent-utility-controls a:hover {
+  filter: brightness(1.4);
+}
+.fantasy-hammer.sheet.actor .talent-item-row .talent-short-desc {
+  display: none;
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  line-height: 1.4;
+}
+.fantasy-hammer.sheet.actor .talent-item-row.is-expanded .talent-short-desc {
+  display: block;
+}
+.fantasy-hammer.sheet.actor .talent-main-line {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important; 
+  justify-content: space-between !important;
+  min-height: 24px;
+  width: 100%;
+  user-select: none; /* Prevents text highlights when double-clicking to toggle */
+}
+
+.fantasy-hammer.sheet.actor .talent-main-line a[data-action="openEmbeddedItem"] {
+  font-size: 0.9rem;
+  color: #e0e0e0;
+  text-decoration: none;
+}
+
+.fantasy-hammer.sheet.actor .talent-main-line a[data-action="openEmbeddedItem"]:hover {
+  color: #ffbc00; /* Give the link a nice classic gold warp color on hover */
+}
+[id^="talent-sheet"] .tab,
+.sheet-body .tab {
+  display: none !important;
+}
+
+/* 2. UNIVERSAL ACTIVE RELEASE: Instantly bring only the .active section live on screen */
+[id^="talent-sheet"] .tab.active,
+.sheet-body .tab.active {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100%;
+}
+
+/* 3. COHESIVE NAVIGATION HIGHLIGHTING POLISH */
+.sheet-tabs .item {
+  color: #a19385;
+  text-decoration: none;
+  padding: 4px 8px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.sheet-tabs .item:hover {
+  color: #e0e0e0;
+}
+
+.sheet-tabs .item.active {
+  color: #ffbc00 !important;
+  border-bottom: 2px solid #ffbc00 !important;
+}
+.sheet-header-ledger {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Vertical padding space between your ledger ink rows */
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+/* Row-Level Flex Alignments */
+.ledger-row {
+  display: flex;
+  width: 100%;
+  gap: 16px; /* Horizontal gutter spacing between separate input field units */
+  align-items: flex-end; /* Binds labels and line baselines to lock on a single straight horizontal track */
+}
+
+/* Individual Field Component Units */
+.ledger-field {
+  display: flex;
+  align-items: baseline;
+  gap: 6px; /* Padding space separating the label text from the beginning of the line input */
+  margin:0;
+  padding:0;
+}
+
+/* THE LEDGER LINE INPUTS: Strips boxes, adds a handwritten bottom stroke line */
+.ledger-field .ledger-input {
+  flex: 1; /* FORCES INPUT TO AUTOMATICALLY STRETCH TO EDGE WALL OF ROW CONTAINER */
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255,255,255,0.1) !important; /* The core underline tracker rule stroke */
+  border-radius: 0 !important;
+  color: #E0E0E0;
+  font-family: inherit;
+  font-size: 0.9rem;
+  margin: 0 !important;
+  padding: 0 4px 1px 4px !important;
+  height: 22px !important;
+  line-height: 1 !important;
+  box-sizing: border-box;
+}
+
+/* Remove default focus bounding frames during keyboard typing selections */
+.ledger-field .ledger-input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border-bottom-color: #ffbc00 !important; /* Highlights your writing line in classic gold on focus */
+}
+
+/* Static text label formatting formatting typography rules */
+.ledger-field .ledger-label {
+  font-variant: small-caps; /* Matches the classic stylized uppercase look from your reference sheet picture */
+  font-weight: bold;
+  font-size: 0.85rem;
+  white-space: nowrap; /* Prevents long labels like "Character Name" from splitting onto two rows */
+  color: #a19385;
+  margin: 0;
+  padding: 0;
+  line-height: 1 !important;
+}
+
+.ledger-field .readonly-text-line {
+  display: flex;
+  align-items: flex-end;
+  flex: 1;
+  height: 22px !important;
+  box-sizing: border-box;
+  cursor: default;
+  font-family: inherit;
+  margin: 0 !important;
+  padding: 0 4px 1px 4px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Light prompt text styling when no item card has been dropped yet */
+.ledger-field .ledger-placeholder {
+  font-style: italic;
+  font-size: 0.8rem;
+  opacity: 0.4;
+  color: #333333;
+}
+/* Utility Helper Modifiers to balance structural columns asymmetrically */
+.ledger-field.flex-1 { flex: 1; }
+.ledger-field.flex-2 { flex: 2; }
+.ledger-field.flex-3 { flex: 3; }
+.ledger-field.width-60 { width: 75px; flex-grow: 0; } /* Keeps the Rank input a short, tight numerical bracket */
+.ledger-field .center-text { text-align: center; }

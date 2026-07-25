@@ -1,0 +1,52 @@
+.v13-code-editor {
+    display: block !important;
+    width: 100% !important;
+    min-height: 200px;
+    background: #1e1e1e;
+    border-radius: 4px;
+    border: 1px solid #444;
+    /*padding: 10px;*/
+    margin: 0;
+    overflow: auto;
+    box-sizing: border-box;
+}
+
+.v13-code-editor code {
+    display: block !important;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    outline: none;
+    width: 100% !important;
+    min-width: 100%;
+    color: #d4d4d4;
+    box-sizing: border-box;
+    /* Default brackets and punctuation color */
+}
+
+.v13-code-editor .token-key {
+    color: #9cdcfe;
+}
+
+/* Light blue keys */
+.v13-code-editor .token-pipe {
+    color: #c586c0;
+    font-weight: bold;
+}
+
+/* Purple/Magenta pipe separator */
+.v13-code-editor .token-string {
+    color: #ce9178;
+}
+
+/* Terracotta strings */
+.v13-code-editor .token-number {
+    color: #b5cea8;
+}
+
+/* Sage green numbers */
+.v13-code-editor .token-bool {
+    color: #569cd6;
+}

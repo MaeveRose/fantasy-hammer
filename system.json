@@ -1,0 +1,77 @@
+{
+  "id": "fantasy-hammer",
+  "title": "Fantasy Flight Warhammer",
+  "description": "Very Unofficial Warhammer 40k using the d100 Fantasy Flight system.",
+  "version": "0.0.1",
+  "compatibility": {
+    "minimum": 13,
+    "verified": 13
+  },
+  "authors": [{
+    "name": "Maeve Kirkland",
+    "url": "github.com",
+    "email": "kirkland.rose.maeve@gmail.com",
+    "discord": "maeve_rose"
+  }],
+  "esmodules": [
+    "js/utils/sys-const.mjs",
+    "js/utils/system-helpers.mjs",
+	"js/utils/GlobalEditor.mjs",
+    "fanfliwar.mjs"
+    ],
+  "styles": [
+    "css/common/code.css",
+    "css/system-styles.css",
+    "css/charactersheet.css",
+    "css/talentsheet.css",
+    "css/weaponsheet.css",
+    "css/armorsheet.css",
+    "css/gearsheet.css",
+    "css/archetypesheet.css",
+    "css/traitsheet.css"
+  ],
+  "fonts": ["fonts/LibreBaskerville-VariableFont_wght.ttf"],
+  "packs": [{
+    "name": "talents",
+    "label": "Talents",
+    "type": "Talent"
+  },
+  {
+    "name": "items",
+    "label": "Items",
+    "type": "Item"
+  }],
+  "languages": [{
+    "lang": "en",
+    "name": "English",
+    "path": "lang/en.json"
+  }],
+  "documentTypes": {
+    "Actor":{
+      "character":{ "htmlFields": ["background.biography"] },
+      "npc":{ "htmlFields": ["background.biography"] },
+      "vehicle":{ "htmlFields": ["background.biography"] }
+    },
+    "Item": {
+      "talent":     { "htmlFields": ["system.description"] },
+      "trait":      { "htmlFields": ["system.description"] },
+      "weapon":     { "htmlFields": ["system.description"] },
+      "spell":      { "htmlFields": ["background.biography"] },
+      "armor":      { "htmlFields": ["system.description"] },
+      "godgift":    {  },
+      "gear":       { "htmlFields": ["system.description"] },
+      "archetype":  { "htmlFields": ["system.description"] }
+    }
+  },
+  "socket": false,
+  "initiative": "1d20",
+  "grid": {
+    "distance": 2,
+    "units": "m"
+  },
+  "primaryTokenAttribute": "resources.health",
+  "secondaryTokenAttribute": "resources.power",
+  "url": "https://your/hosted/system/repo/",
+  "manifest": "https://your/hosted/system/repo/system.json",
+  "download": "https://your/packaged/download/archive.zip"
+}

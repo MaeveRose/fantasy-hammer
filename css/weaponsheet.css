@@ -1,0 +1,170 @@
+.weapon-title-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.weapon-title-header .image-container {
+  flex: 0 0 64px; /* Fixes image to a strict, perfect 64x64 square */
+  height: 64px;
+}
+
+.weapon-title-header .weapon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.weapon-title-header .weapon-img:hover {
+  filter: brightness(1.2);
+  border-color: #ffbc00; /* Subtle hover color indicator matching your text header */
+}
+
+.weapon-title-header .title-container {
+  flex: 1; /* Stretches across the rest of the available horizontal header space */
+  display: flex;
+  align-items: center;
+  font-family: 'WarhammerTitle', 'Courier New', monospace !important; 
+}
+
+.weapon-title-header .weapon-title-input {
+  width: 100%;
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #ffbc00;
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed transparent;
+  padding: 4px 8px;
+  font-family: inherit;
+}
+
+/* Adds a nice clean editing indicator line when the user selects the name */
+.weapon-sheet-header .weapon-title-input:focus {
+  border-bottom-color: #ffbc00;
+  box-shadow: none;
+  outline: none;
+}
+/* Base Layout Containers */
+.weapon-window {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.weapon-title-header h2{
+ 
+}
+.stats-block {
+  display: grid;
+  /* 12 small grid fractions form a flexible master grid */
+  grid-template-columns: repeat(12, 1fr);
+  gap: 12px 16px;
+  align-items: center;
+}
+
+/* Master full-width banner title */
+.stats-block-header {
+  font-family: 'WarhammerSharp', 'Courier New', monospace !important; 
+  grid-column: span 12;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 1px;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Form groups handle inline label/input alignments */
+.form-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+/* Form fields take up all leftover space inside their grid cells */
+.form-group input, 
+.form-group select {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+/* Layout Cell Configurations (Grid Coordinates) */
+
+/* ROW 1: Class, Range, Reload, Clip */
+.stats-class { 
+  grid-column: span 4; 
+}
+.stats-class select { 
+  flex: 1; 
+}
+.stats-range { 
+  grid-column: span 3; 
+}
+.stats-reload { 
+  grid-column: span 3; 
+}
+.stats-clip { 
+  grid-column: span 2; 
+}
+
+/* ROW 2: Damage, Pen, Rate of Fire */
+.stats-damage { 
+  grid-column: span 4; 
+}
+.stats-pen { 
+  grid-column: span 3; 
+}
+.stats-rof { 
+  grid-column: span 5; /* Spans wider to accommodate triple numbers smoothly */
+}
+
+/* ROW 3: Craftsmanship, Availability, Weight */
+.stats-craftsmanship { 
+  grid-column: span 4; 
+}
+.stats-avail { 
+  grid-column: span 6; 
+}
+.stats-weight { 
+  grid-column: span 2; 
+  justify-content: flex-end;
+}
+.stats-weight input { 
+  max-width: 50px; 
+}
+
+/* ROW 4: Special (Wide), Attack (Narrow) */
+.stats-special { 
+  grid-column: span 10; 
+}
+.stats-attack { 
+  grid-column: span 2; 
+  justify-content: flex-end;
+}
+.stats-attack input { 
+  max-width: 50px; 
+}
+
+/* Split-input structural helpers (Slits for / symbols) */
+.input-split, 
+.input-split-triple {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.input-split input,
+.input-split-triple input {
+  width: 100%;
+}

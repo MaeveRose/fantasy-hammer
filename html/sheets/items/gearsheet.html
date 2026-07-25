@@ -1,0 +1,33 @@
+<div class="gear-sheet">
+    <div class = "gear-sheet-header">
+        <div class = "armor-type-block">
+            <img src="{{item.img}}" data-action="editImage" data-field="img" alt="{{item.name}}"/>
+            <div class = "gear-type-fields">
+                <label class = "gear-name-label">{{localize "sheets.gear.stats.name"}}</label>
+                <input type="text" name="name" value="{{item.name}}" placeholder="Item Name" {{disabled isReadOnly}}/>
+            </div>
+        </div>
+    </div>
+    {{#if isEditable}}
+    <div class = "gear-sheet-body">
+        {{formInput fields.description value=system.description height=160 enriched=true}}
+    </div>
+    {{/if}}
+    {{#unless isEditable}}
+    <div class = "gear-sheet-body">
+        {{{system.description}}}
+    </div>
+    {{/unless}}
+    <div class = "gear-sheet-footer">
+        <div class = "availability-block">
+            <label class = "availability-label">{{localize "sheets.armor.stats.availability"}}</label>
+            <select name = "system.availability" {{disabled isReadOnly}}>
+                {{selectOptions availabilityOptions selected=system.availability valueAttr="id" labelAttr="label"}}
+            </select>
+        </div>
+        <div class="weight-block">
+            <label class = "weight-label">{{localize "sheets.armor.stats.weight"}}</label>
+            <input type="number" name="system.weight" value="{{system.weight}}" {{disabled isReadOnly}}/>
+        </div>
+    </div>
+</div>

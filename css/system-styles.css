@@ -1,0 +1,268 @@
+@font-face {
+  font-family: 'WarhammerTitle'; /* This is the nickname you will use in your CSS rules */
+  src: url('../fonts/LibreBaskerville-VariableFont_wght.ttf') format('truetype'); /* Absolute path relative to where your CSS file is located */
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'WarhammerSharp';
+  src: url('../fonts/MedievalSharp-Regular.ttf') format ('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.stat-panel {
+  position: relative;
+  width: 120px;
+  height: 100px;
+  border: 4px solid #4a5356;
+  background: #f7ede2;
+  display: flex;
+}
+.window-app .fantasy-hammer {
+  min-width: 1012px !important; 
+  min-height: 450px !important;
+}
+/* Container holding a single stat panel group (Label + Box area) */
+.stat-panel-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 65px; /* Adjust this width to match the exact distance between your vertical layout lines */
+}
+
+/* The box containing the digit container layout overlay */
+.digit-container {
+  display: flex;
+  width: 100%;
+  height: 45px; /* Match the approximate height of your asset's score line box */
+  position: relative;
+}
+.invisible-stat-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+  
+  /* Make the typed text completely invisible so it doesn't overlap your styled divs */
+  color: transparent !important; 
+  caret-color: #ffffff; /* Keeps the blinking text cursor visible so they know where they are typing */
+}
+
+/* Show the typed number normally ONLY when the player is actively editing it */
+.invisible-stat-input:focus {
+  z-index: 10;                  /* Bring input to front over the display numbers */
+  color: #ffffff !important;     /* Show text cleanly while actively editing */
+  background: #3d342d !important; /* Slightly lighter brown accent background tint when clicked */
+  font-family: 'Courier New', monospace;
+  font-size: 2.2rem !important;
+  text-align: center;
+  font-weight: 900; /* Bring to front over the display divs */
+}
+.single-stat-input {
+  width: 100% !important;
+  height: 25px !important; /* Shrunk height to match the compact text size */
+  
+  /* Wipe out native browser borders and background tints */
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  
+  /* Text and Alignment Styles */
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  font-size: min(1rem, 2.5vw) !important; /* Shrunk font size to half as requested */
+  font-weight: 900 !important;             /* Force maximum boldness */
+  color: #ebd1b3;                         /* Tan asset font color matches */
+}
+.digit-container {
+  display: flex !important;
+  flex-direction: row !important;
+  position: relative;
+  width: 100%;
+  height: 60px;
+  border: 2px solid #5c4e43 !important;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.6); /* Internal shadow depth overlay */
+  overflow: hidden;
+  margin-top: 4px;            
+  background: #251f1a !important;    
+  align-items: baseline !important; 
+  justify-content: center !important;     
+}
+.digit-display{
+  width: 50%;
+  height: auto !important;
+  display: block !important;
+  align-items: flex-end !important;    /* Vertically align numbers perfectly inside the box frame */
+  justify-content: center !important; /* Horizontally center text digits */
+  font-family: 'WarhammerTitle', 'Courier New', monospace !important;
+  color: #ebd1b3;              /* High-contrast parchment cream font tint */
+  pointer-events: none; 
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+.digit-display.tens {
+  width:60% !important;
+  display: flex !important;
+  align-items: baseline !important;
+  justify-content: center !important;
+  font-weight: 900 !important;
+  font-size: min(3rem, 7vw); 
+  border-right: 1px dashed #5c4e43;
+  padding-bottom: 2px !important;
+}
+.digit-display.ones {
+  width:40% !important;
+  display: flex !important;
+  align-items: baseline !important;
+  justify-content: center !important;
+  font-weight: 400 !important;
+  font-size: min(2.2rem, 5.5vw);
+  padding-bottom: 4px !important;
+}
+
+/* Hide standard HTML number input adjustment spinners */
+.digit-input::-webkit-outer-spin-button,
+.digit-input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+/* Subtle edit cue: Light up the panel text slightly when a user clicks in to type */
+.digit-input:focus {
+  color: #ffffff !important;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+/* The locked-down bonus box style */
+.bonus-box.read-only {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+
+.bonus-text {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #555555;
+}
+
+/* Hide standard HTML number input spinners */
+.digit-input::-webkit-outer-spin-button,
+.digit-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.characteristic-panel
+{
+    font-family: 'WarhammerTitle', 'Courier New', monospace !important;
+    display:grid !important;
+    grid-template-columns: repeat(10,minmax(80px, 1fr)) !important;
+    gap: 12px !important;
+    width:100% !important;
+    box-sizing: border-box;
+    padding:10px;
+}
+.characteristic-panel .title {
+    text-align: center;
+    grid-column: 1 / -1;
+    display: block;
+    align-items:center;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+.characteristic-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* Spans exactly 1 fractional unit of the row layout */
+    text-align: center;
+}
+.characteristic-name {
+  display: block !important;
+  font-size: 0.80rem;
+  font-weight: bold;
+  white-space: nowrap; /* Prevents long labels from wrapping ugly mid-sentence */
+}
+.characteristic-short {
+  display: block !important;
+  font-size: 0.75rem;
+  font-weight: bold;
+  opacity: 0.8;
+  margin-bottom: 5px;
+}
+.skills-grid-container {
+  font-family: 'WarhammerTitle', 'Courier New', monospace !important;
+  display: flex;
+  flex-wrap: wrap;        /* Magic word: allows rows to sit side-by-side and break onto new lines */
+  justify-content: space-between; /* Creates clean spacing down the middle of your 2 columns */
+  width: 100%;
+  gap: 6px 4%;            /* Vertical row spacing, and horizontal center gap */
+}
+.skills-grid-header .title {
+    font-family: 'WarhammerTitle', 'Courier New', monospace !important;
+    text-align: center;
+    grid-column: 1 / -1;
+    display: block;
+    align-items:center;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+/* Individual skill block items */
+.skill-flex-row {
+  display: flex;
+  max-width: 280px;
+  width: 48%;             /* Sets width to just under half, forcing a perfect 2-column split */
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px;
+  background: rgba(255, 255, 255, 0.03); /* Subtle alternating row tint if desired */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* Left-hand side: The text and abbreviation labels */
+.skill-name-col {
+  flex: 1 1 auto;
+  text-transform: capitalize;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Keeps long skill names from breaking your boxes */
+}
+
+.skill-char-abbreviation {
+  opacity: 0.7;
+  font-size: 0.85rem;
+  margin-left: 4px;
+}
+
+/* Right-hand side: The group of 4 check boxes */
+.skill-checkboxes-col {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 4px;               /* Clean horizontal spacing between your 4 boxes */
+  align-items: center;
+}
+
+/* Make your custom boxes look square and tidy */
+.skill-checkbox {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  margin: 0;
+}
+.application .window-content{
+  overflow-y:auto !important;
+}
