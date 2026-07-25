@@ -1,13 +1,13 @@
-import {
-    AVAILABILITY_MANIFEST,
-    QUALITY_MANIFEST,
-    ARMORTYPE_MANIFEST } from "../../sys-const.mjs";
+import { AVAILABILITY_MANIFEST, QUALITY_MANIFEST, ARMORTYPE_MANIFEST } from "../../utils/sys-const.mjs";
+
+import { BaseItemDataModel } from "./ItemDataModel.mjs";
 
 const { JSONField, StringField, HTMLField, NumberField, SchemaField, ArrayField, BooleanField } = foundry.data.fields;
 
-export class ArmorDataModel extends foundry.abstract.TypeDataModel {
+export class ArmorDataModel extends BaseItemDataModel {
   static defineSchema() {
     return {
+      ...super.defineSchema(),
         customJSON: new JSONField({required:true, initial:"{}"}),
         type: new StringField({required:true, initial:"primative", choices: Object.keys(ARMORTYPE_MANIFEST)}),
         coverage: new SchemaField({

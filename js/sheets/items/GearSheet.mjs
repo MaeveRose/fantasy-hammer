@@ -5,7 +5,7 @@
      DAMAGETYPE_MANIFEST,
      WEAPONTYPE_MANIFEST,
      ARMORTYPE_MANIFEST
- } from "../../sys-const.mjs";
+ } from "../../utils/sys-const.mjs";
  
  export class GearSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ItemSheetV2) {
      static DEFAULT_OPTIONS = {

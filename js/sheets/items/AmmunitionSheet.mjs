@@ -4,7 +4,7 @@ import {
     WEAPONCLASS_MANIFEST,
     DAMAGETYPE_MANIFEST,
     WEAPONTYPE_MANIFEST
-} from "../../sys-const.mjs";
+} from "../../utils/sys-const.mjs";
 
 export class AmmunitionSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ItemSheetV2) {
     static DEFAULT_OPTIONS = {

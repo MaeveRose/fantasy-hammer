@@ -1,8 +1,5 @@
-import {
-    CHARACTERISTIC_MANIFEST,
-    SKILL_MANIFEST
-} from "../../sys-const.mjs";
-import { GlobalJsonEditor } from "../../GlobalEditor.js";
+import { CHARACTERISTIC_MANIFEST, SKILL_MANIFEST } from "../../utils/sys-const.mjs";
+import { GlobalJsonEditor } from "../../utils/GlobalEditor.mjs";
 
 export class ArchetypeSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ItemSheetV2) {
     #dragDrop;
@@ -49,7 +46,7 @@ export class ArchetypeSheet extends foundry.applications.api.HandlebarsApplicati
     };
     static PARTS = {
         form: {
-            template: "systems/fantasy-hammer/html/sheets/items/archetypeSheet.html"
+            template: "systems/fantasy-hammer/html/sheets/items/archetypesheet.html"
         }
     };
     get title() {
@@ -85,8 +82,13 @@ export class ArchetypeSheet extends foundry.applications.api.HandlebarsApplicati
         if (this.element && this._dragDropHandler) {
             this._dragDropHandler.bind(this.element);
         }
-        const startingTab = "base";
-        this.#tabs = new foundry.applications.ux.Tabs({ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: startingTab, group: "primary-tabs" });
+        const startingTab = "stats";
+        this.#tabs = new foundry.applications.ux.Tabs({ 
+            navSelector: ".archetype-sheet-tabs",
+            contentSelector: ".archetype-body",
+            initial: startingTab,
+            group: "item-archetype-primary-tabs" 
+        });
         this.#tabs.bind(this.element);
         
         GlobalJsonEditor.attach(this.element, this);

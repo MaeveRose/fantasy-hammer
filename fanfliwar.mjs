@@ -31,14 +31,16 @@ Hooks.once("init", () => {
 	CONFIG.Actor.dataModels.character = CharacterDataModel;
 	CONFIG.Actor.dataModels.npc = FallbackDataModel;
 	CONFIG.Actor.dataModels.vehicle = FallbackDataModel;
-	CONFIG.Item.dataModels.talent = TalentDataModel;
-	CONFIG.Item.dataModels.trait = TraitDataModel;
-	CONFIG.Item.dataModels.weapon = WeaponDataModel;
-	CONFIG.Item.dataModels.spell = FallbackDataModel;
-	CONFIG.Item.dataModels.armor = ArmorDataModel;
-	CONFIG.Item.dataModels.godgift = FallbackDataModel;
-	CONFIG.Item.dataModels.gear = GearDataModel;
-	CONFIG.Item.dataModels.archetype = ArchetypeDataModel;
+	CONFIG.Item.dataModels ={
+		talent: TalentDataModel,
+		trait: TraitDataModel,
+		weapon: WeaponDataModel,
+		spell: FallbackDataModel, //tbc
+		armor: ArmorDataModel,
+		godgift: FallbackDataModel, //tbc
+		gear: GearDataModel,
+		archetype: ArchetypeDataModel
+	};
 	// unregister generic sheet
 	foundry.documents.collections.Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
 	// register new sheet 

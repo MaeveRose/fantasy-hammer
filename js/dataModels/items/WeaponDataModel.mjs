@@ -1,14 +1,12 @@
 const { StringField, HTMLField, NumberField, SchemaField, ArrayField, BooleanField } = foundry.data.fields;
 
-import { AVAILABILITY_MANIFEST } from "../../../js/sys-const.mjs";
-import { DAMAGETYPE_MANIFEST } from "../../../js/sys-const.mjs";
-import { WEAPONCLASS_MANIFEST } from "../../../js/sys-const.mjs";
-import { WEAPONTYPE_MANIFEST } from "../../../js/sys-const.mjs";
-import { QUALITY_MANIFEST } from "../../../js/sys-const.mjs";
+import { AVAILABILITY_MANIFEST, DAMAGETYPE_MANIFEST, WEAPONCLASS_MANIFEST, WEAPONTYPE_MANIFEST, QUALITY_MANIFEST } from "../../utils/sys-const.mjs";
+import { BaseItemDataModel } from "./ItemDataModel.mjs";
 
-export class WeaponDataModel extends foundry.abstract.TypeDataModel {
+export class WeaponDataModel extends BaseItemDataModel {
     static defineSchema() {
         return {
+            ...super.defineSchema(),
             description: new HTMLField({required:true, initial:""}),
             class: new StringField({required:true, initial:"melee", choices: Object.keys(WEAPONCLASS_MANIFEST)}),
             type: new StringField({required:true, initial:"las", choices: Object.keys(WEAPONTYPE_MANIFEST)}),
