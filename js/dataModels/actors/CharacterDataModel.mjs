@@ -1,6 +1,7 @@
 const {JSONField, BooleanField, ArrayField, HTMLField, NumberField, SchemaField, StringField, MappingField, ObjectField} = foundry.data.fields;
 
 import { SKILL_MANIFEST, CHARACTERISTIC_MANIFEST } from "../../utils/sys-const.mjs";
+import { BaseActorDataModel } from "./ActorDataModel.mjs";
 
 const skillBlueprint = (linkedCharacteristic, localizable) => new SchemaField({
       characteristic: new StringField({ required: true, initial: linkedCharacteristic }),
@@ -36,6 +37,7 @@ export class CharacterDataModel extends foundry.abstract.TypeDataModel {
       { initial: [] }
     );
     return {
+      ...super.defineSchema(),
       characterCreationActive: new BooleanField({required:true, initial:true}),
       playerName: new StringField({required: false}),
       crusade: new SchemaField({
