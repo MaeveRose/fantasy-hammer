@@ -16,7 +16,7 @@
   "esmodules": [
     "js/utils/sys-const.mjs",
     "js/utils/system-helpers.mjs",
-	"js/utils/GlobalEditor.mjs",
+	  "js/utils/GlobalEditor.mjs",
     "fanfliwar.mjs"
     ],
   "styles": [

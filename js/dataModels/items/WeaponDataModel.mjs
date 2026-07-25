@@ -1,6 +1,6 @@
 const { StringField, HTMLField, NumberField, SchemaField, ArrayField, BooleanField } = foundry.data.fields;
 
-import { AVAILABILITY_MANIFEST, DAMAGETYPE_MANIFEST, WEAPONCLASS_MANIFEST, WEAPONTYPE_MANIFEST, QUALITY_MANIFEST } from "../../../js/sys-const.mjs";
+import { AVAILABILITY_MANIFEST, DAMAGETYPE_MANIFEST, WEAPONCLASS_MANIFEST, WEAPONTYPE_MANIFEST, QUALITY_MANIFEST } from "../../utils/sys-const.mjs";
 import { BaseItemDataModel } from "./ItemDataModel.mjs";
 
 export class WeaponDataModel extends BaseItemDataModel {

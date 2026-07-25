@@ -4,315 +4,330 @@
             isReadOnly "read-only" "" }} />
     </div>
     <div class="archetype-sheet-body">
-        <section class="tab" data-tab="base" data-group="item-archetype-primary-tabs">
-            <div class="archetype-starting-char-list">
-                {{#if isEditable}}
-                <a data-action="addChar">
-                    <i class="fas fa-plus-circle"></i> {{localize "sheets.archetype.actions.characteristicBonus"}}
-                </a>
-                {{#each system.characteristicsBonus as |pool poolIndex|}}
-                <label>{{localize "sheets.archetype.labels.characteristicBonus"}}</label>
-                <label>{{localize (concat "sys-const.characteristic." pool.characteristic)}}</label>
-                <select name="system.characteristicsBonus.{{poolIndex}}.characteristic">
-                    {{selectOptions @root.characteristicOptions selected=pool.characteristic valueAttr="id"
-                    labelAttr="label"}}
-                </select>
-                <input type="number" name="system.characteristicsBonus.{{poolIndex}}.value" value="{{pool.value}}" />
-                <a data-action="deleteChar" data-path="{{poolIndex}}">
-                    <i class="fas fa-minus-circle"></i>
-                </a>
-                {{/each}}
-                {{/if}}
-                {{#unless isEditable}}
-                <label>{{localize "sheets.archetype.labels.characteristicBonus"}}</label>
-                {{#each system.characteristicsBonus as |cBonus cIndex|}}
-                <span class="flat-char-entry">
-                    {{localize (concat "sys-const.characteristic." cBonus.characteristic)}}: +{{cBonus.value}}
-                </span>
-                {{/each}}
-                {{/unless}}
-            </div>
-            <div class="archetype-starting-skill-list">
-                {{#if isEditable}}
-                <a data-action="addBonusSkill">
-                    <i class="fas fa-plus-circle"></i> Add Granted Skill
-                </a>
-                {{/if}}
-                {{#if @root.isEditable}}
-                <div class="granted-skill-wrapper" data-target-type="flat">
-                    <div class="granted-skill-list">
-                        <!-- If the array is empty, this loop skips but the parent container stays perfectly visible -->
-                        <label>Granted Skills:</label>
-                        {{#each system.skillBonus as |pool poolIndex|}}
-                        <label>{{localize (concat "sys-const.skills." pool.id)}}</label>
-                        <select class="bonus-skill-list-select" name="system.skillBonus.{{poolIndex}}.id">
-                            {{selectOptions @root.skillOptions selected=pool.id valueAttr="id" labelAttr="label"}}
-                        </select>
-                        <div class="rank-toggle-box" title="Check to mark choice option as Advanced (+10)">
-                            <input type="checkbox" name="system.skillBonus.{{poolIndex}}.isAdvanced" {{checked
-                                skill.isAdvanced}} />
-                            <span>+10</span>
-                        </div>
-                        {{#if @root.isEditable}}
-                        <a data-action="deleteBonusSkill" data-path="{{poolIndex}}">
-                            <i class="fas fa-minus-circle"></i>
-                        </a>
-                        {{/if}}
-                        {{/each}}
-                    </div>
-                </div>
-                {{/if}}
-
-                <!-- For non-GMs (Read Only view) -->
-                {{#unless @root.isEditable}}
-                {{#if system.skillBonus.length}}
-                <div class="granted-skill-wrapper-readonly">
-                    <strong>Starting Skills:</strong>
-                    <div class="granted-skill-list"
-                        style="display: block; font-size: var(--font-size-13); line-height: 1.5;">
-                        <!-- 1. The Flat Granted Items Group -->
-                        {{#each system.skillBonus as |bonus|}}
-                        <span class="flat-skill-entry">
-                            {{localize (concat "sys-const.skills." bonus.id)}}
-                            {{#if bonus.isPlusTen}} (+10){{/if}}
-                        </span>
-                        {{/each}}
-
-                        <!-- 2. The Choice Pools Group -->
-                        {{#each system.skillChoices as |pool|}}
-                        <span class="choice-pool-entry">
-                            <!-- Inner Loop handles internal 'or' strings natively using the @last flag -->
-                            {{#each pool as |skill|}}
-                            <span class="skill-name">{{localize (concat "sys-const.skills." skill.id)}} {{#if
-                                skill.isAdvanced}}+10{{/if}}</span>
-                            {{#unless @last}} <span class="or-separator">or</span> {{/unless}}
-                            {{/each}}
-                        </span>
-                        {{/each}}
-                    </div>
-                </div>
-                {{/if}}
-                {{/unless}}
-                {{#if isEditable}}
-                <div class="editable-addSkillArray">
-                    <a class="add-skill-a" data-action="addSkillArray" data-array-path="system.skillChoices">
-                        <i class="fas fa-plus-circle"></i> Add Skill Choice Set
+        {{#if isEditable}}
+        <nav class="archetype-sheet-tabs tabs" data-group="item-archetype-primary-tabs">
+            <a class="item" data-tab="stats" data-group="item-archetype-primary-tabs">
+                <i class="fas fa-shield-alt"></i> {{localize "global.tabLabels.stats"}}
+            </a>
+            <a class="item" data-tab="json-entry" data-group="item-archetype-primary-tabs"><i
+                    class="fas fa-swords"></i> {{localize "global.tabLabels.json"}}
+            </a>
+        </nav>
+        {{/if}}
+        <section class="archetype-body">
+            <section class="tab" data-tab="stats" data-group="item-archetype-primary-tabs">
+                <div class="archetype-starting-char-list">
+                    {{#if isEditable}}
+                    <a data-action="addChar">
+                        <i class="fas fa-plus-circle"></i> {{localize "sheets.archetype.actions.characteristicBonus"}}
                     </a>
-                </div>
-                {{/if}}
-                <div class="skill-choice-block">
-                    {{#if @root.isEditable}}
-                    {{#each system.skillChoices as |bonus bonusIndex|}}
-                    <div class="skill-row">
-                        {{#each bonus as |skill skillindex|}}
-                        <!-- If your skillId can be looked up via a helper or direct text evaluation -->
-                        <label class="skill-label">{{localize (concat "sys-const.skills." skill.id)}}</label>
-                        <select name="system.skillChoices.{{bonusIndex}}.{{skillindex}}.id">
-                            {{selectOptions @root.skillOptions selected=skill.id valueAttr="id" labelAttr="label"}}
-                        </select>
-                        <div class="rank-toggle-box" title="Check to mark choice option as Advanced (+10)">
-                            <input type="checkbox" name="system.skillChoices.{{bonusIndex}}.{{skillindex}}.isAdvanced"
-                                {{checked skill.isAdvanced}} />
-                            <span>+10</span>
-                        </div>
-                        <a data-action="deleteSkillArrayEntry" data-parent="system.skillChoices.{{bonusIndex}}"
-                            data-array-path="system.skillChoices.{{bonusIndex}}.{{skillindex}}.id">
-                            <i class="fas fa-minus-circle"></i>Remove Entry
-                        </a>
-                        {{/each}}
-                        <a data-action="addSkillArrayEntry" data-array-path="system.skillChoices.{{bonusIndex}}">
-                            <i class="fas fa-plus-circle"></i>Add Entry
-                        </a>
-                    </div>
-                    <a data-action="deleteSkillArray" data-array-path="system.skillChoice.{{bonusIndex}}">
-                        <i class="fas fa-minus-circle"></i>Remove Skill Choice Set
+                    {{#each system.characteristicsBonus as |pool poolIndex|}}
+                    <label>{{localize "sheets.archetype.labels.characteristicBonus"}}</label>
+                    <label>{{localize (concat "sys-const.characteristic." pool.characteristic)}}</label>
+                    <select name="system.characteristicsBonus.{{poolIndex}}.characteristic">
+                        {{selectOptions @root.characteristicOptions selected=pool.characteristic valueAttr="id"
+                        labelAttr="label"}}
+                    </select>
+                    <input type="number" name="system.characteristicsBonus.{{poolIndex}}.value"
+                        value="{{pool.value}}" />
+                    <a data-action="deleteChar" data-path="{{poolIndex}}">
+                        <i class="fas fa-minus-circle"></i>
                     </a>
                     {{/each}}
                     {{/if}}
+                    {{#unless isEditable}}
+                    <label>{{localize "sheets.archetype.labels.characteristicBonus"}}</label>
+                    {{#each system.characteristicsBonus as |cBonus cIndex|}}
+                    <span class="flat-char-entry">
+                        {{localize (concat "sys-const.characteristic." cBonus.characteristic)}}: +{{cBonus.value}}
+                    </span>
+                    {{/each}}
+                    {{/unless}}
                 </div>
-            </div>
-            <div class="archetype-starting-talent-list">
-                <!--
+                <div class="archetype-starting-skill-list">
+                    {{#if isEditable}}
+                    <a data-action="addBonusSkill">
+                        <i class="fas fa-plus-circle"></i> Add Granted Skill
+                    </a>
+                    {{/if}}
+                    {{#if @root.isEditable}}
+                    <div class="granted-skill-wrapper" data-target-type="flat">
+                        <div class="granted-skill-list">
+                            <!-- If the array is empty, this loop skips but the parent container stays perfectly visible -->
+                            <label>Granted Skills:</label>
+                            {{#each system.skillBonus as |pool poolIndex|}}
+                            <label>{{localize (concat "sys-const.skills." pool.id)}}</label>
+                            <select class="bonus-skill-list-select" name="system.skillBonus.{{poolIndex}}.id">
+                                {{selectOptions @root.skillOptions selected=pool.id valueAttr="id" labelAttr="label"}}
+                            </select>
+                            <div class="rank-toggle-box" title="Check to mark choice option as Advanced (+10)">
+                                <input type="checkbox" name="system.skillBonus.{{poolIndex}}.isAdvanced" {{checked
+                                    skill.isAdvanced}} />
+                                <span>+10</span>
+                            </div>
+                            {{#if @root.isEditable}}
+                            <a data-action="deleteBonusSkill" data-path="{{poolIndex}}">
+                                <i class="fas fa-minus-circle"></i>
+                            </a>
+                            {{/if}}
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/if}}
+
+                    <!-- For non-GMs (Read Only view) -->
+                    {{#unless @root.isEditable}}
+                    {{#if system.skillBonus.length}}
+                    <div class="granted-skill-wrapper-readonly">
+                        <strong>Starting Skills:</strong>
+                        <div class="granted-skill-list"
+                            style="display: block; font-size: var(--font-size-13); line-height: 1.5;">
+                            <!-- 1. The Flat Granted Items Group -->
+                            {{#each system.skillBonus as |bonus|}}
+                            <span class="flat-skill-entry">
+                                {{localize (concat "sys-const.skills." bonus.id)}}
+                                {{#if bonus.isPlusTen}} (+10){{/if}}
+                            </span>
+                            {{/each}}
+
+                            <!-- 2. The Choice Pools Group -->
+                            {{#each system.skillChoices as |pool|}}
+                            <span class="choice-pool-entry">
+                                <!-- Inner Loop handles internal 'or' strings natively using the @last flag -->
+                                {{#each pool as |skill|}}
+                                <span class="skill-name">{{localize (concat "sys-const.skills." skill.id)}} {{#if
+                                    skill.isAdvanced}}+10{{/if}}</span>
+                                {{#unless @last}} <span class="or-separator">or</span> {{/unless}}
+                                {{/each}}
+                            </span>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{/unless}}
+                    {{#if isEditable}}
+                    <div class="editable-addSkillArray">
+                        <a class="add-skill-a" data-action="addSkillArray" data-array-path="system.skillChoices">
+                            <i class="fas fa-plus-circle"></i> Add Skill Choice Set
+                        </a>
+                    </div>
+                    {{/if}}
+                    <div class="skill-choice-block">
+                        {{#if @root.isEditable}}
+                        {{#each system.skillChoices as |bonus bonusIndex|}}
+                        <div class="skill-row">
+                            {{#each bonus as |skill skillindex|}}
+                            <!-- If your skillId can be looked up via a helper or direct text evaluation -->
+                            <label class="skill-label">{{localize (concat "sys-const.skills." skill.id)}}</label>
+                            <select name="system.skillChoices.{{bonusIndex}}.{{skillindex}}.id">
+                                {{selectOptions @root.skillOptions selected=skill.id valueAttr="id" labelAttr="label"}}
+                            </select>
+                            <div class="rank-toggle-box" title="Check to mark choice option as Advanced (+10)">
+                                <input type="checkbox"
+                                    name="system.skillChoices.{{bonusIndex}}.{{skillindex}}.isAdvanced" {{checked
+                                    skill.isAdvanced}} />
+                                <span>+10</span>
+                            </div>
+                            <a data-action="deleteSkillArrayEntry" data-parent="system.skillChoices.{{bonusIndex}}"
+                                data-array-path="system.skillChoices.{{bonusIndex}}.{{skillindex}}.id">
+                                <i class="fas fa-minus-circle"></i>Remove Entry
+                            </a>
+                            {{/each}}
+                            <a data-action="addSkillArrayEntry" data-array-path="system.skillChoices.{{bonusIndex}}">
+                                <i class="fas fa-plus-circle"></i>Add Entry
+                            </a>
+                        </div>
+                        <a data-action="deleteSkillArray" data-array-path="system.skillChoice.{{bonusIndex}}">
+                            <i class="fas fa-minus-circle"></i>Remove Skill Choice Set
+                        </a>
+                        {{/each}}
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="archetype-starting-talent-list">
+                    <!--
             //  FLAT GRANTED TALENTS LIST
             -->
-                {{#if @root.isEditable}}
-                <div class="droppable talent-drop-zone granted-talents-wrapper" data-target-type="flat">
-                    <strong>Bonus Talents (Drag starting talents Here)</strong>
-                    <div class="talent-list">
-                        <!-- If the array is empty, this loop skips but the parent container stays perfectly visible -->
-                        {{#each system.talentsGranted}}
-                        <div class="talent-row">
-                            <img src="{{fromUuidProp this 'img'}}" />
-                            <span>{{fromUuidProp this 'name'}}</span>
-                            <a data-action="deleteFlatTalent" data-index="{{@index}}">
-                                <i class="fas fa-trash"></i>
-                            </a>
+                    {{#if @root.isEditable}}
+                    <div class="droppable talent-drop-zone granted-talents-wrapper" data-target-type="flat">
+                        <strong>Bonus Talents (Drag starting talents Here)</strong>
+                        <div class="talent-list">
+                            <!-- If the array is empty, this loop skips but the parent container stays perfectly visible -->
+                            {{#each system.talentsGranted}}
+                            <div class="talent-row">
+                                <img src="{{fromUuidProp this 'img'}}" />
+                                <span>{{fromUuidProp this 'name'}}</span>
+                                <a data-action="deleteFlatTalent" data-index="{{@index}}">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                            {{/each}}
                         </div>
-                        {{/each}}
                     </div>
-                </div>
-                {{/if}}
+                    {{/if}}
 
-                <!-- For non-GMs (Read Only view) -->
-                {{#unless @root.isEditable}}
-                {{#if system.talentsGranted.length}}
-                <div class="granted-talents-wrapper-readonly">
-                    <strong>Granted Talents:</strong>
-                    <div class="talent-list">
-                        {{#each system.talentsGranted}}
-                        <div class="talent-row">
-                            <img src="{{fromUuidProp this 'img'}}" />
-                            <span>{{fromUuidProp this 'name'}}</span>
+                    <!-- For non-GMs (Read Only view) -->
+                    {{#unless @root.isEditable}}
+                    {{#if system.talentsGranted.length}}
+                    <div class="granted-talents-wrapper-readonly">
+                        <strong>Granted Talents:</strong>
+                        <div class="talent-list">
+                            {{#each system.talentsGranted}}
+                            <div class="talent-row">
+                                <img src="{{fromUuidProp this 'img'}}" />
+                                <span>{{fromUuidProp this 'name'}}</span>
+                            </div>
+                            {{/each}}
                         </div>
-                        {{/each}}
                     </div>
-                </div>
-                {{/if}}
-                {{/unless}}
+                    {{/if}}
+                    {{/unless}}
 
-                <!--
+                    <!--
             //  SELECTION TALENTS LIST
             -->
 
-                {{#if isEditable}}
-                <a data-action="addTalentPool">
-                    <i class="fas fa-plus-circle"></i> Add Talent Choice Pool
-                </a>
-                {{/if}}
+                    {{#if isEditable}}
+                    <a data-action="addTalentPool">
+                        <i class="fas fa-plus-circle"></i> Add Talent Choice Pool
+                    </a>
+                    {{/if}}
 
-                {{#each system.talentChoices as |pool poolIndex|}}
-                <div class="droppable talent-pool-block talent-drop-zone" data-target-type="pool"
-                    data-pool-index="{{poolIndex}}">
+                    {{#each system.talentChoices as |pool poolIndex|}}
+                    <div class="droppable talent-pool-block talent-drop-zone" data-target-type="pool"
+                        data-pool-index="{{poolIndex}}">
 
-                    <strong>Talent Pool Set #{{add poolIndex 1}} (Drag Options Here)</strong>
+                        <strong>Talent Pool Set #{{add poolIndex 1}} (Drag Options Here)</strong>
 
-                    {{#each pool as |uuid|}}
-                    {{const data = (lookup @root.talentMetadata uuid)}}
-                    <div class="talent-row">
-                        <img src="{{fromUuidProp this 'img'}}" />
-                        <span>{{fromUuidProp this 'name'}}</span>
+                        {{#each pool as |uuid|}}
+                        {{const data = (lookup @root.talentMetadata uuid)}}
+                        <div class="talent-row">
+                            <img src="{{fromUuidProp this 'img'}}" />
+                            <span>{{fromUuidProp this 'name'}}</span>
+                            {{#if @root.isEditable}}
+                            <a data-action="deleteTalentPoolEntry" data-pool-index="{{poolIndex}}"
+                                data-option-index="{{@index}}">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                            {{/if}}
+                        </div>
+                        {{/each}}
+
                         {{#if @root.isEditable}}
-                        <a data-action="deleteTalentPoolEntry" data-pool-index="{{poolIndex}}"
-                            data-option-index="{{@index}}">
-                            <i class="fas fa-trash"></i>
+                        <a data-action="deleteTalentPool" data-pool-index="{{poolIndex}}">
+                            <i class="fas fa-minus-circle"></i> Remove Selection Pool
                         </a>
                         {{/if}}
                     </div>
                     {{/each}}
-
-                    {{#if @root.isEditable}}
-                    <a data-action="deleteTalentPool" data-pool-index="{{poolIndex}}">
-                        <i class="fas fa-minus-circle"></i> Remove Selection Pool
-                    </a>
-                    {{/if}}
                 </div>
-                {{/each}}
-            </div>
-            <div class="archetype-starting-gear-list">
-                <!--
+                <div class="archetype-starting-gear-list">
+                    <!--
             //  FLAT GRANTED GEAR LIST
             -->
-                {{#if @root.isEditable}}
-                <div class="droppable gear-drop-zone granted-gear-wrapper" data-target-type="flat">
-                    <strong>Bonus Gear (Drag starting gear Here)</strong>
-                    <div class="talent-list">
-                        <!-- If the array is empty, this loop skips but the parent container stays perfectly visible -->
-                        {{#each system.gearGranted}}
-                        <div class="gear-row">
-                            <img src="{{fromUuidProp this 'img'}}" />
-                            <span>{{fromUuidProp this 'name'}}</span>
-                            <a data-action="deleteFlatGear" data-index="{{@index}}">
-                                <i class="fas fa-trash"></i>
-                            </a>
+                    {{#if @root.isEditable}}
+                    <div class="droppable gear-drop-zone granted-gear-wrapper" data-target-type="flat">
+                        <strong>Bonus Gear (Drag starting gear Here)</strong>
+                        <div class="talent-list">
+                            <!-- If the array is empty, this loop skips but the parent container stays perfectly visible -->
+                            {{#each system.gearGranted}}
+                            <div class="gear-row">
+                                <img src="{{fromUuidProp this 'img'}}" />
+                                <span>{{fromUuidProp this 'name'}}</span>
+                                <a data-action="deleteFlatGear" data-index="{{@index}}">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                            {{/each}}
                         </div>
-                        {{/each}}
                     </div>
-                </div>
-                {{/if}}
+                    {{/if}}
 
-                <!-- For non-GMs (Read Only view) -->
-                {{#unless @root.isEditable}}
-                {{#if system.gearGranted.length}}
-                <div class="granted-gear-wrapper-readonly">
-                    <strong>Granted Starting Gear:</strong>
-                    <div class="gear-list">
-                        {{#each system.gearGranted}}
-                        <div class="gear-row">
-                            <img src="{{fromUuidProp this 'img'}}" />
-                            <span>{{fromUuidProp this 'name'}}</span>
+                    <!-- For non-GMs (Read Only view) -->
+                    {{#unless @root.isEditable}}
+                    {{#if system.gearGranted.length}}
+                    <div class="granted-gear-wrapper-readonly">
+                        <strong>Granted Starting Gear:</strong>
+                        <div class="gear-list">
+                            {{#each system.gearGranted}}
+                            <div class="gear-row">
+                                <img src="{{fromUuidProp this 'img'}}" />
+                                <span>{{fromUuidProp this 'name'}}</span>
+                            </div>
+                            {{/each}}
                         </div>
-                        {{/each}}
                     </div>
-                </div>
-                {{/if}}
-                {{/unless}}
+                    {{/if}}
+                    {{/unless}}
 
-                <!--
+                    <!--
             //  SELECTION TALENTS LIST
             -->
 
-                {{#if isEditable}}
-                <a data-action="addGearPool">
-                    <i class="fas fa-plus-circle"></i> Add Gear Choice Pool
-                </a>
-                {{/if}}
+                    {{#if isEditable}}
+                    <a data-action="addGearPool">
+                        <i class="fas fa-plus-circle"></i> Add Gear Choice Pool
+                    </a>
+                    {{/if}}
 
-                {{#each system.gearChoices as |pool poolIndex|}}
-                <div class="droppable gear-pool-block gear-drop-zone" data-target-type="pool"
-                    data-pool-index="{{poolIndex}}">
-                    <strong>Gear Pool Set #{{add poolIndex 1}} (Drag Options Here)</strong>
-                    {{#each pool as |uuid|}}
-                    {{const data = (lookup @root.gearMetadata uuid)}}
-                    <div class="gear-row">
-                        <img src="{{fromUuidProp this 'img'}}" />
-                        <span>{{fromUuidProp this 'name'}}</span>
+                    {{#each system.gearChoices as |pool poolIndex|}}
+                    <div class="droppable gear-pool-block gear-drop-zone" data-target-type="pool"
+                        data-pool-index="{{poolIndex}}">
+                        <strong>Gear Pool Set #{{add poolIndex 1}} (Drag Options Here)</strong>
+                        {{#each pool as |uuid|}}
+                        {{const data = (lookup @root.gearMetadata uuid)}}
+                        <div class="gear-row">
+                            <img src="{{fromUuidProp this 'img'}}" />
+                            <span>{{fromUuidProp this 'name'}}</span>
+                            {{#if @root.isEditable}}
+                            <a data-action="deleteGearPoolEntry" data-pool-index="{{poolIndex}}"
+                                data-option-index="{{@index}}">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                            {{/if}}
+                        </div>
+                        {{/each}}
+
                         {{#if @root.isEditable}}
-                        <a data-action="deleteGearPoolEntry" data-pool-index="{{poolIndex}}"
-                            data-option-index="{{@index}}">
-                            <i class="fas fa-trash"></i>
+                        <a data-action="deleteGearPool" data-pool-index="{{poolIndex}}">
+                            <i class="fas fa-minus-circle"></i> Remove Selection Pool
                         </a>
                         {{/if}}
                     </div>
                     {{/each}}
-
-                    {{#if @root.isEditable}}
-                    <a data-action="deleteGearPool" data-pool-index="{{poolIndex}}">
-                        <i class="fas fa-minus-circle"></i> Remove Selection Pool
-                    </a>
+                </div>
+                <div class="archetype-wounds">
+                    <label class="wounds-label">{{localize "sheets.archetype.labels.wounds"}}</label>
+                    <input type="text" name="system.wounds" value="{{system.wounds}}" />
+                </div>
+                <div class="archetype-special-ability">
+                    {{#if isEditable}}
+                    <label class="special-ability-label">{{localize "sheets.archetype.labels.specialAbility"}}</label>
+                    <input type="text" name="system.specialAbility.name" value="{{system.specialAbility.name}}" />
+                    {{formInput fields.specialAbility.fields.description value=system.specialAbility.description
+                    height=160
+                    enriched=true}}
                     {{/if}}
+                    {{#unless isEditable}}
+                    <label class="noedit special-ability-label">{{localize
+                        "sheets.archetype.labels.specialAbility"}}</label>
+                    <label class="noedit special-ability-name">{{system.specialAbility.name}}</label>
+                    <div>
+                        {{{system.specialAbility.description}}}
+                    </div>
+                    {{/unless}}
                 </div>
-                {{/each}}
-            </div>
-            <div class="archetype-wounds">
-                <label class="wounds-label">{{localize "sheets.archetype.labels.wounds"}}</label>
-                <input type="text" name="system.wounds" value="{{system.wounds}}" />
-            </div>
-            <div class="archetype-special-ability">
-                {{#if isEditable}}
-                <label class="special-ability-label">{{localize "sheets.archetype.labels.specialAbility"}}</label>
-                <input type="text" name="system.specialAbility.name" value="{{system.specialAbility.name}}" />
-                {{formInput fields.specialAbility.fields.description value=system.specialAbility.description height=160
-                enriched=true}}
-                {{/if}}
-                {{#unless isEditable}}
-                <label class="noedit special-ability-label">{{localize
-                    "sheets.archetype.labels.specialAbility"}}</label>
-                <label class="noedit special-ability-name">{{system.specialAbility.name}}</label>
-                <div>
-                    {{{system.specialAbility.description}}}
+            </section>
+            <section class="tab" data-tab="json-entry" data-group="item-archetype-primary-tabs">
+                <div class="code-editor-container">
+                    <input type="hidden" name="system.customJSON" value="{{jsonString}}">
+                    <pre
+                        class="v13-code-editor"><code class="code-highlight-enabled" data-name="system.customJSON" contenteditable="true" spellcheck="false">{{jsonString}}</code></pre>
+                    <button type="button" data-action="saveJSON" class="save-json-btn">
+                        <i class="fas fa-save"></i> Save Configuration
+                    </button>
                 </div>
-                {{/unless}}
-            </div>
-        </section>
-        <section class="tab" data-tab="json-entry" data-group="item-archetype-primary-tabs">
-            <div class="code-editor-container">
-                <input type="hidden" name="system.customJSON" value="{{jsonString}}">
-                <pre
-                    class="v13-code-editor"><code class="code-highlight-enabled" data-name="system.customJSON" contenteditable="true" spellcheck="false">{{jsonString}}</code></pre>
-                <button type="button" data-action="saveJSON" class="save-json-btn">
-                    <i class="fas fa-save"></i> Save Configuration
-                </button>
-            </div>
+            </section>
         </section>
     </div>
 </div>

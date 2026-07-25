@@ -1,8 +1,8 @@
 const { ActorSheetV2 } = foundry.applications.sheets;
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 
-import { executeD100Test } from "../../system-helpers.mjs";
-import { SKILL_MANIFEST, CHARACTERISTIC_MANIFEST, PRIDE_MANIFEST, DISGRACE_MANIFEST, MOTIVATION_MANIFEST } from "../../sys-const.mjs";
+import { executeD100Test } from "../../utils/system-helpers.mjs";
+import { SKILL_MANIFEST, CHARACTERISTIC_MANIFEST, PRIDE_MANIFEST, DISGRACE_MANIFEST, MOTIVATION_MANIFEST } from "../../utils/sys-const.mjs";
 
 export class CharacterSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheetV2) {
   #tabs;

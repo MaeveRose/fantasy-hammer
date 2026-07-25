@@ -1,5 +1,5 @@
 const {BooleanField, ArrayField, HTMLField, NumberField, SchemaField, StringField, MappingField, ObjectField} = foundry.data.fields;
-import { CHARACTERISTIC_MANIFEST, SKILL_MANIFEST } from "../../sys-const.mjs";
+import { CHARACTERISTIC_MANIFEST, SKILL_MANIFEST } from "../../utils/sys-const.mjs";
 import { BaseItemDataModel } from "./ItemDataModel.mjs";
 
 export class ArchetypeDataModel extends BaseItemDataModel {
@@ -64,7 +64,6 @@ export class ArchetypeDataModel extends BaseItemDataModel {
                 name: new StringField({required:true, initial:""}),
                 description: new HTMLField({required:true, initial:"<p></p>"})
             }),
-            customJSON : new JSONField({required:true, initial:{}})
         }
     }
 }

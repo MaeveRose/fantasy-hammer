@@ -1,4 +1,4 @@
-import { AVAILABILITY_MANIFEST, QUALITY_MANIFEST, ARMORTYPE_MANIFEST } from "../../sys-const.mjs";
+import { AVAILABILITY_MANIFEST, QUALITY_MANIFEST, ARMORTYPE_MANIFEST } from "../../utils/sys-const.mjs";
 
 import { BaseItemDataModel } from "./ItemDataModel.mjs";
 

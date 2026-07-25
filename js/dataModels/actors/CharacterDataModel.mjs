@@ -51,7 +51,10 @@ export class CharacterDataModel extends foundry.abstract.TypeDataModel {
       characterBio: new HTMLField({required: true, initial:"<p>An Unknown Heratic</p>"}),
       characteristics: new SchemaField(characteristicsSchema),
       skills: new SchemaField(skillsSchema),
-      characterModifiers: new JSONField({required:true, initial:{}})
+      characterModifiers: new ObjectField({
+        required:true, 
+        initial:{}
+      })
     };
   }
 }

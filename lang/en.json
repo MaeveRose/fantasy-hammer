@@ -1,13 +1,11 @@
 {
+    "global":{
+        "tabLabels":{
+            "stats": "Statistics",
+            "json":"Custom JSON Entry"
+        }
+    },
     "sheets":{
-        "all":{
-            "labels":{
-                "json":{
-                    "label":"JSON Editor",
-                    "save":"Save JSON Configuration"
-                }
-            }
-        },
         "character":{
             "labels":{
                 "GMCreationLabel":"This Sheet is in Creation Mode!"
