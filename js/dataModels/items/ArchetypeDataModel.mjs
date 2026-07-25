@@ -1,10 +1,11 @@
 const {BooleanField, ArrayField, HTMLField, NumberField, SchemaField, StringField, MappingField, ObjectField} = foundry.data.fields;
 import { CHARACTERISTIC_MANIFEST, SKILL_MANIFEST } from "../../sys-const.mjs";
+import { BaseItemDataModel } from "./ItemDataModel.mjs";
 
-export class ArchetypeDataModel extends foundry.abstract.TypeDataModel {
+export class ArchetypeDataModel extends BaseItemDataModel {
     static defineSchema() {
-        
         return{
+            ...super.defineSchema(),
             description: new HTMLField({required: true, initial:"<p></p>"}),
             characteristicsBonus: new ArrayField(
                 new SchemaField({

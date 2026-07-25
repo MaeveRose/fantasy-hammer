@@ -1,8 +1,11 @@
+import { BaseItemDataModel } from "./ItemDataModel.mjs";
+
 const { StringField, HTMLField, NumberField, SchemaField, ArrayField, BooleanField } = foundry.data.fields;
 
-export class TalentDataModel extends foundry.abstract.TypeDataModel {
+export class TalentDataModel extends BaseItemDataModel {
   static defineSchema() {
     return {
+      ...super.defineSchema(),
       description: new HTMLField({ required: false, initial: "" }),
       tier: new StringField({ required: false, initial: "Tier 1" }),
       specialist: new BooleanField({required: true, initial: false}),

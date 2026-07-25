@@ -1,7 +1,11 @@
 const {BooleanField, ArrayField, HTMLField, NumberField, SchemaField, StringField, MappingField, ObjectField} = foundry.data.fields;
 import { CHARACTERISTIC_MANIFEST } from "../../sys-const.mjs";
+import { BaseItemDataModel } from "./ItemDataModel.mjs";
 
-export class PsychicPowerDataModel extends foundry.abstract.TypeDataModel {
+export class PsychicPowerDataModel extends BaseItemDataModel {
     static defineSchema(){
+        return{
+            ...super.defineSchema(),
+        }
     }
 }
