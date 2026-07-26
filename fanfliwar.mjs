@@ -1,3 +1,5 @@
+import { SystemValidator } from "./js/utils/system/validator.mjs";
+
 import { CharacterSheet } from "./js/sheets/actors/CharacterSheet.mjs"
 import { CharacterDataModel } from "./js/dataModels/actors/CharacterDataModel.mjs"
 
@@ -26,6 +28,9 @@ class FallbackDataModel extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {};
   }
+  gatherRollOptions(){
+	return ["fallback"];
+  }
 }
 Hooks.once("init", () => {
 	CONFIG.Actor.dataModels.character = CharacterDataModel;
@@ -41,6 +46,8 @@ Hooks.once("init", () => {
 		gear: GearDataModel,
 		archetype: ArchetypeDataModel
 	};
+	//KEEP THIS AFTER THE DATA MODELS
+	SystemValidator.auditDataModels();
 	// unregister generic sheet
 	foundry.documents.collections.Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
 	// register new sheet 
@@ -122,6 +129,8 @@ Hooks.once("init", () => {
 	Handlebars.registerHelper("sub", function(value1, value2){
 		return Number(value1) - Number(value2);
 	});
+
+
 });
 
 

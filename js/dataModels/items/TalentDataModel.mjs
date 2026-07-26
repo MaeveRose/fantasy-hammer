@@ -4,14 +4,25 @@ const { StringField, HTMLField, NumberField, SchemaField, ArrayField, BooleanFie
 
 export class TalentDataModel extends BaseItemDataModel {
   static defineSchema() {
+    const baseFields = super.defineSchema();
+    const parentTraits = baseFields.traits?.options?.initial || [];
+    baseFields.traits = new ArrayField(
+      new StringField( // Inherit the StringField configuration exactly as the parent defined it
+        {
+          required: true
+        }),
+      {
+        initial: [...parentTraits, "item:talent", "talent"]
+      }
+    );
     return {
-      ...super.defineSchema(),
+      ...baseFields,
       description: new HTMLField({ required: false, initial: "" }),
-      tier: new StringField({ required: false, initial: "Tier 1" }),
-      specialist: new BooleanField({required: true, initial: false}),
+      tier: new NumberField({ required: false, initial:1, min:1, max:3 }),
+      specialist: new BooleanField({ required: true, initial: false }),
       specializationName: new StringField({ required: false, initial: "" }),
       allowsDuplication: new BooleanField({ required: true, initial: false }),
-      
+
       // 1. SCALABLE MULTI-PREREQUISITE ENGINE
       // This array can hold multiple individual characteristic, talent, or type demands!
       prerequisites: new ArrayField(
@@ -24,20 +35,31 @@ export class TalentDataModel extends BaseItemDataModel {
       ),
       modifiers: new ArrayField(
         new SchemaField({
-          targetType: new StringField({ required: true, initial: "skill" }), 
-          targetKey: new StringField({ required: true, initial: "athletics" }), 
-          modifierValue: new NumberField({ required: true, integer: true, min: -60, max: 60, initial: 10 }) 
+          targetType: new StringField({ required: true, initial: "skill" }),
+          targetKey: new StringField({ required: true, initial: "athletics" }),
+          modifierValue: new NumberField({ required: true, integer: true, min: -60, max: 60, initial: 10 })
         }),
         { initial: [] }
       )
     };
   }
-  async printToChat(){
+  gatherRollOptions() {
+    let set = new Set();
+    const slug = this.slug ? this.slug : this.parent.name.slugify();
+    const id = this.parent.uuid.replaceAll(".", "-");
+    console.log(this.tier);
+    set.add(`item:slug:${slug}`);
+    set.add(`item:uuid:${id}`);
+    set.add(`item:talent:tier:${this.tier}`);
+    set.add(`item:talent:specialist:${this.specialist}`);
+    set.add(`item:talent:duplicatable:${this.allowsDuplication}`);
+    return Array.from(set);
+  }
+  async printToChat() {
     const itemDom = this.parent;
     const actorDoc = itemDom.actor;
     let compName = itemDom.name;
-    if(this.specialist && this.specializationName)
-    {
+    if (this.specialist && this.specializationName) {
       compName += ` (${this.specializationName})`;
     }
 
@@ -51,10 +73,10 @@ export class TalentDataModel extends BaseItemDataModel {
       </div>
     </div>
   `;
-  await ChatMessage.create({
-    user: game.user.id,
-    speaker: ChatMessage.getSpeaker(actorDoc),
-    content: chatContent
-  });
+    await ChatMessage.create({
+      user: game.user.id,
+      speaker: ChatMessage.getSpeaker(actorDoc),
+      content: chatContent
+    });
   }
 }

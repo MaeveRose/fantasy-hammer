@@ -75,8 +75,8 @@
           </div>
           <div class = "form-group stats-avail">
             <label>{{localize "sheets.weapon.stats.availability"}}</label>
-            <select name="system.avilability">
-              {{selectOptions craftsmanshipOptions selected=system.availability valueAttr="id" labelAttr="label"}}
+            <select name="system.availability">
+              {{selectOptions availabilityOptions selected=system.availability valueAttr="id" labelAttr="label"}}
             </select>
           </div>
           <div class = "form-group stats-weight">
@@ -91,6 +91,11 @@
           </div>
         </div>
       </div>
+      {{#if isEditable}}
+      <section class = "weapon-sheet-footer">
+        <input type="text" name="system.slug" value="{{system.slug}}" placeholder="slug" />
+      </section>
+      {{/if}}
     </section>
   </div>
 </div>

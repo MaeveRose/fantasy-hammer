@@ -26,7 +26,7 @@ export async function executeD100Test(testName, baseTarget, actorDocument) {
       </div>
     </div>
   `;
-
+  const traits = actorDocument.gatherTraits();
   const formData = await foundry.applications.api.DialogV2.input({
     window: { title: `${testName} Test Modifiers` },
     content: dialogHtml,

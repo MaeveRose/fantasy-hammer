@@ -1,33 +1,44 @@
-const {BooleanField, ArrayField, HTMLField, NumberField, SchemaField, StringField, MappingField, ObjectField} = foundry.data.fields;
+const { BooleanField, ArrayField, HTMLField, NumberField, SchemaField, StringField, MappingField, ObjectField } = foundry.data.fields;
 import { CHARACTERISTIC_MANIFEST, SKILL_MANIFEST } from "../../utils/sys-const.mjs";
 import { BaseItemDataModel } from "./ItemDataModel.mjs";
 
 export class ArchetypeDataModel extends BaseItemDataModel {
     static defineSchema() {
-        return{
-            ...super.defineSchema(),
-            description: new HTMLField({required: true, initial:"<p></p>"}),
+    const baseFields = super.defineSchema();
+    const parentTraits = baseFields.traits?.options?.initial || [];
+    baseFields.traits = new ArrayField(
+      new StringField( // Inherit the StringField configuration exactly as the parent defined it
+        {
+          required: true
+        }),
+      {
+        initial: [...parentTraits, "item:archetype", "archetype"]
+      }
+    );
+        return {
+            ...baseFields,
+            description: new HTMLField({ required: true, initial: "<p></p>" }),
             characteristicsBonus: new ArrayField(
                 new SchemaField({
                     characteristic: new StringField({
-                        required:true, 
-                        initial:"weaponSkill", 
+                        required: true,
+                        initial: "weaponSkill",
                         choices: Object.keys(CHARACTERISTIC_MANIFEST)
                     }),
-                    value: new NumberField({required: true, initial:0})
+                    value: new NumberField({ required: true, initial: 0 })
                 })
             ),
             skillBonus: new ArrayField(
                 new SchemaField({
-                    id: new StringField({required:true, initial:"forbiddenLore", choices: Object.keys(SKILL_MANIFEST)}),
-                    isAdvanced: new BooleanField({required:true, initial: false})
+                    id: new StringField({ required: true, initial: "forbiddenLore", choices: Object.keys(SKILL_MANIFEST) }),
+                    isAdvanced: new BooleanField({ required: true, initial: false })
                 })
             ),
             skillChoices: new ArrayField(
                 new ArrayField(
                     new SchemaField({
-                    id: new StringField({required:true, initial:"forbiddenLore", choices: Object.keys(SKILL_MANIFEST)}),
-                    isAdvanced: new BooleanField({required:true, initial: false})
+                        id: new StringField({ required: true, initial: "forbiddenLore", choices: Object.keys(SKILL_MANIFEST) }),
+                        isAdvanced: new BooleanField({ required: true, initial: false })
                     })
                 )
             ),
@@ -40,7 +51,7 @@ export class ArchetypeDataModel extends BaseItemDataModel {
             talentChoices: new ArrayField(
                 new ArrayField(
                     new StringField({
-                        required:true,
+                        required: true,
                         initial: ""
                     })
                 )
@@ -59,11 +70,19 @@ export class ArchetypeDataModel extends BaseItemDataModel {
                     })
                 )
             ),
-            wounds: new StringField({required:true, initial:"0d10+0"}),
+            wounds: new StringField({ required: true, initial: "0d10+0" }),
             specialAbility: new SchemaField({
-                name: new StringField({required:true, initial:""}),
-                description: new HTMLField({required:true, initial:"<p></p>"})
+                name: new StringField({ required: true, initial: "" }),
+                description: new HTMLField({ required: true, initial: "<p></p>" })
             }),
         }
+    }
+    gatherRollOptions() {
+        let set = new Set();
+        const slug = this.slug ? this.slug : this.parent.name.slugify();
+        const id = this.parent.uuid.replaceAll(".", "-");
+        set.add(`item:slug:${slug}`);
+        set.add(`item:uuid:${id}`);
+        return Array.from(set);
     }
 }

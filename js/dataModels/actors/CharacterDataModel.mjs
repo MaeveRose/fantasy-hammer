@@ -14,9 +14,17 @@ const charBlueprint = (localizable) => new SchemaField({
       value: new NumberField({ required: true, integer: true, min: 0, max: 100, initial: 0 })
     });
 
-export class CharacterDataModel extends foundry.abstract.TypeDataModel {
+export class CharacterDataModel extends BaseActorDataModel {
   static defineSchema() {
-    // All Actors have resources.
+    const baseFields = super.defineSchema();
+    const parentTraits = baseFields.traits?.options?.initial || [];
+    baseFields.traits = new ArrayField(
+      new StringField({ required: true }),
+      {
+        // Combine parent traits with child-specific traits
+        initial: [...parentTraits, "player-character"]
+      }
+    );
     const characteristicsSchema = {};
     for (let [charKey,config] of Object.entries(CHARACTERISTIC_MANIFEST)) {
       characteristicsSchema[charKey] = charBlueprint(config.key)
@@ -37,7 +45,7 @@ export class CharacterDataModel extends foundry.abstract.TypeDataModel {
       { initial: [] }
     );
     return {
-      ...super.defineSchema(),
+      ...baseFields,
       characterCreationActive: new BooleanField({required:true, initial:true}),
       playerName: new StringField({required: false}),
       crusade: new SchemaField({
@@ -58,5 +66,8 @@ export class CharacterDataModel extends foundry.abstract.TypeDataModel {
         initial:{}
       })
     };
+  }
+  gatherRollOptions(){
+    return [];
   }
 }
