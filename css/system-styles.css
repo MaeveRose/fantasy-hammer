@@ -1,14 +1,97 @@
 @font-face {
-  font-family: 'WarhammerTitle'; /* This is the nickname you will use in your CSS rules */
-  src: url('../fonts/LibreBaskerville-VariableFont_wght.ttf') format('truetype'); /* Absolute path relative to where your CSS file is located */
+  font-family: 'WarhammerTitle';
+  /* This is the nickname you will use in your CSS rules */
+  src: url('../fonts/LibreBaskerville-VariableFont_wght.ttf') format('truetype');
+  /* Absolute path relative to where your CSS file is located */
   font-weight: normal;
   font-style: normal;
 }
+
 @font-face {
   font-family: 'WarhammerSharp';
-  src: url('../fonts/MedievalSharp-Regular.ttf') format ('truetype');
-  font-weight: normal;
+  src: url('../fonts/MedievalSharp-Regular.ttf') format('truetype');
+  font-weight: 100 900;
   font-style: normal;
+}
+
+.chat-message{
+  background: #251f1a !important; 
+}
+.chat-message .message-header{
+  color: #d1d1d1;
+}
+.chat-message .message-content{
+  background: rgba(255,255,255,0.1); 
+}
+.fantasy-hammer-weapon-chat-card {
+  border: 1px solid #5c4e43;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.fantasy-hammer-weapon-chat-card .item-type-bar {
+  text-align: left;
+  padding-bottom: 1px;
+}
+
+.fantasy-hammer-weapon-chat-card .weapon-quality-name {
+  border-bottom: 2px solid #5c4e43;
+  margin: 0 0 6px 0;
+  padding-bottom: 2px;
+}
+.fantasy-hammer-weapon-chat-card .item-type-bar .weapon-quality{
+  font-weight: normal !important;
+  font-style: italic;
+  font-size: 0.8em !important;
+}
+.fantasy-hammer-weapon-chat-card .weapon-quality-name .weapon-name{
+  font-family: 'WarhammerSharp', 'Courier New', monospace !important;
+  font-weight: bold !important;
+  color: #c1c1c1;
+}
+.fantasy-hammer-weapon-chat-card .weapon-type-class {
+  text-align: center;
+  border-bottom: 2px solid #5c4e43;
+  margin: 0 0 6px 0;
+  padding-bottom: 2px;
+  font-weight: bold;
+  color: #b0b0b0;
+}
+.fantasy-hammer-weapon-chat-card .weapon-stat-wrapper
+{
+  display:grid;
+  grid-template-columns: 1fr 64px;
+  align-items: center;
+}
+.fantasy-hammer-weapon-chat-card .weapon-stat-wrapper .weapon-stat-aside{
+  color: #a7a7a7;
+}
+.fantasy-hammer-weapon-chat-card .weapon-image{
+  height:64px;
+  width:64px;
+}
+.fantasy-hammer-weapon-chat-card .weapon-stat-aside{
+  width:auto;
+}
+.fantasy-hammer-weapon-chat-card .weapon-damage,
+.fantasy-hammer-weapon-chat-card .weapon-weight,
+.fantasy-hammer-weapon-chat-card .weapon-avail{
+  text-align: left;
+  margin: 0 0 6px 0;
+  padding-bottom: 2px;
+  font-weight: bold;
+  color: #a7a7a7;
+  
+}
+.fantasy-hammer-weapon-chat-card .weapon-avail{
+  display:block;
+  text-align:center;
+}
+.fantasy-hammer-weapon-chat-card .weapon-damage,
+.fantasy-hammer-weapon-chat-card .weapon-weight{
+  border-bottom: 2px solid #5c4e43;
+  padding-left: 1em;
 }
 
 .stat-panel {
@@ -19,26 +102,31 @@
   background: #f7ede2;
   display: flex;
 }
+
 .window-app .fantasy-hammer {
-  min-width: 1012px !important; 
+  min-width: 1012px !important;
   min-height: 450px !important;
 }
+
 /* Container holding a single stat panel group (Label + Box area) */
 .stat-panel-group {
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-  width: 65px; /* Adjust this width to match the exact distance between your vertical layout lines */
+  width: 65px;
+  /* Adjust this width to match the exact distance between your vertical layout lines */
 }
 
 /* The box containing the digit container layout overlay */
 .digit-container {
   display: flex;
   width: 100%;
-  height: 45px; /* Match the approximate height of your asset's score line box */
+  height: 45px;
+  /* Match the approximate height of your asset's score line box */
   position: relative;
 }
+
 .invisible-stat-input {
   position: absolute;
   top: 0;
@@ -48,26 +136,33 @@
   border: none !important;
   background: transparent !important;
   outline: none !important;
-  
+
   /* Make the typed text completely invisible so it doesn't overlap your styled divs */
-  color: transparent !important; 
-  caret-color: #ffffff; /* Keeps the blinking text cursor visible so they know where they are typing */
+  color: transparent !important;
+  caret-color: #ffffff;
+  /* Keeps the blinking text cursor visible so they know where they are typing */
 }
 
 /* Show the typed number normally ONLY when the player is actively editing it */
 .invisible-stat-input:focus {
-  z-index: 10;                  /* Bring input to front over the display numbers */
-  color: #ffffff !important;     /* Show text cleanly while actively editing */
-  background: #3d342d !important; /* Slightly lighter brown accent background tint when clicked */
+  z-index: 10;
+  /* Bring input to front over the display numbers */
+  color: #ffffff !important;
+  /* Show text cleanly while actively editing */
+  background: #3d342d !important;
+  /* Slightly lighter brown accent background tint when clicked */
   font-family: 'Courier New', monospace;
   font-size: 2.2rem !important;
   text-align: center;
-  font-weight: 900; /* Bring to front over the display divs */
+  font-weight: 900;
+  /* Bring to front over the display divs */
 }
+
 .single-stat-input {
   width: 100% !important;
-  height: 25px !important; /* Shrunk height to match the compact text size */
-  
+  height: 25px !important;
+  /* Shrunk height to match the compact text size */
+
   /* Wipe out native browser borders and background tints */
   border: none !important;
   background: transparent !important;
@@ -75,14 +170,18 @@
   outline: none !important;
   padding: 0 !important;
   margin: 0 !important;
-  
+
   /* Text and Alignment Styles */
   text-align: center;
   font-family: 'Courier New', monospace;
-  font-size: min(1rem, 2.5vw) !important; /* Shrunk font size to half as requested */
-  font-weight: 900 !important;             /* Force maximum boldness */
-  color: #ebd1b3;                         /* Tan asset font color matches */
+  font-size: min(1rem, 2.5vw) !important;
+  /* Shrunk font size to half as requested */
+  font-weight: 900 !important;
+  /* Force maximum boldness */
+  color: #ebd1b3;
+  /* Tan asset font color matches */
 }
+
 .digit-container {
   display: flex !important;
   flex-direction: row !important;
@@ -90,36 +189,43 @@
   width: 100%;
   height: 60px;
   border: 2px solid #5c4e43 !important;
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.6); /* Internal shadow depth overlay */
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.6);
+  /* Internal shadow depth overlay */
   overflow: hidden;
-  margin-top: 4px;            
-  background: #251f1a !important;    
-  align-items: baseline !important; 
-  justify-content: center !important;     
+  margin-top: 4px;
+  background: #251f1a !important;
+  align-items: baseline !important;
+  justify-content: center !important;
 }
-.digit-display{
+
+.digit-display {
   width: 50%;
   height: auto !important;
   display: block !important;
-  align-items: flex-end !important;    /* Vertically align numbers perfectly inside the box frame */
-  justify-content: center !important; /* Horizontally center text digits */
+  align-items: flex-end !important;
+  /* Vertically align numbers perfectly inside the box frame */
+  justify-content: center !important;
+  /* Horizontally center text digits */
   font-family: 'WarhammerTitle', 'Courier New', monospace !important;
-  color: #ebd1b3;              /* High-contrast parchment cream font tint */
-  pointer-events: none; 
+  color: #ebd1b3;
+  /* High-contrast parchment cream font tint */
+  pointer-events: none;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
+
 .digit-display.tens {
-  width:60% !important;
+  width: 60% !important;
   display: flex !important;
   align-items: baseline !important;
   justify-content: center !important;
   font-weight: 900 !important;
-  font-size: min(3rem, 7vw); 
+  font-size: min(3rem, 7vw);
   border-right: 1px dashed #5c4e43;
   padding-bottom: 2px !important;
 }
+
 .digit-display.ones {
-  width:40% !important;
+  width: 40% !important;
   display: flex !important;
   align-items: baseline !important;
   justify-content: center !important;
@@ -134,11 +240,13 @@
   -webkit-appearance: none !important;
   margin: 0 !important;
 }
+
 /* Subtle edit cue: Light up the panel text slightly when a user clicks in to type */
 .digit-input:focus {
   color: #ffffff !important;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
+
 /* The locked-down bonus box style */
 .bonus-box.read-only {
   width: 24px;
@@ -161,39 +269,45 @@
   -webkit-appearance: none;
   margin: 0;
 }
-.characteristic-panel
-{
-    font-family: 'WarhammerTitle', 'Courier New', monospace !important;
-    display:grid !important;
-    grid-template-columns: repeat(10,minmax(80px, 1fr)) !important;
-    gap: 12px !important;
-    width:100% !important;
-    box-sizing: border-box;
-    padding:10px;
+
+.characteristic-panel {
+  font-family: 'WarhammerTitle', 'Courier New', monospace !important;
+  display: grid !important;
+  grid-template-columns: repeat(10, minmax(80px, 1fr)) !important;
+  gap: 12px !important;
+  width: 100% !important;
+  box-sizing: border-box;
+  padding: 10px;
 }
+
 .characteristic-panel .title {
-    text-align: center;
-    grid-column: 1 / -1;
-    display: block;
-    align-items:center;
-    font-weight: bold;
-    font-size: 1.5rem;
-    margin-bottom: 5px;
-    text-transform: uppercase;
+  text-align: center;
+  grid-column: 1 / -1;
+  display: block;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+  text-transform: uppercase;
 }
+
 .characteristic-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%; /* Spans exactly 1 fractional unit of the row layout */
-    text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  /* Spans exactly 1 fractional unit of the row layout */
+  text-align: center;
 }
+
 .characteristic-name {
   display: block !important;
   font-size: 0.80rem;
   font-weight: bold;
-  white-space: nowrap; /* Prevents long labels from wrapping ugly mid-sentence */
+  white-space: nowrap;
+  /* Prevents long labels from wrapping ugly mid-sentence */
 }
+
 .characteristic-short {
   display: block !important;
   font-size: 0.75rem;
@@ -201,34 +315,42 @@
   opacity: 0.8;
   margin-bottom: 5px;
 }
+
 .skills-grid-container {
   font-family: 'WarhammerTitle', 'Courier New', monospace !important;
   display: flex;
-  flex-wrap: wrap;        /* Magic word: allows rows to sit side-by-side and break onto new lines */
-  justify-content: space-between; /* Creates clean spacing down the middle of your 2 columns */
+  flex-wrap: wrap;
+  /* Magic word: allows rows to sit side-by-side and break onto new lines */
+  justify-content: space-between;
+  /* Creates clean spacing down the middle of your 2 columns */
   width: 100%;
-  gap: 6px 4%;            /* Vertical row spacing, and horizontal center gap */
+  gap: 6px 4%;
+  /* Vertical row spacing, and horizontal center gap */
 }
+
 .skills-grid-header .title {
-    font-family: 'WarhammerTitle', 'Courier New', monospace !important;
-    text-align: center;
-    grid-column: 1 / -1;
-    display: block;
-    align-items:center;
-    font-weight: bold;
-    font-size: 1.5rem;
-    margin-bottom: 5px;
-    text-transform: uppercase;
+  font-family: 'WarhammerTitle', 'Courier New', monospace !important;
+  text-align: center;
+  grid-column: 1 / -1;
+  display: block;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+  text-transform: uppercase;
 }
+
 /* Individual skill block items */
 .skill-flex-row {
   display: flex;
   max-width: 280px;
-  width: 48%;             /* Sets width to just under half, forcing a perfect 2-column split */
+  width: 48%;
+  /* Sets width to just under half, forcing a perfect 2-column split */
   align-items: center;
   justify-content: space-between;
   padding: 4px 6px;
-  background: rgba(255, 255, 255, 0.03); /* Subtle alternating row tint if desired */
+  background: rgba(255, 255, 255, 0.03);
+  /* Subtle alternating row tint if desired */
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
@@ -239,7 +361,8 @@
   font-size: 0.95rem;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Keeps long skill names from breaking your boxes */
+  text-overflow: ellipsis;
+  /* Keeps long skill names from breaking your boxes */
 }
 
 .skill-char-abbreviation {
@@ -252,7 +375,8 @@
 .skill-checkboxes-col {
   display: flex;
   flex: 0 0 auto;
-  gap: 4px;               /* Clean horizontal spacing between your 4 boxes */
+  gap: 4px;
+  /* Clean horizontal spacing between your 4 boxes */
   align-items: center;
 }
 
@@ -263,6 +387,7 @@
   cursor: pointer;
   margin: 0;
 }
-.application .window-content{
-  overflow-y:auto !important;
+
+.application .window-content {
+  overflow-y: auto !important;
 }

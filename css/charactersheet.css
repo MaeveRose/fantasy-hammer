@@ -293,3 +293,179 @@
 .ledger-field.flex-3 { flex: 3; }
 .ledger-field.width-60 { width: 75px; flex-grow: 0; } /* Keeps the Rank input a short, tight numerical bracket */
 .ledger-field .center-text { text-align: center; }
+
+.fantasy-hammer.sheet.actor .combat-armor-pane .character-armor-sheet .armor-stat-display
+{
+    position: relative;
+    width: 500px; /* Adjust width to fit your sheet size */
+    height: 450px; /* Matches the exact aspect ratio of the layout */
+    background: url("../ui/assets/Armor_BKG.png") no-repeat center center;
+    background-size: contain;
+    margin: 0 auto;
+    border: 1px solid  #444;
+}
+.fantasy-hammer.sheet.actor .character-armor-wrapper{
+  display:grid;
+  grid-template-columns: 500px auto;
+}
+.fantasy-hammer.sheet.actor .character-armor-wrapper .armor-inventory{
+  border: 2px solid blue;
+}
+.fantasy-hammer.sheet.actor .character-armor-wrapper .armor-inventory .item-row{
+  display:grid;
+  align-items:center;
+  grid-template-columns: 22px 22px auto 22px;
+  gap: 5px;
+  border-top: 1px solid #777;
+  border-bottom: 1px solid #222;
+}
+.fantasy-hammer.sheet.actor .character-armor-wrapper .armor-inventory .armor-inventory-item .armor-name{
+  font-size:1.25em;
+  text-align:center;
+}
+.armor-header
+{
+  font-size:1.5em;
+  align-items:center;
+  margin-bottom:0.5em;
+}
+.armor-header label{
+  display:block;
+  text-align:center;
+}
+.weapon-header
+{
+  font-size:1.5em;
+  align-items:center;
+  margin-bottom:0.5em;
+}
+.weapon-header label{
+  display:block;
+  text-align:center;
+}
+.fantasy-hammer.sheet.actor .character-armor-wrapper .armor-inventory img{
+  width: 22px;
+  height: 22px;
+}
+.equipped-indicator{
+  text-align:center;
+}
+.equipped-indicator input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.equipped-indicator .custom-box i {
+  font-size: 1.25em;
+  grid-area: 1 / 1; /* Stack them perfectly on top of each other */
+  transition: transform 0.2s ease;
+}
+.custom-box .icon-unchecked { color: #e74c3c; display: block; }
+.custom-box .icon-checked   { color: #7777FF; display: none;  }
+
+.equipped-indicator input[type="checkbox"]:checked + .custom-box {
+  background-color: #2ecc71;
+  border-color: #2ecc71;
+}
+
+/* 2. Hide the ban icon when checked */
+.equipped-indicator input[type="checkbox"]:checked + .custom-box .icon-unchecked {
+  display: none;
+}
+
+/* 3. Reveal the shirt icon when checked */
+.equipped-indicator input[type="checkbox"]:checked + .custom-box .icon-checked {
+  display: block;
+  animation: popIn 0.20s ease-in-out;
+}
+@keyframes popIn {
+  0% { transform: scale(0.6); }
+  100% { transform: scale(1); }
+}
+.fantasy-hammer.sheet.actor .character-weapon-wrapper{
+  border: 1px solid #414141;
+  padding:10px;
+}
+.fantasy-hammer.sheet.actor .character-weapon-wrapper .character-weapon-item{
+  border-top: 1px solid #717171;
+  border-left: 1px solid #313131;
+  border-right: 1px solid #313131;
+  border-bottom: 1px solid #717171;
+  display:grid;
+  grid-template-columns: 64px auto 32px;
+  align-items:center;
+}
+.fantasy-hammer.sheet.actor .character-weapon-wrapper .character-weapon-item .character-weapon-img-attack .weapon-img,
+.fantasy-hammer.sheet.actor .character-weapon-wrapper .character-weapon-item .character-weapon-img-attack .weapon-attack{
+  height:64px;
+  width:64px;
+}
+.fantasy-hammer.sheet.actor .character-weapon-wrapper .character-weapon-item .character-weapon-img-attack .weapon-attack{
+  font-size: 3.5em;
+  text-align:center;
+  display:block;
+}
+.fantasy-hammer.sheet.actor .character-weapon-wrapper .character-weapon-item .character-weapon-statblock{
+  display:grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 12px 16px;
+  align-items: center;
+}
+.fantasy-hammer.sheet.actor .character-weapon-wrapper .character-weapon-item .character-weapon-img-attack{
+  display:grid;
+  width: 64px;
+  grid-template-rows: 1fr 1fr;
+  align-items:center;
+  gap: 25px;
+}
+.split-input{
+  display:flex;
+}
+.character-weapon-statblock .character-sheet-weapon-stat{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.character-sheet-weapon-name{
+  grid-column: span 12;
+}
+.character-sheet-weapon-class{
+  grid-column: span 3;
+}
+.character-sheet-weapon-damage{
+  grid-column: span 4;
+}
+.character-sheet-weapon-damage input{
+  display: inline-block;
+  width:50;
+}
+.character-sheet-weapon-type{
+  grid-column: span 3;
+}
+.character-sheet-weapon-pen{
+  grid-column:span 2;
+}
+.character-sheet-weapon-range{
+  grid-column:span 2;
+}
+.character-sheet-weapon-rof{
+  grid-column:span 4;
+}
+.character-sheet-weapon-rld{
+  grid-column:span 3;
+}
+.character-sheet-weapon-clip{
+  grid-column:span 3;
+}
+.character-sheet-weapon-special{
+  grid-column:span 12;
+}
+.character-weapon-actions{
+  display:grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 25px;
+  text-align:center;
+}

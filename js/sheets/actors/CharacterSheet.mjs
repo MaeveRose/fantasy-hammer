@@ -1,13 +1,13 @@
 const { ActorSheetV2 } = foundry.applications.sheets;
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 
-import { executeD100Test } from "../../utils/system-helpers.mjs";
+
+import { executeD100Test, _targetedAttack } from "../../utils/system-helpers.mjs";
 import { SKILL_MANIFEST, CHARACTERISTIC_MANIFEST, PRIDE_MANIFEST, DISGRACE_MANIFEST, MOTIVATION_MANIFEST } from "../../utils/sys-const.mjs";
 
 export class CharacterSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheetV2) {
-  #tabs;
   static DEFAULT_OPTIONS = {
-    title: "FUCK SHIT MCGEE",
+    id: "FUCK SHIT MCGEE",
     classes: ["fantasy-hammer", "sheet", "actor"],     
     position:
     {
@@ -24,21 +24,65 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
       submitOnChange: true,
       closeOnSubmit: false
     },
+    /*tabSelectors: {
+      characterTabs: {
+        navSelector: ".character-sheet-tabs",
+        contentSelector: ".character-sheet-body"
+      }
+    },*/
     actions: {
       deleteSpecializedSkill: this._onDeleteSpecializedSkill,
       addSpecializedSkill: this._onAddSpecializedSkill,
       toggleSkillCheckbox: this._onToggleSkillCheckbox,
       rollCharacteristic: this._onRollCharacteristic,
       rollSkill: this._onRollSkill,
+      toggleEquipped: this._toggleEquipment,
       toggleTalentExpand: this._onToggleTalentExpand,
       printToChat: this._onPrintToChat,
-
       openEmbeddedItem: this._onOpenEmbeddedItem,
       deleteEmbeddedItem: this._onDeleteEmbeddedItem,
       flipToPlay: this._onChangePlay,
+      attackWith: this._onUseWeapon
+      
     },
-    dragDrop: [{ dropSelector: ".talents-panel-section" }]
+    dragDrop: [{ dropSelector: ".talents-panel-section, .armor-droppable, .weapon-droppable" }]
   };
+  static PARTS = {
+    form: {
+      template: "systems/fantasy-hammer/html/sheets/actors/charactersheet.html",
+      scrollable: [".sheet-body"] 
+    }
+  };
+  static TABS = {
+    characterTabs: {
+      tabs:[
+        {id:"attributes",label:"Attributes"},
+        {id:"combat",label:"Combat"},
+        {id:"psychic",label:"Psychic"},
+        {id:"advancements",label:"Advancements"},
+        {id:"biography",label:"Biography"},
+        {id:"inventory",label:"Inventory"}
+      ]
+    }
+  };
+  async getData(options)
+  {
+
+
+  }
+  _initializeApplicationOptions(options) {
+    console.log(`_initializeApplicationOptions`);
+    options = super._initializeApplicationOptions(options);
+    console.log(options);
+    const startingTab = options.isEditable ? "attributes" : "biography";
+    options.tabs = {
+      characterTabs: {
+        initial: startingTab
+      }
+    };
+
+    return options;
+  }
   get title(){
     const localizedprefix = game.i18n.localize("TYPES.Actor.character.label");
     const actor = this.document;
@@ -46,12 +90,6 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
     const headerBar = `${localizedprefix} | ${itemName}`;
     return headerBar;
   }
-  static PARTS = {
-    form: {
-      template: "systems/fantasy-hammer/html/sheets/actors/charactersheet.html",
-      scrollable: [".sheet-body"] 
-    }
-  };
   static async _onChangePlay(event, target){
     event.preventDefault();
 
@@ -59,14 +97,10 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
   static async _onPrintToChat(event, target)
   {
     event.preventDefault();
-    const itemId = target.closest(".js-talent-card").getAttribute("data-item-id");
+    const itemId = target.closest(".item-row").getAttribute("data-item-id");
     const item = this.document.items.get(itemId);
-
     item.system.printToChat();
-
-    console.log(item.system);
   }
-  //override
   static async _onToggleTalentExpand(event, target) {
     if (event.target.closest(".js-prevent-toggle") || event.target.closest("[data-action='deleteEmbeddedItem']") || event.target.closest("[data-action='openEmbeddedItem']")) {
       return;
@@ -90,6 +124,8 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
         break;
       case "weapon":
       case "armor":
+        this._handleInventoryDrop(event, item);
+        break;
       case "spell":
       case "pride":
       case "disgrace":
@@ -99,6 +135,23 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
         ui.notifications.warn(`The item type "${item.type}" does not have a drop handler configured yet.`);
         return false;
     }
+  }
+  static async _toggleEquipment(event, target){
+    event.preventDefault();
+    const itemId = target.closest(".item-row").getAttribute("data-item-id");
+    const gaineditem = this.document.items.get(itemId);
+    if(!gaineditem) return;
+    const isCurrentlyEquipped = gaineditem.system.equipped ?? false;
+    const updates = {};
+    updates[`system.equipped`] = !isCurrentlyEquipped;
+    await gaineditem.update(updates);
+  }
+  async _handleInventoryDrop(event, item){
+    const dropped = await Item.fromDropData(item);
+    if(!dropped) return false;
+    await this.document.createEmbeddedDocuments("Item", [dropped.toObject()]);
+    ui.notifications.info(`Successfully added item: ${dropped.name} to inventory`);
+    return true;
   }
   async _handleTalentTraitDrop(event, item) {
   // make sure we are not duplicating talents.
@@ -177,8 +230,19 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
     
     ui.notifications.info(`Successfully added talent: ${gotItem.name}`);
     return true;
-  } 
-  // ... your getData() and activateListeners() methods live down here ...
+  }
+  async _prepareContext(options){
+    const context = await super._prepareContext(options);
+    context.tabs = this._prepareTabs("characterTabs");
+    const hasActive = Object.values(context.tabs).some(t => t.cssClass === "active");
+    if (!hasActive) {
+      const defaultTab = this.isEditable ? "attributes" : "biography";
+      if (context.tabs[defaultTab]) {
+        context.tabs[defaultTab].cssClass = "active";
+      }
+    }
+    return context;
+  }
   async _preparePartContext(partId, context, options) {
     await super._preparePartContext(partId, context, options);
    
@@ -186,7 +250,51 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
     context.system = this.document.system;
     const rawCharacteristics = this.document.system.characteristics;
     context.isGM = game.user.isGM;
-
+    let collectedArmorItems = [];
+    let collectedWeaponItems =[];
+    let collectedTraitItems =[];
+    let collectedTalentItems =[];
+    const calculatedArmor = {
+      head: 0,
+      leftarm: 0,
+      body: 0,
+      rightarm: 0,
+      leftleg: 0,
+      rightleg: 0,
+    }
+    for(const item of this.document.items){
+      if(item.type =="armor") {
+        collectedArmorItems.push(item.id);
+        if(!item.system.equipped) continue;
+        for(const slot of Object.keys(calculatedArmor))
+        {
+          const itemValue = item.system.coverage?.[slot];
+          if(calculatedArmor[slot] < itemValue)
+          {
+            calculatedArmor[slot] = itemValue;
+          }
+        }
+      }
+      if(item.type =="weapon") collectedWeaponItems.push(item.id);
+      
+      if(item.type =="talent") collectedTalentItems.push(item.id);
+      
+      if(item.type =="trait") collectedTraitItems.push(item.id);
+    }
+    console.log(`getData Called`);
+    context.armorItems = collectedArmorItems
+      .map(id => this.actor.items.get(id))
+      .filter(Boolean);
+    context.weaponItems = collectedWeaponItems
+      .map(id => this.actor.items.get(id))
+      .filter(Boolean);;
+    context.talentItems = collectedTalentItems
+      .map(id => this.actor.items.get(id))
+      .filter(Boolean);;
+    context.traitItems = collectedTraitItems
+      .map(id => this.actor.items.get(id))
+      .filter(Boolean);;
+    context.calcArmor = calculatedArmor;
     context.isCreationActive = this.document.system.characterCreationActive;
     context.isEditable = this.isEditable;
     context.characteristicsList = Object.entries(CHARACTERISTIC_MANIFEST).map(([charkey,config]) => {
@@ -194,7 +302,6 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
       const scoreValue = dbRecord?.value ?? 0;
       const translatedName = game.i18n.localize(config.key);
       const translatedShort = game.i18n.localize(config.short);
-
       return{
          key: charkey,
          name: translatedName,
@@ -308,22 +415,14 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
 
     // 3. UNIFIED ALPHABETICAL SORT: Organizes standard and custom skills together flawlessly
     context.sortedSkillsList = displaySkills.sort((a, b) => a.label.localeCompare(b.label));
-    
+
+    //context.tab = this.tabGroups[partId] || this.tabGroups.characterTabs;
+    console.log(context);
     return context;
   }
- 
   _onRender(context, options) {
     super._onRender(context, options);
-    //if you can edit, you get punted to attributes when you first open the page, otherwise the biography tab
-    const startingTab = this.isEditable ? "attributes" : "biography";
-
-    this.#tabs = new foundry.applications.ux.Tabs({
-      navSelector: ".character-sheet-tabs", 
-      contentSelector: ".character-sheet-body", 
-      initial: startingTab, 
-      group: "actor-character-primary-tabs"
-    });
-    this.#tabs.bind(this.element);
+    console.log(this.tabGroups?.["characterTabs"]);
   }
   static async _onDeleteSpecializedSkill(event, target) {
     event.preventDefault();
@@ -491,7 +590,8 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
   }
   static async _onDeleteEmbeddedItem(event, target) {
     event.preventDefault();
-    const itemId = target.closest(".talent-item-row").getAttribute("data-item-id");
+    const itemId = target.closest(".item-row").getAttribute("data-item-id");
+
     const item = this.document.items.get(itemId);
 
     if (!item) return;
@@ -510,5 +610,17 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
     // Fire the embedded documents batch transaction update array
     await this.document.deleteEmbeddedDocuments("Item", [itemId]);
     ui.notifications.info(`Removed talent: ${item.name}`);
+  }
+  static async _onUseWeapon(event, target) {
+    if(!game.user.targets.size){
+      ui.notifications.warn("you have nothing targeted");
+    }
+    const weaponID = target.closest(".character-weapon-item").getAttribute("data-item-id");
+    if(!weaponID) return;
+    const weapon = this.document.items.get(weaponID);
+    const attacker = this.document;
+    const attacktoken = game.user.targets.first() ? game.user.targets.first() : null;
+    const targeted = !attacktoken ? "void" : attacktoken?.actor;
+    _targetedAttack(attacker,targeted,weapon);
   }
 }

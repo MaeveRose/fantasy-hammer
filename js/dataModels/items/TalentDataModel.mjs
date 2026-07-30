@@ -57,6 +57,7 @@ export class TalentDataModel extends BaseItemDataModel {
   }
   async printToChat() {
     const itemDom = this.parent;
+    console.log(itemDom)
     const actorDoc = itemDom.actor;
     let compName = itemDom.name;
     if (this.specialist && this.specializationName) {

@@ -11,6 +11,40 @@ export class BaseActorDataModel extends foundry.abstract.TypeDataModel {
             )
         }
     }
+    gatherAttackOptions(weaponItem, defender) {
+        if(!weaponItem.equipped){
+            return false;
+        }
+        let gatheredSet = new Set();
+        if (!defender)
+        {
+            gatheredSet.add(`target:none:true`);
+        } else {
+            if (/* for some reason */ defender.type !== "actor") {
+                throw new Error(`Somehow you have managed to make the defender of an attack, NOT an actor`);
+            }
+            let optionset = defender.system.gatherRollOptions();
+            for(const option of optionset)
+            {
+                gatheredSet.add(`target:${option}`);
+            }
+        }
+        if (weaponItem.type !== "weapon") {
+            throw new Error(`${weaponItem} isnt a weapon?`);
+        }
+
+        optionset = weaponItem.system.gatherRollOptions();
+        for (const option of optionset)
+        {
+            gatheredSet.add(option);
+        }
+        optionset = this.system.gatherRollOptions();
+        for (const option of optionset)
+        {
+            gatheredSet.add(`self:${option}`);
+        }
+        return Array.from(gatheredSet);
+    }
     gatherRollOptions() {
         const subclassPrototype = Object.getPrototypeOf(this);
         if (!subclassPrototype.hasOwnProperty("gatherRollOptions")) {

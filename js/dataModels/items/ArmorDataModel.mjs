@@ -21,6 +21,7 @@ export class ArmorDataModel extends BaseItemDataModel {
       ...baseFields,
       customJSON: new JSONField({ required: true, initial: "{}" }),
       type: new StringField({ required: true, initial: "primative", choices: Object.keys(ARMORTYPE_MANIFEST) }),
+      equipped: new BooleanField({required:true, initial:false}),
       coverage: new SchemaField({
         head: new NumberField({ required: true, initial: 0 }),
         rightarm: new NumberField({ required: true, initial: 0 }),

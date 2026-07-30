@@ -99,3 +99,59 @@ export async function _printToChat(item, actorDocument)
 {
   //probably wont be used?
 }
+/**
+* takes the attacker, defender weaponItem and rollOptions and runs the d100 test to determine if the attack hits or not.
+* @param {import("foundry-vtt").Actor|uuid} attacker
+* @param {import("foundry-vtt").Actor|uuid} defender
+* @param {import("foundry-vtt").Weapon|uuid} weaponItem
+* @param {string[]} [rollOptions =[]]
+* @returns {Promise<void>} 
+* @throws {Error} if the attacker or defender type cannot resolve to an Actor, or if the weapon cannot resolve to a Weapon
+*
+**/
+export async function _targetedAttack(attacker, defender, weaponItem, rollOptions = [])
+{
+  let attacking = attacker;
+  if(!attacker.type || attacker.documentName !== "Actor")
+  {
+    attacking = await fromUuid(attacker);
+    if(attacking.type !== "actor" || !attacking.type) throw new Error(`neither ${attacker} nor ${attacking} are of type actor. attacker must be either Actor or a UUID that resolves to an Actor`);
+  }
+  let defending = defender;
+  let defendingOptions = [];
+  if (defender !== "void"){
+    if(typeof defender === "string" || !defender?.type || defender?.documentName !== "Actor")
+    {
+      let resolvedDoc = await fromUuid(defender);
+      if(!resolvedDoc) throw new Error(`[MySystem] Combat Target Error: The UUID '${defender}' could not be found or resolved.`);
+      const targetActor = resolvedDoc.actor || resolvedDoc.document?.actor || resolvedDoc;
+      if (targetActor?.type !== "actor") {
+        throw new Error(
+          `Neither the input target nor its resolved reference match type 'actor'. ` +
+          `Target must be an Actor Document, a Canvas Token, or a valid Actor/Token UUID.`
+        );
+      }
+      defending = targetActor;
+    }
+    defendingOptions = defending.system.gatherRollOptions();
+    console.log(defendingOptions);
+  } else {
+    defendingOptions = ["the-void"];
+  }
+  let weapon = weaponItem;
+  if(!weaponItem.type || weaponItem.type !== "weapon")
+  {
+    weapon = await fromUuid(weaponItem);
+    if(weapon.type !== "weapon" || !weapon.type) throw new Error(`neither ${weaponItem} nor ${weapon} are of type "weapon". weaponItem must be either Weapon or a UUID that resolves to a Weapon`);
+  }
+  let options = [...rollOptions];
+  if(rollOptions.length == 0)
+  {
+    options = [
+      ...attacking.system.gatherRollOptions(),
+      ...defendingOptions.map(o=> `target:${o}`), //appends "target:"
+      ...weapon.system.gatherRollOptions()
+    ]
+  }
+  console.log(options);
+}

@@ -1,16 +1,18 @@
 <div class="flexcol" autocomplete="off">
-  <nav class="character-sheet-tabs tabs" data-group="actor-character-primary-tabs">
+  <nav class="character-sheet-tabs tabs" data-group="characterTabs">
     {{#if isEditable}}
-    <a class="item" data-tab="attributes" data-group="actor-character-primary-tabs"><i class="fas fa-shield-alt"></i>
+    <a class="item" data-action="tab" data-tab="attributes" data-group="characterTabs"><i class="fas fa-shield-alt"></i>
       Attributes</a>
-    <a class="item" data-tab="combat" data-group="actor-character-primary-tabs"><i class="fas fa-swords"></i> Combat</a>
-    <a class="item" data-tab="psychic" data-group="actor-character-primary-tabs"><i class="fas fa-brain"></i>
+    <a class="item" data-action="tab" data-tab="combat" data-group="characterTabs"><i class="fas fa-swords"></i>
+      Combat</a>
+    <a class="item" data-action="tab" data-tab="psychic" data-group="characterTabs"><i class="fas fa-brain"></i>
       Psychic</a>
-    <a class="item" data-tab="advancements" data-group="actor-character-primary-tabs"><i class="fas fa-chart-line"></i>
+    <a class="item" data-action="tab" data-tab="advancements" data-group="characterTabs"><i
+        class="fas fa-chart-line"></i>
       Progress</a>
     {{/if}}
 
-    <a class="item" data-tab="biography" data-group="actor-character-primary-tabs"><i class="fas fa-scroll"></i>
+    <a class="item" data-action="tab" data-tab="biography" data-group="characterTabs"><i class="fas fa-scroll"></i>
       Biography</a>
     {{#if (or isGM isCreationActive)}}
     <a class="flipmode" data-action="flipToPlay"><i class="fa-solid fa-triangle-exclamation"></i>Turn off Character
@@ -21,11 +23,12 @@
   </nav>
   <section class="character-sheet-body">
     {{#if (and isGM isCreationActive)}}
-    <header class = "creation-mode-header">
-      <label class = "creation-mode-warning"><i class="fa-solid fa-triangle-exclamation"></i>THIS SHEET IS IN CREATION MODE</label>
+    <header class="creation-mode-header">
+      <label class="creation-mode-warning"><i class="fa-solid fa-triangle-exclamation"></i>THIS SHEET IS IN CREATION
+        MODE</label>
     </header>
     {{/if}}
-    <section class="tab" data-tab="biography" data-groups="actor-character-primary-tabs">
+    <section class="tab {{tabs.biography.cssClass}}" data-tab="biography" data-group="characterTabs">
       <section class="biography">
         <h2 class="bio-label">Biography</h2>
         <div class="bio-content">
@@ -34,8 +37,8 @@
       </section>
     </section>
     {{#if isEditable}}
-    <section class="tab" data-tab="attributes" data-groups="actor-character-primary-tabs">
-      <section class=" sheet-header">
+    <section class="tab {{tabs.attributes.cssClass}}" data-tab="attributes" data-group="characterTabs">
+      <section class="sheet-header">
         <section>
           <div class="sheet-header-ledger">
             <!-- ROW 1: Character Name & Player Name -->
@@ -167,14 +170,10 @@
         <div class="talents-panel-section">
           <h3 class="panel-title-header">Talents & Traits</h3>
           <div class="talents-list-wrapper">
-            <!-- 
-          Loop directly through every embedded item owned by the actor.
-          ApplicationV2 automatically populates actor.items natively on the page root!
-          -->
             {{#each actor.items}}
             <!-- Use conditional tags to cleanly isolate talents and traits out of general inventory -->
             {{#if (or (eq this.type "talent") (eq this.type "trait"))}}
-            <div class="talent-item-row js-talent-card" data-item-id="{{this.id}}">
+            <div class="talent-item-row item-row js-talent-card" data-item-id="{{this.id}}">
               <div class="talent-main-line" data-action="toggleTalentExpand">
                 <!-- Click to trigger our new open action method smoothly! -->
                 <a data-action="openEmbeddedItem" title="Click to view details" style="cursor: pointer;">
@@ -198,18 +197,14 @@
                   </a>
                 </div>
               </div>
-
-              <!-- If you have an active system description paragraph box written, show a snippet -->
               {{#if this.system.description}}
               <div class="talent-short-desc">
                 {{{this.system.description}}}
-                <!-- Using 3 curly braces allows HTML formatting tags inside descriptions to pass safely -->
               </div>
               {{/if}}
             </div>
             {{/if}}
             {{else}}
-            <!-- Fallback presentation block revealed ONLY if actor.items array initializes empty -->
             <p class="empty-notice-text"
               style="font-size: 0.85rem; opacity: 0.5; font-style: italic; text-align: center; margin-top: 25px;">
               Drag Talents or Traits from the sidebar or a compendium here...
@@ -217,10 +212,154 @@
             {{/each}}
           </div>
         </div>
+      </div>
     </section>
     {{/if}}
     {{#if isEditable}}
-    <section class="tab" data-tab="combat" data-group="actor-character-primary-tabs">
+    <section class="tab {{tabs.combat.cssClass}}" data-tab="combat" data-group="characterTabs">
+      <div class="combat-log-header">
+
+      </div>
+      <div class="combat-armor-pane armor-droppable">
+        <div class="character-armor-wrapper">
+          <div class="character-armor-sheet">
+            <div class="armor-stat-display">
+              <div class="armor-stat-block head-block">
+                <label class="armor-header">{{localize "sheets.armor.stats.head"}}</label>
+                <label class="armor-numbers">{{localize "sheets.armor.stats.headvalues"}}</label>
+                <input type="number" name="head-armor" value="{{calcArmor.head}}" disabled />
+              </div>
+              <div class="armor-stat-block rarm-block">
+                <label class="armor-header">{{localize "sheets.armor.stats.rightarm"}}</label>
+                <label class="armor-numbers">{{localize "sheets.armor.stats.rightarmvalues"}}</label>
+                <input type="number" name="rightarm-armor" value="{{calcArmor.rightarm}}" disabled />
+              </div>
+              <div class="armor-stat-block body-block">
+                <label class="armor-header">{{localize "sheets.armor.stats.body"}}</label>
+                <label class="armor-numbers">{{localize "sheets.armor.stats.bodyvalues"}}</label>
+                <input type="number" name="body-armor" value="{{calcArmor.body}}" disabled />
+              </div>
+              <div class="armor-stat-block larm-block">
+                <label class="armor-header">{{localize "sheets.armor.stats.leftarm"}}</label>
+                <label class="armor-numbers">{{localize "sheets.armor.stats.leftarmvalues"}}</label>
+                <input type="number" name="leftarm-armor" value="{{calcArmor.leftarm}}" disabled />
+              </div>
+              <div class="armor-stat-block rleg-block">
+                <label class="armor-header">{{localize "sheets.armor.stats.rightleg"}}</label>
+                <label class="armor-numbers">{{localize "sheets.armor.stats.rightlegvalues"}}</label>
+                <input type="number" name="rightleg-armor" value="{{calcArmor.rightleg}}" disabled />
+              </div>
+              <div class="armor-stat-block lleg-block">
+                <label class="armor-header">{{localize "sheets.armor.stats.leftleg"}}</label>
+                <label class="armor-numbers">{{localize "sheets.armor.stats.leftlegvalues"}}</label>
+                <input type="number" name="leftleg-armor" value="{{calcArmor.leftleg}}" disabled />
+              </div>
+            </div>
+          </div>
+          <div class="armor-inventory">
+            <div class="armor-header">
+              <label class="armor-list-header">{{localize "sheets.character.labels.weapons.ArmorInventory"}}</label>
+            </div>
+            {{#each armorItems}}
+            <div class="item-row armor-inventory-item" data-item-id="{{this.id}}">
+              <label class="equipped-indicator">
+                <input type="checkbox" data-action="toggleEquipped" data-item-id="{{this.id}}" {{checked
+                  this.system.equipped}}>
+                <span class="custom-box">
+                  <i class="fa-sharp fa-solid fa-ban icon-unchecked"></i>
+                  <i class="fa-sharp fa-solid fa-shirt icon-checked"></i>
+                </span>
+              </label>
+              <img src="{{this.img}}" class="armor-img" />
+              <label class="armor-name">{{this.name}}</label>
+              <a class="js-prevent-toggle" data-action="deleteEmbeddedItem" title="Delete Armor"
+                style="cursor: pointer; color: #c92a2a;"><i class="fas fa-trash"></i></a>
+            </div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+      <div class="character-weapon-wrapper weapon-droppable">
+        <div class="weapon-header">
+          <label class="weapon-list-header">{{localize "sheets.character.labels.weapons.WeaponInventory"}}</label>
+        </div>
+        {{#each weaponItems}}
+        <div class="character-weapon-item item-row" data-item-id="{{this.id}}">
+          <div class = "character-weapon-img-attack">
+            <img src="{{this.img}}" class="weapon-img" />
+            {{#if (eq this.system.class 'melee')}}
+            <a class="weapon-attack js-prevent-toggle" data-action="attackWith" title="Attack" style="cursor: pointer; color: #a19385;"><i class="fa-solid fa-swords"></i></a>
+            {{else if (eq this.system.class 'pistol')}}
+            <a class="weapon-attack js-prevent-toggle" data-action="attackWith" title="Attack" style="cursor: pointer; color: #a19385;"><i class="fa-solid fa-gun"></i></a>
+            {{else if (eq this.system.class 'launcher')}}
+            <a class="weapon-attack js-prevent-toggle" data-action="attackWith" title="Attack" style="cursor: pointer; color: #a19385;"><i class="fa-solid fa-rocket"></i></i></a>
+            {{else if (eq this.system.class 'thrown')}}
+            <a class="weapon-attack js-prevent-toggle" data-action="attackWith" title="Attack" style="cursor: pointer; color: #a19385;"><i class="fa-solid fa-bomb"></i></i></a>
+            {{else}}
+            <a class="weapon-attack js-prevent-toggle" data-action="attackWith" title="Attack" style="cursor: pointer; color: #a19385;"><i class="fa-solid fa-crosshairs"></i></i></a>
+            {{/if}}
+          </div>
+          <div class="character-weapon-statblock">
+            <div class="character-sheet-weapon-stat character-sheet-weapon-name">
+              <label>{{localize "sheets.weapon.stats.name"}}</label>
+              <input type="text" name="weapon-{{this.id}}-name" value="{{this.name}}" readonly />
+            </div>
+            <div class="character-sheet-weapon-stat character-sheet-weapon-class">
+              <label>{{localize "sheets.weapon.stats.class"}}</label>
+              <input type="text" name="weapon-{{this.id}}-class" value="{{this.system.class}}" readonly />
+            </div>
+            <div class="character-sheet-weapon-stat character-sheet-weapon-damage">
+              <label>{{localize "sheets.weapon.stats.damage"}}</label>
+              <input type="text" name="weapon-{{this.id}}-damage" value="{{this.system.damage.value}}" readonly />
+              <input type="text" name="weapon-{{this.id}}-damageType" value="{{this.system.damage.type}}" readonly />
+            </div>
+            <div class="character-sheet-weapon-stat character-sheet-weapon-type">
+              <label>{{localize "sheets.weapon.stats.type"}}</label>
+              <input type="text" name="weapon-{{this.id}}-type" value="{{this.system.type}}" readonly />
+            </div>
+            <div class="character-sheet-weapon-stat character-sheet-weapon-pen">
+              <label>{{localize "sheets.weapon.stats.pen"}}</label>
+              <input type="text" name="weapon-{{this.id}}-pen" value="{{this.system.pen}}" readonly />
+            </div>
+            <div class="character-sheet-weapon-stat character-sheet-weapon-range">
+              <label>{{localize "sheets.weapon.stats.range"}}</label>
+              <input type="text" name="weapon-{{this.id}}-range" value="{{this.system.pen}}" readonly />
+            </div>
+            <div class="character-sheet-weapon-stat character-sheet-weapon-rof">
+              <label>{{localize "sheets.weapon.stats.rof"}}</label>
+              <div class="split-input">
+                <input type="text" name="weapon-{{this.id}}-rof-semi" value="{{this.system.rateOfFire.single}}" readonly />
+                <span>/</span>
+                <input type="text" name="weapon-{{this.id}}-rof-burst" value="{{this.system.rateOfFire.semi}}" readonly />
+                <span>/</span>
+                <input type="text" name="weapon-{{this.id}}-rof-auto" value="{{this.system.rateOfFire.full}}" readonly />
+              </div>
+            </div>
+            <div class="character-sheet-weapon-stat character-sheet-weapon-clip">
+              <label>{{localize "sheets.weapon.stats.clip"}}</label>
+              <div class = "split-input">
+                <input type="text" name="weapon-{{this.id}}-clip.current" value="{{this.system.clip.current}}" readonly />
+                <span>/</span>
+                <input type="text" name="weapon-{{this.id}}-clip.max" value="{{this.system.clip.max}}" readonly />
+              </div>
+            </div>
+            <div class="character-sheet-weapon-stat character-sheet-weapon-rld">
+              <label>{{localize "sheets.weapon.stats.reload"}}</label>
+              <input type="text" name="weapon-{{this.id}}-reload" value="{{this.system.reload}}" readonly />
+            </div>
+            <div class="character-sheet-weapon-stat character-sheet-weapon-special">
+              <label>{{localize "sheets.weapon.stats.special"}}</label>
+              <input type="text" name="weapon-{{this.id}}-special" value="{{this.system.special}}" readonly />
+            </div>
+          </div>
+          <div class="character-weapon-actions">
+            <a class="js-prevent-toggle" data-action="openEmbeddedItem" title="Edit Weapon Details" style="cursor: pointer; color: #a19385;"><i class="fas fa-edit"></i></a>
+            <a class="js-prevent-toggle" data-action="printToChat" title="Print To Chat" style="cursor: pointer; color: #EDE8B2;"><i class="fa-sharp fa-solid fa-message"></i></a>
+            <a class="js-prevent-toggle" data-action="deleteEmbeddedItem" title="Delete Weapon" style="cursor: pointer; color: #c92a2a;"><i class="fas fa-trash"></i></a>
+          </div>
+        </div>
+        {{/each}}
+      </div>
       <div class="combat-log-pane">
         <h3>Weapons & Armaments</h3>
         <p class="empty-notice-text">Drag Weapon or Armor item documents here to equip gear profiles...</p>
@@ -229,7 +368,7 @@
     </section>
     {{/if}}
     {{#if isEditable}}
-    <section class="tab" data-tab="psychic" data-group="actor-character-primary-tabs">
+    <section class="tab {{tabs.psychic.cssClass}}" data-tab="psychic" data-group="characterTabs">
       <div class="psychic-powers-pane">
         <h3>Psychic Disciplines & Powers</h3>
         <p class="empty-notice-text">Drag Spells here to log active psy-phenomena disciplines...</p>
@@ -237,7 +376,7 @@
     </section>
     {{/if}}
     {{#if isEditable}}
-    <section class="tab" data-tab="advancements" data-group="actor-character-primary-tabs">
+    <section class="tab {{tabs.advancements.cssClass}}" data-tab="advancements" data-group="characterTabs">
       <div class="advancements-pane">
         <h3>Character Advancements & Chaos Alignment</h3>
         <!-- (Tracks earned XP expenditures or pride/disgrace metrics!) -->

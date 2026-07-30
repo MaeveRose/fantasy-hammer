@@ -17,11 +17,22 @@ export class BaseItemDataModel extends foundry.abstract.TypeDataModel{
             slug: new foundry.data.fields.StringField({required:true, initial:""}),
         }
     }
+    async printToChat(){
+        const subclassPrototype = Object.getPrototypeOf(this);
+        if (!subclassPrototype.hasOwnProperty("printToChat")){
+            throw new Error(`[${SYSTEM_ID} FATAL] the subclass '${this.constructor.name}' must implement its own 'printToChat()' method.`);
+        }
+        return false; 
+    } 
+    getIDs()
+    {
+        return [this.uuid.replaceAll(".", "-"), this.slug];
+    }
     gatherRollOptions()
     {
         const subclassPrototype = Object.getPrototypeOf(this);
         if (!subclassPrototype.hasOwnProperty("gatherRollOptions")){
-            throw new error(`[${SYSTEM_ID} FATAL] the subclass '${this.constructor.name}' must implement its own 'gatherRollOptions()' method.`);
+            throw new Error(`[${SYSTEM_ID} FATAL] the subclass '${this.constructor.name}' must implement its own 'gatherRollOptions()' method.`);
         }
         return this.traits ? Array.from(this.traits) : [];    
     }

@@ -8,7 +8,14 @@
     "sheets":{
         "character":{
             "labels":{
-                "GMCreationLabel":"This Sheet is in Creation Mode!"
+                "GMCreationLabel":"This Sheet is in Creation Mode!",
+                "weapons":{
+                    "ArmorInventory": "Armor Inventory",
+                    "WeaponInventory":"Weapon Inventory"
+                },
+                "armor":{
+
+                }
             }
         },
         "archetype":{
@@ -51,7 +58,9 @@
         "weapon":{
             "stats":{
                 "_":"Stats",
+                "name":"Name",
                 "class":"Class",
+                "type":"Type",
                 "range":"Range",
                 "reload":"Reload",
                 "clip":"clip",

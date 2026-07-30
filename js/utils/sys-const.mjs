@@ -3,424 +3,561 @@ export const SKILL_MANIFEST = {
   acrobatics:{ 
     char: "agility",
     key: "sys-const.skills.acrobatics",
-    traits:["skill","skill:acrobatics"]
+    option:["skill","skill:acrobatics"]
   },
   athletics:{ 
     char: "strength",
     key: "sys-const.skills.athletics",
-    traits:["skill","skill:athletics"]
+    option:["skill","skill:athletics"]
   },
   awareness:{ 
     char: "perception",
     key: "sys-const.skills.awareness",
-    traits:["skill","skill:awareness"]
+    option:["skill","skill:awareness"]
   },
   charm:{ 
     char: "fellowship",
     key: "sys-const.skills.charm",
-    traits:["skill","skill:charm"]
+    option:["skill","skill:charm"]
   },
   command:{ 
     char: "fellowship",
     key: "sys-const.skills.command",
-    traits:["skill","skill:command"]
+    option:["skill","skill:command"]
   },
   commerce:{ 
     char: "intelligence",
     key: "sys-const.skills.commerce",
-    traits:["skill","skill:commerce"]
+    option:["skill","skill:commerce"]
   },
   commonLore:{ 
     char: "none",
     key: "sys-const.skills.commonLore",
-    traits:["skill","skill:common-lore"]
+    option:["skill","skill:common-lore"]
   },
   deceive:{ 
     char: "fellowship",
     key: "sys-const.skills.deceive",
-    traits:["skill","skill:deceive"]
+    option:["skill","skill:deceive"]
   },
   dodge:{ 
     char: "agility",
     key: "sys-const.skills.dodge",
-    traits:["skill","skill:dodge"]
+    option:["skill","skill:dodge"]
   },
   forbiddenLore:{ 
     char: "intelligence",
     key: "sys-const.skills.forbiddenLore",
-    traits:["skill","skill:forbidden-lore"]
+    option:["skill","skill:forbidden-lore"]
   },
   inquiry:{ 
     char: "fellowship",
     key: "sys-const.skills.inquiry",
-    traits:["skill","skill:inquiry"]
+    option:["skill","skill:inquiry"]
   },
   intimidate:{ 
     char: "willpower",
     key: "sys-const.skills.intimidate",
-    traits:["skill","skill:intimidate"]
+    option:["skill","skill:intimidate"]
   },
   linguistics:{ 
     char: "intelligence",
     key: "sys-const.skills.linguistics",
-    traits:["skill","skill:linguistics"]
+    option:["skill","skill:linguistics"]
   },
   logic:{ 
     char: "intelligence",
     key: "sys-const.skills.logic",
-    traits:["skill","skill:logic"]
+    option:["skill","skill:logic"]
   },
   medicae:{ 
     char: "intelligence",
     key: "sys-const.skills.medicae",
-    traits:["skill","skill:medicae"]
+    option:["skill","skill:medicae"]
   },
   navigationSurface:{ 
     char: "intelligence",
     key: "sys-const.skills.navigationSurface",
-    traits:["skill","skill:navigation-surface"]
+    option:["skill","skill:navigation-surface"]
   },
   navigationStellar:{ 
     char: "intelligence",
     key: "sys-const.skills.navigationStellar",
-    traits:["skill","skill:navigation-stellar"]
+    option:["skill","skill:navigation-stellar"]
   },
   navigationWarp:   { 
     char: "intelligence",
     key: "sys-const.skills.navigationWarp",
-    traits:["skill","skill:navigation-warp"]
+    option:["skill","skill:navigation-warp"]
   },
   operateAeronautica:{ 
     char: "agility",
     key: "sys-const.skills.operateAeronautica",
-    traits:["skill","skill:operate-aeronautica"]
+    option:["skill","skill:operate-aeronautica"]
   },
   operateSurface:{ 
     char: "agility",
     key: "sys-const.skills.operateSurface",
-    traits:["skill","skill:operate-surface"]
+    option:["skill","skill:operate-surface"]
   },
   operateVoidship:{ 
     char: "agility",
     key: "sys-const.skills.operateVoidship",
-    traits:["skill","skill:operate-voidship"]
+    option:["skill","skill:operate-voidship"]
   },
   parry:{ 
     char: "weaponSkill",
     key: "sys-const.skills.parry",
-    traits:["skill","skill:parry"]
+    option:["skill","skill:parry"]
   },
   psyniscience:{ 
     char: "perception",
     key: "sys-const.skills.psyniscience",
-    traits:["skill","skill:psyniscience"]
+    option:["skill","skill:psyniscience"]
   },
   scholasticLore:{ 
     char: "intelligence",
     key: "sys-const.skills.scholasticLore",
-    traits:["skill","skill:scholastic-lore"]
+    option:["skill","skill:scholastic-lore"]
   },
   scrutiny:{ 
     char: "perception",
     key: "sys-const.skills.scrutiny",
-    traits:["skill","skill:scrutiny"]
+    option:["skill","skill:scrutiny"]
   },
   security:{ 
     char: "intelligence",
     key: "sys-const.skills.security",
-    traits:["skill","skill:security"]
+    option:["skill","skill:security"]
   },
   slightOfHand:{ 
     char: "agility",
     key: "sys-const.skills.slightOfHand",
-    traits:["skill","skill:slight-of-hand"]
+    option:["skill","skill:slight-of-hand"]
   },
   stealth:{ 
     char: "agility",
     key: "sys-const.skills.stealth",
-    traits:["skill","skill:stealth"]
+    option:["skill","skill:stealth"]
   },
   techUse:{ 
     char: "intelligence",
     key: "sys-const.skills.techUse",
-    traits:["skill","skill:tech-use"]
+    option:["skill","skill:tech-use"]
   },
   tracking:{ 
     char: "intelligence",
     key: "sys-const.skills.tracking",
-    traits:["skill","skill:tracking"]
+    option:["skill","skill:tracking"]
   },
   trade:{ 
     char: "intelligence",
     key: "sys-const.skills.trade",
-    traits:["skill","skill:trade"]
+    option:["skill","skill:trade"]
   }
 }
 export const CHARACTERISTIC_MANIFEST = {
     weaponSkill:        {
       key: "sys-const.characteristic.weaponSkill",
       short: "sys-const.characteristic.weaponSkill_short",
-      traits:["characteristic","characteristic:weapon-skill"]
+      option:["characteristic","characteristic:weapon-skill"]
     },
     ballisticSkill:     {
       key: "sys-const.characteristic.ballisticSkill",
       short: "sys-const.characteristic.ballisticSkill_short",
-      traits:["characteristic","characteristic:ballistic-skill"]
+      option:["characteristic","characteristic:ballistic-skill"]
     },
     strength:           {
       key: "sys-const.characteristic.strength",
       short: "sys-const.characteristic.strength_short",
-      traits:["characteristic","characteristic:strength"]
+      option:["characteristic","characteristic:strength"]
     },
     toughness:          {
       key: "sys-const.characteristic.toughness",
       short: "sys-const.characteristic.toughness_short",
-      traits:["characteristic","characteristic:toughness"]
+      option:["characteristic","characteristic:toughness"]
     },
     agility:            {
       key: "sys-const.characteristic.agility",
       short: "sys-const.characteristic.agility_short",
-      traits:["characteristic","characteristic:agility"]
+      option:["characteristic","characteristic:agility"]
     },
     intelligence:       {
       key: "sys-const.characteristic.intelligence",
       short: "sys-const.characteristic.intelligence_short",
-      traits:["characteristic","characteristic:intelligence"]
+      option:["characteristic","characteristic:intelligence"]
     },
     perception:         {
       key: "sys-const.characteristic.perception",
       short: "sys-const.characteristic.perception_short",
-      traits:["characteristic","characteristic:perception"]
+      option:["characteristic","characteristic:perception"]
     },
     willpower:          {
       key: "sys-const.characteristic.willpower",
       short: "sys-const.characteristic.willpower_short",
-      traits:["characteristic","characteristic:willpower"]
+      option:["characteristic","characteristic:willpower"]
     },
     fellowship:         {
       key: "sys-const.characteristic.fellowship",
       short: "sys-const.characteristic.fellowship_short",
-      traits:["characteristic","characteristic:fellowship"]
+      option:["characteristic","characteristic:fellowship"]
     },
     infamy:             {
       key: "sys-const.characteristic.infamy",
       short: "sys-const.characteristic.infamy_short",
-      traits:["characteristic","characteristic:infamy"]
+      option:["characteristic","characteristic:infamy"]
     }
+}
+export const SIZE_MANIFEST = {
+  miniscule:{
+    value:1,
+    modifier:{
+      tohit: -30,
+      stealth: 30,
+      movement: -3
+    },
+    option:["size:miniscule","size:1"],
+    key:"sys-const.size.miniscule"
+  },
+    tokensize:[1,1],
+    tokenscale:0.5,
+  puny:{
+    value:2,
+    modifier:{
+      tohit: -20,
+      stealth: 20,
+      movement: -2
+    },
+    tokensize:[1,1],
+    tokenscale:0.75,
+    option:["size:puny","size:2"],
+    key:"sys-const.size.puny"
+  },
+  weedy:{
+    value:3,
+    modifier:{
+      tohit: -10,
+      stealth: 10,
+      movement: -1
+    },
+    tokensize:[1,1],
+    tokenscale:0.9,
+    option:["size:weedy","size:3"],
+    key:"sys-const.size.weedy"
+  },
+  average:{
+    value: 4,
+    modifier:{
+      tohit: 0,
+      stealth: 0,
+      movement: 0
+    },
+    tokensize:[1,1],
+    tokenscale:1.0,
+    option:["size:average","size:4"],
+    key:"sys-const.size.average"
+  },
+  hulking:{
+    value: 5,
+    modifier:{
+      tohit: 10,
+      stealth: -10,
+      movement: 1
+    },
+    tokensize:[1,1],
+    tokenscale:1.5,
+    option:["size:hulking","size:5"],
+    key:"sys-const.size.hulking"
+  },
+  enormous:{
+    value: 6,
+    modifier:{
+      tohit: 20,
+      stealth: -20,
+      movement: 2
+    },
+    tokensize:[2,2],
+    tokenscale:1.0,
+    option:["size:enormous","size:6"],
+    key:"sys-const.size.enormous"
+  },
+  massive:{
+    value:7,
+    modifier:{
+      tohit: 30,
+      stealth: -30,
+      movement: 3
+    },
+    tokensize:[3,3],
+    tokenscale:1.0,
+    option:["size:massive","size:7"],
+    key:"sys-const.size.massive"
+  },
+  immense:{
+    value:8,
+    modifier:{
+      tohit: 40,
+      stealth: -40,
+      movement: 4
+    },
+    tokensize:[4,4],
+    tokenscale:1.0,
+    option:["size:immense","size:8"],
+    key:"sys-const.size.immense"
+  },
+  monumental:{
+    value:9,
+    modifier:{
+      tohit: 50,
+      stealth: -50,
+      movement: 5
+    },
+    tokensize:[5,5],
+    tokenscale:1.0,
+    option:["size:monumental","size:9"],
+    key:"sys-const.size.monumental"
+  },
+  titanic:{
+    value:10,
+    modifier:{
+      tohit: 60,
+      stealth: -60,
+      movement: 6
+    },
+    tokensize: [5,5],
+    tokenscale: 1.2,
+    option:["size:titanic","size:10"],
+    key:"sys-const.size.titanic"
+  },
 }
 export const AVAILABILITY_MANIFEST = {
   ubiquitous:{
     key: "sys-const.availability.ubiquitous",
     value: 70,
-    traits:["availability","availability:ubiquitous"]
+    option:["availability:ubiquitous"],
+    color: "#94a3b8"
   },
   abundant:{
     key: "sys-const.availability.abundant",
     value: 50,
-    traits:["availability","availability:abundant"]
+    option:["availability:abundant"],
+    color: "#cbd5e1"
   },
   plentiful:{
     key: "sys-const.availability.plentiful",
     value: 30,
-    traits:["availability","availability:plentiful"]
+    option:["availability:plentiful"],
+    color: "#ffffff"
   },
   common:{
     key: "sys-const.availability.common",
     value: 20,
-    traits:["availability","availability:common"]
+    option:["availability:common"],
+    color: "#1eff00"
   },
   average:{
     key: "sys-const.availability.average",
     value: 10,
-    traits:["availability","availability:average"]
+    option:["availability:average"],
+    color: "#06b6d4"
   },
   scarce:{
     key: "sys-const.availability.scarce",
     value: 0,
-    traits:["availability","availability:scarce"]
+    option:["availability:scarce"],
+    color: "#0070dd"
   },
   rare:{
     key: "sys-const.availability.rare",
     value: -10,
-    traits:["availability","availability:rare"]
+    option:["availability:rare"],
+    color: "#a335ee"
   },
   veryRare:{
     key: "sys-const.availability.veryRare",
     value: -20,
-    traits:["availability","availability:very-rare"]
+    option:["availability:very-rare"],
+    color: "#d946ef"
   },
   extremelyRare:{
     key: "sys-const.availability.extremelyRare",
     value: -30,
-    traits:["availability","availability:extremely-rare"]
+    option:["availability:extremely-rare"],
+    color: "#ff3333"
   },
   nearUnique:{
     key: "sys-const.availability.nearUnique",
     value: -50,
-    traits:["availability","availability:near-unique"]
+    option:["availability:near-unique"],
+    color: "#e65c00"
   },
   unique:{
     key: "sys-const.availability.unique",
     value: -70,
-    traits:["availability","availability:unique"]
+    option:["availability:unique"],
+    color: "#e5c158"
   }
 }
 export const DAMAGETYPE_MANIFEST = {
   energy:     {
     key:"sys-const.damageType.energy",
     short:"E",
-    traits:["energy"]
+    option:["energy"]
   },
   explosive:  {
     key:"sys-const.damageType.explosive",
     short:"X",
-    traits:["explosive"]
+    option:["explosive"]
   },
   rending:    {
     key:"sys-const.damageType.rending",
     short:"R",
-    traits:["rending"]
+    option:["rending"]
   },
   impact:     {
     key:"sys-const.damageType.impact",
     short:"I",
-    traits:["impact"]
+    option:["impact"]
   }
 }
 export const WEAPONCLASS_MANIFEST = {
   melee: {
     key:"sys-const.weaponclass.melee",
-    traits:["melee"]
+    option:["melee"]
   },
   thrown: {
     key:"sys-const.weaponclass.thrown",
-    traits:["thrown"]
+    option:["thrown"]
   },
   pistol: {
     key:"sys-const.weaponclass.pistol",
-    traits:["pistol"]
+    option:["pistol"]
   },
   basic: {
     key:"sys-const.weaponclass.basic",
-    traits:["basic"]
+    option:["basic"]
   },
   heavy: {
     key:"sys-const.weaponclass.heavy",
-    traits:["heavy"]
+    option:["heavy"]
   },
   launch:{
     key:"sys-const.weaponclass.launch",
-    traits:["launch"]
+    option:["launch"]
   },
   place:{
     key:"sys-const.weaponclass.place",
-    traits:["place"]
+    option:["place"]
   },
   vehicle:{
     key:"sys-const.weaponclass.vehicle",
-    traits:["vehicle"]
+    option:["vehicle"]
   }
 }
 export const WEAPONTYPE_MANIFEST = {
   las: {
     key:"sys-const.weapontype.las",
-    traits:["las"]
+    option:["las"]
   },
   solid:{
     key:"sys-const.weapontype.solid",
-    traits:["solid"]
+    option:["solid"]
   },
   bolt:{
     key:"sys-const.weapontype.bolt",
-    traits:["bolt"]
+    option:["bolt"]
   },
   melta:{
     key:"sys-const.weapontype.melta",
-    traits:["melta"]
+    option:["melta"]
   },
   plasma:{
     key:"sys-const.weapontype.plasma",
-    traits:["plasma"]
+    option:["plasma"]
   },
   flame:{
     key:"sys-const.weapontype.flame",
-    traits:["flame"]
+    option:["flame"]
   },
   launcher:{
     key:"sys-const.weapontype.launcher",
-    traits:["launcher"]
+    option:["launcher"]
   },
   grenade:{
     key:"sys-const.weapontype.grenade",
-    traits:["granade"]
+    option:["granade"]
   },
   exotic:{
     key:"sys-const.weapontype.exotic",
-    traits:["exotic"]
+    option:["exotic"]
   },
   chain:{
     key:"sys-const.weapontype.chain",
-    traits:["chain"]
+    option:["chain"]
   },
   power:{
     key:"sys-const.weapontype.power",
-    traits:["power"]
+    option:["power"]
   },
   force:{
     key:"sys-const.weapontype.force",
-    traits:["force"]
+    option:["force"]
   },
   shock:{
     key:"sys-const.weapontype.shock",
-    traits:["shock"]
+    option:["shock"]
   },
   primary:{
     key:"sys-const.weapontype.primary",
-    traits:["primary"]
+    option:["primary"]
   }
 }
 export const QUALITY_MANIFEST = {
   poor:{
     key:"sys-const.quality.poor",
-    traits:["quality:poor"]
+    option:["quality:poor"],
+    color: "#808080"
   },
   common:{
     key:"sys-const.quality.common",
-    traits:["quality:common"]
+    option:["quality:common"],
+    color:"#1eff00"
   },
   good:{
     key:"sys-const.quality.good",
-    traits:["quality:good"]
+    option:["quality:good"],
+    color:"#0070dd"
   },
   best:{
     key:"sys-const.quality.best",
-    traits:["quality:best"]
+    option:["quality:best"],
+    color:"#a335ee"
   }
 }
 export const ARMORTYPE_MANIFEST = {
   primative:{
     key:"sys-const.armortype.primative",
-    trait:["armor:primative"]
+    option:["armor:primative"]
   },
   flak:{
     key:"sys-const.armortype.flak",
-    traits:["armor:flak"]
+    option:["armor:flak"]
   },
   mesh:{
     key:"sys-const.armortype.mesh",
-    traits:["armor:mesh"]
+    option:["armor:mesh"]
   },
   carapice:{
     key:"sys-const.armortype.carapice",
-    traits:["armor:carapice"]
+    option:["armor:carapice"]
   },
   power:{
     key:"sys-const.armortype.power",
-    traits:["armor:power"]
+    option:["armor:power"]
   },
   exotic:{
     key:"sys-const.armortype.exotic",
-    traits:["armor:exotic"]
+    option:["armor:exotic"]
   }
 }
 export const PRIDE_MANIFEST = {
@@ -431,7 +568,7 @@ export const PRIDE_MANIFEST = {
       "characteristic.infamy":2,
       "characteristic.willpower":-4
     },
-    traits:["pride:beauty"]
+    option:["pride:beauty"]
   },
   charm:{
     label:"sys-const.pride.charm.label",
@@ -440,7 +577,7 @@ export const PRIDE_MANIFEST = {
       "characteristic.fellowship":5,
       "characteristic.toughness":-5
     },
-    traits:["pride:charm"]
+    option:["pride:charm"]
   },
   craftsmanship:{
     label:"sys-const.pride.craftsmanship.label",
@@ -452,7 +589,7 @@ export const PRIDE_MANIFEST = {
       "characteristic.weaponSkill":-3,
       "characteristic.ballisticSkill":-3
     },
-    traits:["pride:craftsmanship"]
+    option:["pride:craftsmanship"]
   },
   devotion:{
     label:"sys-const.pride.devotion.label",
@@ -461,7 +598,7 @@ export const PRIDE_MANIFEST = {
       "characteristic.willpower":5,
       "characteristic.strength":-5
     },
-    traits:["pride:devotion"]
+    option:["pride:devotion"]
   },
   fortitude:{
     label:"sys-const.pride.fortitude.label",
@@ -471,7 +608,7 @@ export const PRIDE_MANIFEST = {
       "characteristic.agility":-3,
       "characteristic.intelligence":-3
     },
-    traits:["pride:fortitude"]
+    option:["pride:fortitude"]
   },
   foresight:{
     label:"sys-const.pride.foresight.label",
@@ -480,7 +617,7 @@ export const PRIDE_MANIFEST = {
       "characteristic.perception":5,
       "characteristic.felowship":-5
     },
-    traits:["pride:foresight"]
+    option:["pride:foresight"]
   },
   logic:{
     label:"sys-const.pride.logic.label",
@@ -489,7 +626,7 @@ export const PRIDE_MANIFEST = {
       "characteristic.intelligence":5,
       "characteristic.perception":-5
     },
-    traits:["pride:logic"]
+    option:["pride:logic"]
   },
   martialProwess:{
     label:"sys-const.pride.martialProwess.label",
@@ -498,7 +635,7 @@ export const PRIDE_MANIFEST = {
       "characteristic.weaponSkill":5,
       "cahracteristic.intelligence":-5
     },
-    traits:["pride:martial-prowess"]
+    option:["pride:martial-prowess"]
   },
   grace:{
     label:"sys-const.pride.grace.label",
@@ -507,7 +644,7 @@ export const PRIDE_MANIFEST = {
       "characteristic.agility":5,
       "characteristic.ballisticSkill":-5,
     },
-    traits:["pride:grace"]
+    option:["pride:grace"]
   },
   wealth:{
     label:"sys-const.pride.wrath.label",
@@ -515,7 +652,7 @@ export const PRIDE_MANIFEST = {
     modifiers:{
       "characteristic.willpower":-3
     },
-    traits:["pride:wealth"]
+    option:["pride:wealth"]
   }
 }
 export const DISGRACE_MANIFEST ={
@@ -526,7 +663,7 @@ export const DISGRACE_MANIFEST ={
       "playermods.corruption":5,
       "trait.untrustworthy":true
     },
-    traits:["disgrace:betrayal"]
+    option:["disgrace:betrayal"]
   },
   deceit:{
     label:"sys-const.disgrace.deceit.label",
@@ -535,7 +672,7 @@ export const DISGRACE_MANIFEST ={
       "characteristic.infamy":2,
       "characteristic.perception":-4
     },
-    traits:["disgrace:deceit"]
+    option:["disgrace:deceit"]
   },
   dread:{
     label:"sys-const.disgrace.dread.label",
@@ -544,7 +681,7 @@ export const DISGRACE_MANIFEST ={
       "characteristic.perception":5,
       "characteristic.willpower":-5,
     },
-    traits:["disgrace:dread"]
+    option:["disgrace:dread"]
   },
   destruction:{
     label:"sys-const.disgrace.destruction.label",
@@ -553,7 +690,7 @@ export const DISGRACE_MANIFEST ={
       "characteristic.infamy":2,
       "characteristic.fellowship":-4
     },
-    traits:["disgrace:destruction"]
+    option:["disgrace:destruction"]
   },
   gluttony:{
     label:"sys-const.disgrace.gluttony.label",
@@ -562,7 +699,7 @@ export const DISGRACE_MANIFEST ={
       "playermods.wounds":2,
       "characteristic.agility":-5
     },
-    traits:["disgrace:gluttony"]
+    option:["disgrace:gluttony"]
   },
   greed:{
     label:"sys-const.disgrace.greed.label",
@@ -571,7 +708,7 @@ export const DISGRACE_MANIFEST ={
       "playermod.corruption":4,
       "trait.overwhelmingNeed":true
     },
-    traits:["disgrace:greed"]
+    option:["disgrace:greed"]
   },
   hubris:{
     label:"sys-const.disgrace.hubris.label",
@@ -580,7 +717,7 @@ export const DISGRACE_MANIFEST ={
       "characteristic.infamy":2,
       "characteristic.intelligence":-4
     },
-    traits:["disgrace:hubris"]
+    option:["disgrace:hubris"]
   },
   regret:{
     label:"sys-const.disgrace.regret.label",
@@ -589,7 +726,7 @@ export const DISGRACE_MANIFEST ={
       "playermod.corruption":5,
       "trait.haunted":true
     },
-    traits:["disgrace:regret"]
+    option:["disgrace:regret"]
   },
   waste:{
     label:"sys-const.disgrace.waste.label",
@@ -598,7 +735,7 @@ export const DISGRACE_MANIFEST ={
       "characteristic.willpower":-4,
       "characteristic.infamy":2,
     },
-    traits:["disgrace:waste"]
+    option:["disgrace:waste"]
   },
   wrath:{
     label:"sys-const.disgrace.wrath.label",
@@ -608,7 +745,7 @@ export const DISGRACE_MANIFEST ={
       "characteristic.willpower":-2,
       "characteristic.perception":5
     },
-    traits:["disgrace:wrath"]
+    option:["disgrace:wrath"]
   }
 }
 export const MOTIVATION_MANIFEST={
@@ -620,7 +757,7 @@ export const MOTIVATION_MANIFEST={
       "characteristic.intelligence":2,
       "characteristic.strength":-3
     },
-    traits:["motivation:arcane"]
+    option:["motivation:arcane"]
   },
   ascendancy:{
     label:"sys-const.motivation.ascendancy.label",
@@ -629,7 +766,7 @@ export const MOTIVATION_MANIFEST={
       "playermods.wounds":-2,
       "characteristic.willpower":5
     },
-    traits:["motivation:ascendancy"]
+    option:["motivation:ascendancy"]
   },
   dominion:{
     label:"sys-const.motivation.dominion.label",
@@ -641,7 +778,7 @@ export const MOTIVATION_MANIFEST={
       "characteristic.agility":-4,
       "playermods.wounds":-1
     },
-    traits:["motivation:dominion"]
+    option:["motivation:dominion"]
   },
   immortality:{
     label:"sys-const.motivation.immortality.label",
@@ -650,7 +787,7 @@ export const MOTIVATION_MANIFEST={
       "playermods.wounds":2,
       "characteristic.weaponSkill":5
     },
-    traits:["motivation:immortality"]
+    option:["motivation:immortality"]
   },
   innovation:{
     label:"sys-const.motivation.innovation.label",
@@ -660,7 +797,7 @@ export const MOTIVATION_MANIFEST={
       "playermods.wounds":-2,
       "characteristic.intelligence":3
     },
-    traits:["motivation:innovation"]
+    option:["motivation:innovation"]
   },
   legacy:{
     label:"sys-const.motivation.legacy.label",
@@ -669,7 +806,7 @@ export const MOTIVATION_MANIFEST={
       "characteristic.infamy":2,
       "characteristic.intelligence":-4
     },
-    traits:["motivation:legacy"]
+    option:["motivation:legacy"]
   },
   nihilism:{
     label:"sys-const.motivation.nihilism.label",
@@ -678,7 +815,7 @@ export const MOTIVATION_MANIFEST={
       "playermods.corruption":5,
       "characteristic.willpower":-3
     },
-    traits:["motivation:nihilism"]
+    option:["motivation:nihilism"]
   },
   perfection:{
     label:"sys-const.motivation.perfection.label",
@@ -688,7 +825,7 @@ export const MOTIVATION_MANIFEST={
       "characteristic.choice":-3,
       "characteristic.choice":5
     },
-    traits:["motivation:perfection"]
+    option:["motivation:perfection"]
   },
   vengeance:{
     label:"sys-const.motivation.vengeance.label",
@@ -697,7 +834,7 @@ export const MOTIVATION_MANIFEST={
       "playermods.wounds":2,
       "characteristic.perception":-5,
     },
-    traits:["motivation:vengeance"]
+    option:["motivation:vengeance"]
   },
   violence:{
     label:"sys-const.motivation.violence.label",
@@ -706,48 +843,48 @@ export const MOTIVATION_MANIFEST={
       "playermods.corruption":5,
       "characteristic.intelligence":-3
     },
-    traits:["motivation:violence"]
+    option:["motivation:violence"]
   }
 }
 export const RELOADTIME_MANIFEST={
   free:{
     label:"sheets.weapon.stats.free",
     key:"free",
-    traits:["free"]
+    option:["free"]
   },
   half:{
     label:"sheets.weapon.stats.half",
     key:"half",
-    traits:["half"]
+    option:["half"]
   },
   full:{
     label:"sheets.weapon.stats.full",
     key:"full",
-    traits:["full"]
+    option:["full"]
   },
   twoFull:{
     label:"sheets.weapon.stats.full",
     key:"2full",
-    traits:["2-full"]
+    option:["2-full"]
   },
   threeFull:{
     label:"sheets.weapon.stats.full",
     key:"3full",
-    traits:["3-full"]
+    option:["3-full"]
   },
   fourFull:{
     label:"sheets.weapon.stats.full",
     key:"4full",
-    traits:["4-full"]
+    option:["4-full"]
   },
   fiveFull:{
     label:"sheets.weapon.stats.full",
     key:"5full",
-    traits:["5-full"]
+    option:["5-full"]
   },
   sixFull:{
     label:"sheets.weapon.stats.full",
     key:"6full",
-    traits:["6-full"]
+    option:["6-full"]
   }
 }

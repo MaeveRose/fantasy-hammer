@@ -32,6 +32,39 @@ class FallbackDataModel extends foundry.abstract.TypeDataModel {
 	return ["fallback"];
   }
 }
+Hooks.on("renderChatLog", (app, html, data) => {
+  // Use a native click event listener on the base container
+  html.addEventListener("click", async (event) => {
+    // Look for the specific selector inside your target click path
+    const targetLink = event.target.closest(".chat-card-item-link");
+    if (!targetLink) return; // Ignore if they clicked somewhere else on the card
+
+    event.preventDefault();
+    
+    // Extract parameters directly from the native element's dataset
+    const actorId = targetLink.getAttribute("data-actor-id");
+    const itemId = targetLink.getAttribute("data-item-id");
+	console.log(itemId);
+    // 1. Resolve if owned by an Actor
+    if (actorId) {
+      const item = await fromUuid(itemId);
+	  console.log(item);
+	  console.log()
+      if (item) {
+        item.sheet.render(true);
+		return;
+      }
+    } 
+
+    // 2. Resolve if a global Sidebar/World Item
+    const worldItem = await fromUuid(itemId);
+    if (worldItem) {
+      return worldItem.sheet.render(true);
+    }
+
+    ui.notifications.warn("The original item file or owner could not be found.");
+  });
+});
 Hooks.once("init", () => {
 	CONFIG.Actor.dataModels.character = CharacterDataModel;
 	CONFIG.Actor.dataModels.npc = FallbackDataModel;
@@ -131,6 +164,31 @@ Hooks.once("init", () => {
 	});
 
 
+});
+Hooks.on("getChatLogEntryContext", (html, options) => {
+  options.push({
+    name: "Audit Roll Options",
+    icon: '<i class="fas fa-calculator"></i>', // FontAwesome icon of your choice
+    condition: (li) => {
+      // 1. Get the live ChatMessage document from the DOM element ID
+      const messageId = li.data("message-id");
+      const message = game.messages.get(messageId);
+      
+      // 2. Only show this option if the message is a roll and has roll options saved
+      // Update the flag path below to match where you save your pre-processed options array
+      return message?.isRoll && !!message.getFlag("fantasy-hammer", "rollOptions");
+    },
+    callback: (li) => {
+      const messageId = li.data("message-id");
+      const message = game.messages.get(messageId);
+      
+      // Fetch the array you saved when the roll was generated
+      const rollOptions = message.getFlag("fantasy-hammer", "rollOptions") || [];
+      
+      // Call your custom menu/dialog function here
+      yourCustomAuditMenuFunction(rollOptions, message);
+    }
+  });
 });
 
 
