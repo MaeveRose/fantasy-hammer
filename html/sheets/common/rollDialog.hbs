@@ -1,0 +1,52 @@
+<div class="attack-roll-dialog-msg">
+    <div class="other-stuff">
+        {{#if notarget}}
+        <div class="no-target-warning">
+            <label class="no-target-label">{{localize
+                "sys-const.dialog.weaponAttackRoll.label.noTargetWarning"}}</label>
+        </div>
+        {{else}}
+        <div class="target">
+            <label class="target-label">{{localize "sys-const.dialog.weaponAttackRoll.label.targetHeader"}} {{target.name}} at {{distance}} meters</label>
+        </div>
+        {{/if}}
+        <label class="weapon-name">{{weaponName}}</label>
+        <div class="weapon-microstat">
+            <label class="weapon-class">{{weaponType}} {{weaponClass}}</label>
+            {{#if isMelee}}
+            <label class="weapon-rof">{{localize "sys-const.dialog.weaponAttackRoll.label.melee"}}</label>
+            {{else}}
+            <label class="weapon-rof">{{single}}/{{semi}}/{{full}}</label>
+            {{/if}}
+        </div>
+        <label class="modifier-label" style="font-weight: bold;">{{diffMod}}</label>
+        {{#unless isMelee}}
+        <div class="weapon-selector-wrapper">
+            <div class="weapon-modifier-firemode">
+                <label class="range-label">{{localize "sys-const.dialog.weaponAttackRoll.label.rof"}}</label>
+                <select name="rollModifier">
+                    <option value="single" {{disabled (eq single "-")}}>{{semicombat}} [{{single}}]</option>
+                    <option value="semi" {{disabled (eq semi 0)}} selected>{{burstcombat}} [{{semi}}]</option>
+                    <option value="full" {{disabled (eq full 0)}}>{{fullcombat}} [{{full}}]</option>
+                </select>
+            </div>
+            <div class="weapon-modifier-range">
+                <label class="range-label">{{localize "sys-const.dialog.weaponAttackRoll.label.range.label"}}</label>
+                <select>
+                    <option value="pointblank" {{#if (eq rangeIncrement "pointblank")}}selected{{/if}}>{{localize "sys-const.dialog.weaponAttackRoll.label.range.pointblank"}}</option>
+                    <option value="short" {{#if (eq rangeIncrement "short")}}selected{{/if}}>{{localize "sys-const.dialog.weaponAttackRoll.label.range.short"}}</option>
+                    <option value="standard" {{#if (eq rangeIncrement "standard")}}selected{{/if}}>{{localize "sys-const.dialog.weaponAttackRoll.label.range.standard"}}</option>
+                    <option value="long" {{#if (eq rangeIncrement "long")}}selected{{/if}}>{{localize "sys-const.dialog.weaponAttackRoll.label.range.long"}}</option>
+                    <option value="extreme" {{#if (eq rangeIncrement "extreme")}}selected{{/if}}>{{localize "sys-const.dialog.weaponAttackRoll.label.range.extreme"}}</option>
+                    <option value="outofrange" {{#if (eq rangeIncrement "outofrange")}}selected{{/if}}>{{localize "sys-const.dialog.weaponAttackRoll.label.range.outofrange"}}</option>
+                </select>
+            </div>
+        </div>
+        {{/unless}}
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+        <label style="font-weight: bold;">Additional Modifier:</label>
+        <input type="number" name="customModifier" placeholder="e.g., +5, -15" value="0" style="text-align: center;" />
+        <small style="opacity: 0.6; font-style: italic;">Enter any situational bonuses or penalties here.</small>
+    </div>
+</div>

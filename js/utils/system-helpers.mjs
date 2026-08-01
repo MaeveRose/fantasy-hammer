@@ -42,7 +42,7 @@ export async function executeD100Test(testName, baseTarget, actorDocument) {
   const rawCombinedModifier = chosenModifier + customModifier;
   // Clamp the final score safely between standard 1 and 100 game rule boundaries
   const totalCombinedModifier = Math.max(-60, Math.min(60, rawCombinedModifier));
-  
+
   const hitModifierCap = rawCombinedModifier !== totalCombinedModifier;
 
   if (hitModifierCap) {
@@ -95,8 +95,7 @@ export async function executeD100Test(testName, baseTarget, actorDocument) {
     roll: roll
   });
 }
-export async function _printToChat(item, actorDocument)
-{
+export async function _printToChat(item, actorDocument) {
   //probably wont be used?
 }
 /**
@@ -109,21 +108,19 @@ export async function _printToChat(item, actorDocument)
 * @throws {Error} if the attacker or defender type cannot resolve to an Actor, or if the weapon cannot resolve to a Weapon
 *
 **/
-export async function _targetedAttack(attacker, defender, weaponItem, rollOptions = [])
-{
+export async function _targetedAttack(attacker, defender, weaponItem, rollOptions = []) {
+  console.log(rollOptions);
   let attacking = attacker;
-  if(!attacker.type || attacker.documentName !== "Actor")
-  {
+  if (!attacker.type || attacker.documentName !== "Actor") {
     attacking = await fromUuid(attacker);
-    if(attacking.type !== "actor" || !attacking.type) throw new Error(`neither ${attacker} nor ${attacking} are of type actor. attacker must be either Actor or a UUID that resolves to an Actor`);
+    if (attacking.type !== "actor" || !attacking.type) throw new Error(`neither ${attacker} nor ${attacking} are of type actor. attacker must be either Actor or a UUID that resolves to an Actor`);
   }
   let defending = defender;
   let defendingOptions = [];
-  if (defender !== "void"){
-    if(typeof defender === "string" || !defender?.type || defender?.documentName !== "Actor")
-    {
+  if (defender !== "void") {
+    if (typeof defender === "string" || !defender?.type || defender?.documentName !== "Actor") {
       let resolvedDoc = await fromUuid(defender);
-      if(!resolvedDoc) throw new Error(`[MySystem] Combat Target Error: The UUID '${defender}' could not be found or resolved.`);
+      if (!resolvedDoc) throw new Error(`[MySystem] Combat Target Error: The UUID '${defender}' could not be found or resolved.`);
       const targetActor = resolvedDoc.actor || resolvedDoc.document?.actor || resolvedDoc;
       if (targetActor?.type !== "actor") {
         throw new Error(
@@ -134,24 +131,110 @@ export async function _targetedAttack(attacker, defender, weaponItem, rollOption
       defending = targetActor;
     }
     defendingOptions = defending.system.gatherRollOptions();
-    console.log(defendingOptions);
+    //console.log(defendingOptions);
   } else {
     defendingOptions = ["the-void"];
   }
   let weapon = weaponItem;
-  if(!weaponItem.type || weaponItem.type !== "weapon")
-  {
+  if (!weaponItem.type || weaponItem.type !== "weapon") {
     weapon = await fromUuid(weaponItem);
-    if(weapon.type !== "weapon" || !weapon.type) throw new Error(`neither ${weaponItem} nor ${weapon} are of type "weapon". weaponItem must be either Weapon or a UUID that resolves to a Weapon`);
+    if (weapon.type !== "weapon" || !weapon.type) throw new Error(`neither ${weaponItem} nor ${weapon} are of type "weapon". weaponItem must be either Weapon or a UUID that resolves to a Weapon`);
   }
-  let options = [...rollOptions];
-  if(rollOptions.length == 0)
-  {
-    options = [
-      ...attacking.system.gatherRollOptions(),
-      ...defendingOptions.map(o=> `target:${o}`), //appends "target:"
-      ...weapon.system.gatherRollOptions()
-    ]
-  }
+  let options = [
+    ...rollOptions,
+    ...attacking.system.gatherRollOptions(),
+    ...defendingOptions.map(o => `target:${o}`), //appends "target:"
+    ...weapon.system.gatherRollOptions()
+  ]
+  //_rollAttackDialog(attacking, options);
   console.log(options);
+}
+/**
+ * 
+ * @param {import ("foundry-vtt").Actor } attacker 
+ * @param {import ("foundry-vtt").Actor } defender
+ * @param {import ("foundry-vtt").weapon } weapon 
+ * @param {Number} distance
+ * @returns {Promise<string[]>} of rollOptions
+ */
+export async function _rollAttackDialog(attacker, defender, weapon, distance = -1) {
+  const weaponType = game.i18n.localize(`sys-const.weapontype.${weapon.system.type}`);
+  const weaponClass = game.i18n.localize(`sys-const.weaponclass.${weapon.system.class}`)
+  const skillTest = weapon.system.class === "melee" ? game.i18n.localize(`sys-const.characteristic.weaponSkill`) : game.i18n.localize(`sys-const.characteristic.ballisticSkill`);
+  const weaponRangeBracket = weapon.system.range;
+  console.log(weapon.system.range);
+  let weaponrange = "";
+  if (distance != -1) {
+    if (distance <= 2) {
+      weaponrange = "pointblank";
+    } else if (distance <= (0.5 * weaponRangeBracket)) {
+      weaponrange = "short";
+    } else if (distance <= weaponRangeBracket) {
+      weaponrange = "standard";
+    } else if (distance <= (weaponRangeBracket * 2)) {
+      weaponrange = "long";
+    } else if (distance <= (weaponRangeBracket * 4)) {
+      weaponrange = "extreme";
+    } else {
+      ui.notifications.warn(`attempting attack beyond extreme range for ${weapon.name}.`);
+      weaponrange = "outofrange";
+    }
+  }
+  console.log(weapon.system.rateOfFire.single);
+  console.log(weapon.system.rateOfFire.semi);
+  console.log(weapon.system.rateOfFire.full);
+  const templateData = {
+    distance: distance,
+    rangeIncrement: weaponrange,
+    weaponName: weapon.name,
+    notarget: defender == "void",
+    target: defender,
+    isMelee: (weapon.system.class === "melee"),
+    semi: weapon.system.rateOfFire.semi,
+    full: weapon.system.rateOfFire.full,
+    single: weapon.system.rateOfFire.single,
+    weaponClass: game.i18n.localize(`sys-const.weaponclass.${weapon.system.class}`),
+    weaponType: game.i18n.localize(`sys-const.weapontype.${weapon.system.type}`),
+    diffMod: game.i18n.localize(`sys-const.dialog.weaponAttackRoll.label.modifiers`),
+    fullcombat: game.i18n.localize(`sys-const.dialog.weaponAttackRoll.label.full`),
+    burstcombat: game.i18n.localize(`sys-const.dialog.weaponAttackRoll.label.semi`),
+    semicombat: game.i18n.localize(`sys-const.dialog.weaponAttackRoll.label.single`)
+  }
+  const dialogHTML = await foundry.applications.handlebars.renderTemplate('systems/fantasy-hammer/html/sheets/common/rollDialog.hbs', templateData);
+  return new Promise((resolve) => {
+    new foundry.applications.api.DialogV2({
+      window: { title: `${weapon.name} ${skillTest} Test` },
+      content: dialogHTML,
+      buttons: [
+        {
+          action: "roll",
+          label: "Roll Attack",
+          class: "dialog-button-ok",
+          callback: (event, button, target) => {
+            const results = _processAttackFormData(button.form);
+            resolve(results);
+          }
+        },
+        {
+          action: "cancel",
+          label: "Cancel",
+          callback: () => resolve([])
+        }
+      ],
+      close: () => resolve([])
+    }).render(true);
+  });
+}
+export function _processAttackFormData(formElement) {
+  const formData = new foundry.applications.ux.FormDataExtended(formElement);
+  const data = formData.object;
+  const rollOptions = [];
+  console.log(data);
+  if (data.rollModifier) {
+    rollOptions.push(`attack:modifier:rof:${data.rollModifier}`);
+  }
+  if (Number(data.customModifier)) {
+    rollOptions.push(`attack:modifier:custom:${Number(data.customModifier)}`);
+  }
+  return rollOptions;
 }

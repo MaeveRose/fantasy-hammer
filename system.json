@@ -20,6 +20,7 @@
     "fanfliwar.mjs"
     ],
   "styles": [
+    "css/common/dialogs.css",
     "css/common/code.css",
     "css/system-styles.css",
     "css/charactersheet.css",

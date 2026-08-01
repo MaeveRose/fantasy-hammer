@@ -2,7 +2,7 @@ const { ActorSheetV2 } = foundry.applications.sheets;
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 
 
-import { executeD100Test, _targetedAttack } from "../../utils/system-helpers.mjs";
+import { executeD100Test, _targetedAttack, _rollAttackDialog } from "../../utils/system-helpers.mjs";
 import { SKILL_MANIFEST, CHARACTERISTIC_MANIFEST, PRIDE_MANIFEST, DISGRACE_MANIFEST, MOTIVATION_MANIFEST } from "../../utils/sys-const.mjs";
 
 export class CharacterSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheetV2) {
@@ -65,22 +65,14 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
       ]
     }
   };
-  async getData(options)
-  {
-
-
-  }
   _initializeApplicationOptions(options) {
-    console.log(`_initializeApplicationOptions`);
     options = super._initializeApplicationOptions(options);
-    console.log(options);
     const startingTab = options.isEditable ? "attributes" : "biography";
     options.tabs = {
       characterTabs: {
         initial: startingTab
       }
     };
-
     return options;
   }
   get title(){
@@ -281,7 +273,6 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
       
       if(item.type =="trait") collectedTraitItems.push(item.id);
     }
-    console.log(`getData Called`);
     context.armorItems = collectedArmorItems
       .map(id => this.actor.items.get(id))
       .filter(Boolean);
@@ -417,12 +408,10 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
     context.sortedSkillsList = displaySkills.sort((a, b) => a.label.localeCompare(b.label));
 
     //context.tab = this.tabGroups[partId] || this.tabGroups.characterTabs;
-    console.log(context);
     return context;
   }
   _onRender(context, options) {
     super._onRender(context, options);
-    console.log(this.tabGroups?.["characterTabs"]);
   }
   static async _onDeleteSpecializedSkill(event, target) {
     event.preventDefault();
@@ -612,15 +601,30 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
     ui.notifications.info(`Removed talent: ${item.name}`);
   }
   static async _onUseWeapon(event, target) {
-    if(!game.user.targets.size){
-      ui.notifications.warn("you have nothing targeted");
+    const actor = this.actor;
+    const selfToken = actor.token?.object || canvas.tokens.placeables.find(t => t.actor?.id === actor.id);
+    let distance = 0;
+    if(!selfToken){
+      ui.notifications.warn(`No Token found on mcurrent active map for ${actor.name}`);
     }
     const weaponID = target.closest(".character-weapon-item").getAttribute("data-item-id");
     if(!weaponID) return;
     const weapon = this.document.items.get(weaponID);
     const attacker = this.document;
     const attacktoken = game.user.targets.first() ? game.user.targets.first() : null;
+    if(!attacktoken)
+    {
+      distance = 0;
+    } else {
+      const path = [
+        {x:selfToken.center.x ,y:selfToken.center.y},
+        {x:attacktoken.center.x,y:attacktoken.center.y}
+      ];
+      distance = canvas.grid.measurePath(path).distance;
+      //distance = canvas.grid.measurePath(selfToken, attacktoken);
+    }
     const targeted = !attacktoken ? "void" : attacktoken?.actor;
-    _targetedAttack(attacker,targeted,weapon);
+    const options = await _rollAttackDialog(attacker, targeted, weapon, distance);
+    _targetedAttack(attacker,targeted,weapon,options);
   }
 }

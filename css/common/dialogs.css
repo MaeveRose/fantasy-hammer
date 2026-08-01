@@ -1,0 +1,58 @@
+.attack-roll-dialog-msg
+{
+    padding: 6px;
+    display: flex;
+    flex-direction:
+    column; gap: 8px;
+}
+.no-target-label{
+    display: block;
+    background-color: #550000;
+    font-weight:bold;
+    color:#FFFFFF;
+    border: 1px solid #FF0000;
+    padding: 3px;
+    text-align:center;
+}
+.attack-roll-dialog-msg .other-stuff
+{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.attack-roll-dialog-msg .other-stuff .weapon-name{
+    text-align: center;
+    font-size:1.25em;
+    border-bottom: 1px solid #313122;
+}
+.attack-roll-dialog-msg .other-stuff .weapon-microstat{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid #313122;
+    margin-bottom: 4px;
+}
+.attack-roll-dialog-msg .other-stuff .weapon-microstat .weapon-class{
+    text-align:left;
+    font-style:italic;
+    font-size:0.9em;
+
+}
+.attack-roll-dialog-msg .other-stuff .weapon-microstat .weapon-rof{
+    text-align: right;
+    font-style:italic;
+    font-size:0.9em;
+}
+.attack-roll-dialog-msg .other-stuff .modifier-label{
+    text-align:center;
+    display:block;
+}
+.attack-roll-dialog-msg .weapon-selector-wrapper{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+}
+.attack-roll-dialog-msg .weapon-selector-wrapper label{
+    display:block;
+    padding: 0 5px 0 5px;
+    text-align:center;
+}

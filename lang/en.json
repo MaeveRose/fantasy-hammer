@@ -145,6 +145,31 @@
                 "full":"Rending"
             }
         },
+        "dialog":{
+            "weaponAttackRoll":{
+                "label":{
+                    "modifiers": "Modifiers",
+                    "full": "Full Auto (-10)",
+                    "semi": "Semi Automatic (0)",
+                    "single": "Single Fire (+10)",
+                    "aimh": "Half Aim (+10)",
+                    "aimf": "Full Aim (+20)",
+                    "noTargetWarning":"You Have Nothing Targeted",
+                    "rof":"Rate Of Fire",
+                    "melee":"Melee",
+                    "targetHeader":"Target: ",
+                    "range":{
+                        "pointblank":"Point Blank [+30]",
+                        "short": "Short [+10]",
+                        "standard":"Standard [0]",
+                        "long":"Long [-10]",
+                        "extreme":"Extreme [-30]",
+                        "outofrange": "Out Of Range [Impossible]",
+                        "label":"Range Increment"
+                    }
+                }
+            }
+        },
         "skills":{
             "acrobatics":"Acrobatics",
             "athletics":"Athletics",
