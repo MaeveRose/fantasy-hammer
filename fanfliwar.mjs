@@ -1,4 +1,5 @@
 import { SystemValidator } from "./js/utils/system/validator.mjs";
+import { _displayAuditWindow } from "./js/utils/system-helpers.mjs";
 
 import { CharacterSheet } from "./js/sheets/actors/CharacterSheet.mjs"
 import { CharacterDataModel } from "./js/dataModels/actors/CharacterDataModel.mjs"
@@ -20,6 +21,10 @@ import { ArchetypeSheet } from "./js/sheets/items/ArchetypeSheet.mjs";
 
 import { TraitDataModel } from "./js/dataModels/items/TraitDataModel.mjs";
 import { TraitSheet } from "./js/sheets/items/TraitSheet.mjs"
+
+import { PassionDataModel } from "./js/dataModels/items/PassionDataModel.mjs";
+import { PassionSheet } from "./js/sheets/items/PassionSheet.mjs";
+
 
 const {
   HTMLField, SchemaField, NumberField, StringField, FilePathField, ArrayField
@@ -75,10 +80,18 @@ Hooks.once("init", () => {
 		weapon: WeaponDataModel,
 		spell: FallbackDataModel, //tbc
 		armor: ArmorDataModel,
+		passion: PassionDataModel,
 		godgift: FallbackDataModel, //tbc
 		gear: GearDataModel,
 		archetype: ArchetypeDataModel
 	};
+	CONFIG.Actor.documentClass.prototype._onCreate = function (data, options, userId) {
+    	if (game.user.id === userId) {
+      		this.update({
+        		"prototypeToken.lockRotation": true
+      		});
+    	}
+  	};
 	//KEEP THIS AFTER THE DATA MODELS
 	SystemValidator.auditDataModels();
 	// unregister generic sheet
@@ -119,6 +132,11 @@ Hooks.once("init", () => {
 		makeDefault:true,
 		label:"TYPES.Item.archetype.label"
 	});
+	foundry.documents.collections.Items.registerSheet("core",PassionSheet,{
+		types:["passion"],
+		makeDefault: true,
+		label:"Types.Item.passion.label"
+	})
 	Handlebars.registerHelper("getStatDigit", function (totalValue, digitType){
 		if (typeof totalValue !== "number") return 0;
         if (digitType === "tens") return Math.floor(totalValue / 10); // e.g. 12 -> 1
@@ -162,31 +180,40 @@ Hooks.once("init", () => {
 	Handlebars.registerHelper("sub", function(value1, value2){
 		return Number(value1) - Number(value2);
 	});
-
-
+	Handlebars.registerHelper("contains", function(list, value){
+		if(!Array.isArray(list)) return false;
+		return list.includes(value);
+	})
+	game.settings.register("fantasy-hammer", "enablehombrew", {
+		name: "enable homebrew",
+		scope: "world",
+		config: true,
+		type: Boolean,
+		default: false,
+		onChange: value =>{
+			console.log(`Homebrew is now ${value}`);
+		}
+	});
 });
-Hooks.on("getChatLogEntryContext", (html, options) => {
+Hooks.on("getChatMessageContextOptions", (html, options) => {
   options.push({
-    name: "Audit Roll Options",
-    icon: '<i class="fas fa-calculator"></i>', // FontAwesome icon of your choice
-    condition: (li) => {
-      // 1. Get the live ChatMessage document from the DOM element ID
-      const messageId = li.data("message-id");
+    name: game.i18n.localize("global.chat.options.gatherRollOptions"),
+    icon: '<i class="fas fa-list-check"></i>',
+
+    condition: li => {
+      const messageId = li.getAttribute("data-message-id");
       const message = game.messages.get(messageId);
-      
-      // 2. Only show this option if the message is a roll and has roll options saved
-      // Update the flag path below to match where you save your pre-processed options array
-      return message?.isRoll && !!message.getFlag("fantasy-hammer", "rollOptions");
+      return !!message?.getFlag("fantasy-hammer", "rollOptions");
     },
-    callback: (li) => {
-      const messageId = li.data("message-id");
+
+    callback: li => {
+      const messageId = li.getAttribute("data-message-id");
       const message = game.messages.get(messageId);
-      
-      // Fetch the array you saved when the roll was generated
-      const rollOptions = message.getFlag("fantasy-hammer", "rollOptions") || [];
-      
-      // Call your custom menu/dialog function here
-      yourCustomAuditMenuFunction(rollOptions, message);
+      const auditOptions = message.getFlag("fantasy-hammer", "rollOptions");
+      const modifiers = message.getFlag("fantasy-hammer", "auditModifiers") || {};
+
+
+      _displayAuditWindow(message, auditOptions, modifiers);
     }
   });
 });

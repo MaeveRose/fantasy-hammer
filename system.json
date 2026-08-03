@@ -23,6 +23,7 @@
     "css/common/dialogs.css",
     "css/common/code.css",
     "css/system-styles.css",
+    "css/passionsheet.css",
     "css/charactersheet.css",
     "css/talentsheet.css",
     "css/weaponsheet.css",
@@ -31,11 +32,13 @@
     "css/archetypesheet.css",
     "css/traitsheet.css"
   ],
-  "fonts": ["fonts/LibreBaskerville-VariableFont_wght.ttf"],
-  "packs": [{
-    "name": "talents",
-    "label": "Talents",
-    "type": "Talent"
+  "packs": [
+  {
+    "name":"charactercreation",
+    "label":"Character Creation",
+    "path":"packs/charactercreation",
+    "type":"Item"
+
   },
   {
     "name": "items",
@@ -54,21 +57,23 @@
       "vehicle":{ "htmlFields": ["background.biography"] }
     },
     "Item": {
+      "archetype":  { "htmlFields": ["system.description"] },
+      "armor":      { "htmlFields": ["system.description"] },
+      "gear":       { "htmlFields": ["system.description"] },
+      "godgift":    {  },
+      "passion":    { "htmlFields": ["system.description"] },
+      "spell":      { "htmlFields": ["system.description"] },
       "talent":     { "htmlFields": ["system.description"] },
       "trait":      { "htmlFields": ["system.description"] },
-      "weapon":     { "htmlFields": ["system.description"] },
-      "spell":      { "htmlFields": ["background.biography"] },
-      "armor":      { "htmlFields": ["system.description"] },
-      "godgift":    {  },
-      "gear":       { "htmlFields": ["system.description"] },
-      "archetype":  { "htmlFields": ["system.description"] }
+      "weapon":     { "htmlFields": ["system.description"] }
     }
   },
   "socket": false,
-  "initiative": "1d20",
+  "initiative": "1d10",
   "grid": {
-    "distance": 2,
-    "units": "m"
+    "distance": 1,
+    "units": "m",
+    "type":0
   },
   "primaryTokenAttribute": "resources.health",
   "secondaryTokenAttribute": "resources.power",

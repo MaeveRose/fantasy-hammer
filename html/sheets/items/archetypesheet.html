@@ -15,7 +15,8 @@
         </nav>
         {{/if}}
         <section class="archetype-body">
-            <section class="tab" data-tab="stats" data-group="item-archetype-primary-tabs">
+
+            <section class="tab" data-tab="stats" data-group="item-archetype-primary-tabs">          
                 <div class="archetype-starting-char-list">
                     {{#if isEditable}}
                     <a data-action="addChar">
@@ -145,9 +146,6 @@
                     </div>
                 </div>
                 <div class="archetype-starting-talent-list">
-                    <!--
-            //  FLAT GRANTED TALENTS LIST
-            -->
                     {{#if @root.isEditable}}
                     <div class="droppable talent-drop-zone granted-talents-wrapper" data-target-type="flat">
                         <strong>Bonus Talents (Drag starting talents Here)</strong>
@@ -220,6 +218,26 @@
                         {{/if}}
                     </div>
                     {{/each}}
+                </div>
+                <div class="archetype-starting-trait-list">
+                    {{#if isEditable}}
+                    <div class="droppable archetype-talent-list trait-drop-zone">
+                        {{#if (eq system.traitssGranted.length 0)}}
+                        <label class="drop-helper">{{localize "sheets.archetype.labels.drop-helper-trait"}}</label>
+                        {{/if}}
+                        <div class = "trait-list">                    
+                        {{#each system.traitsGranted}}
+                        <div class="trait-row">
+                            <img src="{{fromUuidProp this 'img'}}" />
+                            <label class = "trait-name">{{fromUuidProp this 'name'}}</label>
+                            <div class = "trait-options">
+                                <a class="delete-trait" data-action="deleteTrait" data-item-id="{{this.id}}"><i class="fas fa-trash"></i></a>
+                            </div>
+                        </div>
+                        {{/each}}
+                        </div>
+                    </div>
+                    {{/if}}
                 </div>
                 <div class="archetype-starting-gear-list">
                     <!--

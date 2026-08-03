@@ -2,7 +2,7 @@ import { SYSTEM_ID } from "../../utils/sys-const.mjs";
 export class BaseItemDataModel extends foundry.abstract.TypeDataModel{
     static defineSchema(){
         return{
-            traits: new foundry.data.fields.ArrayField(
+            options: new foundry.data.fields.ArrayField(
                 new foundry.data.fields.StringField({
                     required:true
                 }),
@@ -26,7 +26,7 @@ export class BaseItemDataModel extends foundry.abstract.TypeDataModel{
     } 
     getIDs()
     {
-        return [this.uuid.replaceAll(".", "-"), this.slug];
+        return [this.uuid, this.slug];
     }
     gatherRollOptions()
     {

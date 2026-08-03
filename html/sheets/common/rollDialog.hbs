@@ -24,7 +24,7 @@
         <div class="weapon-selector-wrapper">
             <div class="weapon-modifier-firemode">
                 <label class="range-label">{{localize "sys-const.dialog.weaponAttackRoll.label.rof"}}</label>
-                <select name="rollModifier">
+                <select name="firemode">
                     <option value="single" {{disabled (eq single "-")}}>{{semicombat}} [{{single}}]</option>
                     <option value="semi" {{disabled (eq semi 0)}} selected>{{burstcombat}} [{{semi}}]</option>
                     <option value="full" {{disabled (eq full 0)}}>{{fullcombat}} [{{full}}]</option>
@@ -32,7 +32,7 @@
             </div>
             <div class="weapon-modifier-range">
                 <label class="range-label">{{localize "sys-const.dialog.weaponAttackRoll.label.range.label"}}</label>
-                <select>
+                <select name = "rangeincrement">
                     <option value="pointblank" {{#if (eq rangeIncrement "pointblank")}}selected{{/if}}>{{localize "sys-const.dialog.weaponAttackRoll.label.range.pointblank"}}</option>
                     <option value="short" {{#if (eq rangeIncrement "short")}}selected{{/if}}>{{localize "sys-const.dialog.weaponAttackRoll.label.range.short"}}</option>
                     <option value="standard" {{#if (eq rangeIncrement "standard")}}selected{{/if}}>{{localize "sys-const.dialog.weaponAttackRoll.label.range.standard"}}</option>

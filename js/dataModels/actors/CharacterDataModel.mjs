@@ -1,6 +1,6 @@
 const { JSONField, BooleanField, ArrayField, HTMLField, NumberField, SchemaField, StringField, MappingField, ObjectField } = foundry.data.fields;
 
-import { SKILL_MANIFEST, CHARACTERISTIC_MANIFEST } from "../../utils/sys-const.mjs";
+import { SKILL_MANIFEST, CHARACTERISTIC_MANIFEST, SIZE_MANIFEST } from "../../utils/sys-const.mjs";
 import { BaseActorDataModel } from "./ActorDataModel.mjs";
 
 const skillBlueprint = (linkedCharacteristic, localizable) => new SchemaField({
@@ -11,7 +11,7 @@ const skillBlueprint = (linkedCharacteristic, localizable) => new SchemaField({
 });
 const charBlueprint = (localizable) => new SchemaField({
   readable: new StringField({ required: true, initial: localizable }),
-  value: new NumberField({ required: true, integer: true, min: 0, max: 100, initial: 0 })
+  value: new NumberField({ required: true, integer: true, min: 0, max: 100, initial: 25 })
 });
 
 export class CharacterDataModel extends BaseActorDataModel {
@@ -60,7 +60,7 @@ export class CharacterDataModel extends BaseActorDataModel {
       characterDescription: new StringField({ required: true, initial: "" }),
       characterBio: new HTMLField({ required: true, initial: "<p>An Unknown Heratic</p>" }),
       characteristics: new SchemaField(characteristicsSchema),
-      size: new NumberField({required:true, initial:4, min:1, max:10}),
+      size: new StringField({required:true, initial:"average", choices: Object.keys(SIZE_MANIFEST)}),
       skills: new SchemaField(skillsSchema),
       characterModifiers: new ObjectField({
         required: true,
@@ -87,36 +87,39 @@ export class CharacterDataModel extends BaseActorDataModel {
       const pride = this.parent.items.find(item => item.type === "pride")
       const motivation = this.parent.items.find(item => item.type === "motivation");
       const disgrace = this.parent.items.find(item => item.type === "disgrace");
+      const traitItems = this.parent.items.filter(item => item.type === "trait");
+      const talentItems = this.parent.items.filter(item => item.type === "talent");
+      console.log(archetype);
       if(!archetype){
         set.add(`actor:archetype:void`) 
       } else {
-        const [uuid, slug] = archetype.getIDs();
+        console.log(archetype);
+        const [uuid, slug] = archetype.system.gatherRollOptions();
         set.add(`actor:archetype:uuid:${uuid}`);
         set.add(`actor:archetype:slug:${slug}`);
       }
       if(!pride){
         set.add(`actor:pride:void`) 
       } else {
-        const [uuid, slug] = pride.getIDs();
+        const [uuid, slug] = pride.gatherRollOptions();
         set.add(`actor:pride:uuid:${uuid}`);
         set.add(`actor:pride:slug:${slug}`);
       }
       if(!motivation){
         set.add(`actor:motivation:void`) 
       } else {
-        const [uuid, slug] = motivation.getIDs();
+        const [uuid, slug] = motivation.gatherRollOptions();
         set.add(`actor:motivation:uuid:${uuid}`);
         set.add(`actor:motivation:slug:${slug}`);
       }
       if(!disgrace){
         set.add(`actor:disgrace:void`) 
       } else {
-        const [uuid, slug] = disgrace.getIDs();
+        const [uuid, slug] = disgrace.gatherRollOptions();
         set.add(`actor:disgrace:uuid:${uuid}`);
         set.add(`actor:disgrace:slug:${slug}`);
       }
-      const traitItems = this.parent.items.filter(item => item.type === "trait");
-      const talentItems = this.parent.items.filter(item => item.type === "talent");
+
       for (const item of traitItems) {
         let traitID = item.uuid;
         let traitSlug = item.system.slug ? item.system.slug : item.name.slugify();

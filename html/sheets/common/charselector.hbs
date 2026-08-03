@@ -1,0 +1,15 @@
+<div class = "char-selector-wrapper">
+    <label>{{localize "global.charselector.plead"}}{{characteristicValue}}</label>
+    <select name = "selectedcharacteristic" class = "characteristic-selector">
+        <option value = "weaponSkill" {{#if (contains chosen "weaponSkill")}}disabled{{/if}}>{{localize "sys-const.characteristic.weaponSkill"}}</option>
+        <option value = "ballisticSkill" {{#if (contains chosen "ballisticSkill")}}disabled{{/if}}>{{localize "sys-const.characteristic.ballisticSkill"}}</option>
+        <option value = "strength" {{#if (contains chosen "strength")}}disabled{{/if}}>{{localize "sys-const.characteristic.strength"}}</option>
+        <option value = "toughness" {{#if (contains chosen "toughness")}}disabled{{/if}}>{{localize "sys-const.characteristic.toughness"}}</option>
+        <option value = "agility" {{#if (contains chosen "agility")}}disabled{{/if}}>{{localize "sys-const.characteristic.agility"}}</option>
+        <option value = "intelligence" {{#if (contains chosen "intelligence")}}disabled{{/if}}>{{localize "sys-const.characteristic.intelligence"}}</option>
+        <option value = "perception" {{#if (contains chosen "perception")}}disabled{{/if}}>{{localize "sys-const.characteristic.perception"}}</option>
+        <option value = "willpower" {{#if (contains chosen "willpower")}}disabled{{/if}}>{{localize "sys-const.characteristic.willpower"}}</option>
+        <option value = "fellowship" {{#if (contains chosen "fellowship")}}disabled{{/if}}>{{localize "sys-const.characteristic.fellowship"}}</option>
+        <option value = "infamy" {{#if (contains chosen "infamy")}}disabled{{/if}}>{{localize "sys-const.characteristic.infamy"}}</option>
+    </select>
+</div>

@@ -293,6 +293,7 @@
 /*
 Archetype Talent and Gear CSS
 */
+.archetype-starting-trait-list,
 .archetype-starting-talent-list,
 .archetype-starting-gear-list {
     display: flex;
@@ -345,12 +346,14 @@ Archetype Talent and Gear CSS
 }
 
 /* Inner Vertical Container Flows */
+.trait-list,
 .talent-list,
 .gear-list {
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
+.trait-row,
 .talent-row,
 .gear-row {
     display: grid;

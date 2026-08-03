@@ -39,13 +39,11 @@ export class GlobalJsonEditor {
         }
       );
 
-      // Wrap lines for CSS counter row line numbering
       const linesArray = highlightedHtml.split('\n');
       const structuredHtml = linesArray.map(line => {
         return `<div class="editor-line-row">${line === "" ? " " : line}</div>`;
       }).join('');
 
-      // Caret Position Tracking
       const selection = window.getSelection();
       let caretOffset = 0;
       if (selection.rangeCount > 0) {
@@ -58,7 +56,6 @@ export class GlobalJsonEditor {
 
       codeElement.innerHTML = structuredHtml;
 
-      // Restore Caret Position Seamlessly
       if (caretOffset > 0) {
         let currentOffset = 0;
         const range = document.createRange();
@@ -155,7 +152,7 @@ export class GlobalJsonEditor {
       const dataPath = codeElement.dataset.name; // e.g., "system.customJSON"
       const container = codeElement.closest('.code-editor-container');
       const hiddenInput = container?.querySelector(`input[type="hidden"][name="${dataPath}"]`);
-      console.log(hiddenInput);
+      //console.log(hiddenInput);
       if (!hiddenInput || !dataPath) continue;
 
       const rawText = hiddenInput.value.trim();
@@ -240,7 +237,7 @@ export class GlobalJsonEditor {
       // Updates the DB directly, completely bypassing form parsing and tab layouts!
       await documentInstance.update({ [dataPath]: cleanJsonObject });
 
-      ui.notifications.active.find(n => n.text?.includes("Saving JSON"))?.remove();
+      //ui.notifications.active.find(n => n.text?.includes("Saving JSON"))?.remove();
       ui.notifications.info("Configuration saved successfully!");
     } catch (err) {
       console.error("GlobalJsonEditor | Database Update Failed:", err);

@@ -2,12 +2,50 @@
     "global":{
         "tabLabels":{
             "stats": "Statistics",
+            "description":"Description",
             "json":"Custom JSON Entry"
+        },
+        "jsoneditor":{
+            "jsonLabel": "JSON Entry",
+            "jsonSave":"Save Configuration"
+        },
+        "chat":{
+            "options":{
+                "gatherRollOptions" : "Audit Roll Options"
+            }
+        },
+        "charselector":{
+            "title":"Select a Characteristic",
+            "plead":"Select a characteristic for the required bonus of:"
+        },
+        "roll-option-audit":{
+            "headerLabel":"Roll Options [Audit]",
+            "tableheader":{
+                "option":"Roll Option Key",
+                "value":"Roll Option Value"
+            }
         }
     },
     "sheets":{
         "character":{
             "labels":{
+                "tabs":{
+                    "advancements":{
+                        "tabLabel":"Advancements"
+                    },
+                    "attributes":{
+                        "tabLabel":"Attributes"
+                    },
+                    "combat":{
+                        "tabLabel":"Combat"
+                    },
+                    "inventory":{
+                        "tabLabel":"Inventory"
+                    },
+                    "psychic":{
+                        "tabLabel":"Psychic"
+                    }
+                },
                 "GMCreationLabel":"This Sheet is in Creation Mode!",
                 "weapons":{
                     "ArmorInventory": "Armor Inventory",
@@ -23,6 +61,7 @@
                 "characteristicBonus":"Add Characteristic Bonus"
             },
             "labels":{
+                "drop-helper-trait": "Drop Traits Here...",
                 "wounds":"Starting Wounds:",
                 "specialAbility": "Archetype Special Ability:",
                 "characteristicBonus":"Characteristic Bonus:"
@@ -53,6 +92,12 @@
                 "bodyvalues":"31-70",
                 "rightlegvalues":"71-85",
                 "leftlegvalues":"86-00"
+            }
+        },
+        "passion":{
+            "stats":{
+                "name":"Name:",
+                "type":"Passion Type:"
             }
         },
         "weapon":{
@@ -266,6 +311,14 @@
             },
             "armor":{
                 "label":"Armour"
+            },
+            "passion":{
+                "label":"Passion",
+                "types":{
+                    "pride":"Pride",
+                    "motivation":"Motivation",
+                    "disgrace":"Disgrace"
+                }
             },
             "spell":{"label":"Spell"},
             "pride":{"label":"Pride"},

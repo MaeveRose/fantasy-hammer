@@ -130,7 +130,6 @@ export class ArchetypeSheet extends foundry.applications.api.HandlebarsApplicati
     }
     async _handleTalent(event, data, droppedItem)
     {
-        
         const dropZone = event.target.closest(".talent-drop-zone");
         if (!dropZone) return false;
 
@@ -157,6 +156,17 @@ export class ArchetypeSheet extends foundry.applications.api.HandlebarsApplicati
             ui.notifications.info(`Added to Pool #${poolIndex + 1}: ${droppedItem.name}`);
         }
     }
+    async _handleTrait(event, data, droppedItem){
+        const dropZone = event.target.closest(".trait-drop-zone");
+        if (!dropZone) return false;
+        const path = "system.traitsGranted";
+        const currentList = foundry.utils.deepClone(foundry.utils.getProperty(this.document, path));
+        if(currentList.includes(droppedItem.uuid)) return false;
+        currentList.push(droppedItem.uuid);
+        await this.document.update({[path]:currentList});
+        ui.notifications.info(`Successfully added trait: ${droppedItem.name}`);
+        return true;
+    }
     async _onDrop(event){
         event.preventDefault();
         if (!this.isEditable) return false;
@@ -168,8 +178,8 @@ export class ArchetypeSheet extends foundry.applications.api.HandlebarsApplicati
             return false; 
         }
         const droppedItem = await Item.fromDropData(data);
-        if (!droppedItem || (droppedItem.type !== "gear" && droppedItem.type !== "talent")){ 
-            ui.notifications.warn("You can only drop Talent or Gear items here.");
+        if (!droppedItem || (droppedItem.type !== "gear" && droppedItem.type !== "talent" && droppedItem.type !== "trait")){ 
+            ui.notifications.warn("You can only drop Talent, Trait, or Gear items here.");
             return false;
         }
         console.log(droppedItem.type);
@@ -179,8 +189,10 @@ export class ArchetypeSheet extends foundry.applications.api.HandlebarsApplicati
         if (droppedItem.type == "talent") {
             this._handleTalent(event, data, droppedItem)
         }
+        if (droppedItem.type == "trait") {
+            this._handleTrait(event, data, droppedItem)
+        }
     }
-    
     static async _onAddTalentPool(event, target) {
         event.preventDefault();
 
@@ -303,6 +315,7 @@ export class ArchetypeSheet extends foundry.applications.api.HandlebarsApplicati
             }
         }
         context.talentMetadata = talentMap;
+        console.log(context);
         return context;
     }
     static async _onAddChar(event, target) {
@@ -396,7 +409,6 @@ export class ArchetypeSheet extends foundry.applications.api.HandlebarsApplicati
         let newSkill = {id:"forbiddenLore",isAdvanced:false};
         let poolindex = parseInt(arrayPath.split(".").pop());
         if (isNaN(poolindex) || !currentOuterList[poolindex]) return;
-
 
         currentOuterList[poolindex].push(newSkill);
 

@@ -4,11 +4,11 @@
     clear: both;
 }
 
-.form-group {
+.fantasy-hammer .form-group {
     display: block;
 }
 
-.form-group label {
+.fantasy-hammer .form-group label {
     display: block;
     text-align: center;
     padding-top: 0.5em;

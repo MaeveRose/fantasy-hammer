@@ -92,8 +92,7 @@ export class ArmorSheet extends foundry.applications.api.HandlebarsApplicationMi
         
         // 4. Return the expanded data tree structure to the database layer
         return foundry.utils.expandObject(formData);
-    });
-        //return submitData;
+        });
     }
     _onRender(context, options){
         super._onRender(context, options);

@@ -13,7 +13,6 @@ export class TalentSheet extends foundry.applications.api.HandlebarsApplicationM
       title:"TYPES.Item.talent.label"
     },
     actions: {
-      // Register custom actions for managing our dynamic array blocks
       addArrayEntry: this._onAddArrayEntry,
       deleteArrayEntry: this._onDeleteArrayEntry
     },

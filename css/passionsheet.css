@@ -1,0 +1,25 @@
+.passion-sheet .passion-sheet-header .passion-type-block{
+    display:flex;
+    flex-direction:row;
+    margin-bottom:5px;
+}
+.passion-sheet .passion-sheet-header .passion-type-block img{
+    width:64px;
+    height:64px;
+}
+.passion-sheet .passion-sheet-header .passion-type-block .passion-type-fields{
+    display:grid;
+    grid-template-columns: 25% auto;
+    gap:5px;
+    width:calc(100% - 64px);
+}
+.passion-sheet .passion-sheet-header .passion-type-block .passion-type-fields .passion-type-label,
+.passion-sheet .passion-sheet-header .passion-type-block .passion-type-fields .passion-name-label{
+    text-align:center;
+    font-weight:bold;
+    font-size:1.25em;
+}
+.passion-sheet .passion-sheet-header .passion-type-block .passion-type-fields input,
+.passion-sheet .passion-sheet-header .passion-type-block .passion-type-fields select{
+
+}

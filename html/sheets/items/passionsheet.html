@@ -1,0 +1,49 @@
+<div class="passion-sheet">
+    <div class = "passion-sheet-header">
+        <div class = "passion-type-block">
+            <img src="{{item.img}}" data-action="editImage" data-field="img" alt="{{item.name}}"/>
+            <div class = "passion-type-fields">
+                <label class = "passion-name-label">{{localize "sheets.passion.stats.name"}}</label>
+                <input type="text" name="name" value="{{item.name}}" placeholder="Item Name" {{disabled isReadOnly}}/>
+                <label class = "passion-name-label">{{localize "sheets.passion.stats.type"}}</label>
+                <select {{disabled isReadOnly}} name="system.type">
+                    <option value="pride" {{#if (eq system.type "pride")}}selected{{/if}}>{{localize "TYPES.Item.passion.types.pride"}}</option>
+                    <option value="motivation" {{#if (eq system.type "motivation")}}selected{{/if}}>{{localize "TYPES.Item.passion.types.motivation"}}</option>
+                    <option value="disgrace" {{#if (eq system.type "disgrace")}}selected{{/if}}>{{localize "TYPES.Item.passion.types.disgrace"}}</option>
+                </select>
+            </div>
+        </div>
+        {{#if isEditable}}
+        <nav class="passion-sheet-tabs tabs" data-group="passionTabs">
+            <a class="item" data-action="tab" data-tab="description" data-group="passionTabs">
+                <i class="fas fa-shield-alt"></i> {{localize "global.tabLabels.description"}}
+            </a>
+            <a class="item" data-action="tab" data-tab="json-entry" data-group="passionTabs"><i
+                    class="fas fa-swords"></i> {{localize "global.tabLabels.json"}}
+            </a>
+        </nav>
+        {{/if}}
+    </div>
+    <section class="tab {{tabs.description.cssClass}}" data-tab="description" data-group="passionTabs">
+    {{#if isEditable}}
+    <div class = "passion-sheet-body">
+        {{formInput fields.description value=system.description height=160 enriched=true}}
+    </div>
+    {{/if}}
+    {{#unless isEditable}}
+    <div class = "passion-sheet-body">
+        {{{system.description}}}
+    </div>
+    {{/unless}}
+    </section>
+    <section class="tab {{tabs.json-entry.cssClass}}" data-tab="json-entry" data-group="passionTabs">
+        <label class= "code-editor-label">{{localize "global.jsoneditor.jsonLabel"}}</label>
+        <div class="code-editor-container">
+            <input type="hidden" name="system.customJSON" value="{{jsonString}}">
+            <pre class="v13-code-editor"><code class="code-highlight-enabled" data-name="system.customJSON" contenteditable="true" spellcheck="false">{{jsonString}}</code></pre>
+            <button type="button" data-action="saveJSON" class="save-json-btn">
+                <i class="fas fa-save"></i>{{localize "global.jsoneditor.jsonSave"}}
+            </button>
+        </div>
+    </section>
+</div>

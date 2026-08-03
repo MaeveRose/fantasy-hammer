@@ -1,3 +1,5 @@
+import { FIREMODE_MANIFEST, RANGE_MANIFEST, SIZE_MANIFEST } from "./sys-const.mjs";
+
 export async function executeD100Test(testName, baseTarget, actorDocument) {
   // 1. Launch Foundry's native ApplicationV2 Dialog input window
   const dialogHtml = `
@@ -26,7 +28,7 @@ export async function executeD100Test(testName, baseTarget, actorDocument) {
       </div>
     </div>
   `;
-  const traits = actorDocument.gatherTraits();
+  const traits = actorDocument.system.gatherRollOptions();
   const formData = await foundry.applications.api.DialogV2.input({
     window: { title: `${testName} Test Modifiers` },
     content: dialogHtml,
@@ -72,7 +74,7 @@ export async function executeD100Test(testName, baseTarget, actorDocument) {
 
   // 4. THE MASTER CHAT CARD TEMPLATE
   const chatContent = `
-    <div class="my-system-chat-card" style="border: 1px solid #5c4e43; background: rgba(0,0,0,0.4); padding: 8px; border-radius: 4px;">
+    <div class="fantasy-hammer-chat-content" style="border: 1px solid #5c4e43; background: rgba(0,0,0,0.4); padding: 8px; border-radius: 4px;">
       <h3 style="border-bottom: 2px solid #5c4e43; margin: 0 0 6px 0; padding-bottom: 2px; font-weight: bold;">${testName} Test</h3>
       <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 0.9rem;">
         <span>Base Target: <strong>${baseTarget}</strong></span>
@@ -92,7 +94,12 @@ export async function executeD100Test(testName, baseTarget, actorDocument) {
     user: game.user.id,
     speaker: ChatMessage.getSpeaker({ actor: actorDocument }),
     content: chatContent,
-    roll: roll
+    roll: roll,
+    flags: {
+      "fantasy-hammer": {
+        rollOptions: traits
+      }
+    }
   });
 }
 export async function _printToChat(item, actorDocument) {
@@ -109,7 +116,6 @@ export async function _printToChat(item, actorDocument) {
 *
 **/
 export async function _targetedAttack(attacker, defender, weaponItem, rollOptions = []) {
-  console.log(rollOptions);
   let attacking = attacker;
   if (!attacker.type || attacker.documentName !== "Actor") {
     attacking = await fromUuid(attacker);
@@ -145,9 +151,74 @@ export async function _targetedAttack(attacker, defender, weaponItem, rollOption
     ...attacking.system.gatherRollOptions(),
     ...defendingOptions.map(o => `target:${o}`), //appends "target:"
     ...weapon.system.gatherRollOptions()
-  ]
-  //_rollAttackDialog(attacking, options);
+  ];
+  const totalmodifier = calculateModifier(options);
+  //executeD100Test(options);
+  return true;
+}
+export async function _selector(chosen = [], value)
+{
+  let chosenChars = chosen;
+  const templateData = {
+    characteristicValue:value,
+    chosen:chosenChars
+  }
+  const title = game.i18n.localize("global.charselector.title");
+  const dialogHTML = await foundry.applications.handlebars.renderTemplate('systems/fantasy-hammer/html/sheets/common/charselector.hbs', templateData);
+  return new Promise((resolve) => {
+    new foundry.applications.api.DialogV2({
+      window: { title: `${title}` },
+      content: dialogHTML,
+      buttons: [
+        {
+          action: "confirm",
+          label: title,
+          class: "dialog-button-ok",
+          callback: (event, button, target) => {
+            const formdata = new foundry.applications.ux.FormDataExtended(button.form);
+            const { selectedcharacteristic } = formdata.object;
+            resolve(selectedcharacteristic);
+          }
+        },
+        {
+          action: "cancel",
+          label: "Cancel",
+          callback: () => resolve([])
+        }
+      ],
+      close: () => resolve([])
+    }).render(true);
+  });
+}
+export async function calculateModifier(options){
+  if(!options) return 0;
   console.log(options);
+  let runningTotal = 0;
+  for(const option of options){
+    let prefix = "attack:modifier:"
+    if(option.includes(prefix)){
+      let index = option.indexOf(prefix)
+      const substring = option.substring(index+prefix.length);
+
+      const key = substring.substring(0,substring.indexOf(":"));
+      const value = substring.substring(substring.indexOf(":")+1);
+      if(key == "firemode")
+      {
+        console.log(FIREMODE_MANIFEST[value]);
+        runningTotal += Number(FIREMODE_MANIFEST[value].value);
+      }
+      if(key == "range-increment"){
+        runningTotal += Number(RANGE_MANIFEST[value].value);
+      }
+    }
+    prefix = "target:size:";
+    if(option.includes(prefix)){
+      const value = option.substring(option.indexOf(prefix)+prefix.length);
+      const manifest = SIZE_MANIFEST;
+      console.log(manifest);
+    }
+  }
+  return runningTotal;
 }
 /**
  * 
@@ -157,6 +228,48 @@ export async function _targetedAttack(attacker, defender, weaponItem, rollOption
  * @param {Number} distance
  * @returns {Promise<string[]>} of rollOptions
  */
+export async function _displayAuditWindow(message, auditOptions, modifiers) {
+  console.log(message);
+  console.log(auditOptions);
+  console.log(modifiers);
+  let rollOptions = {};
+
+  for (const option of auditOptions) {
+    const lastColonIndex = option.lastIndexOf(":");
+    let key;
+    let value;
+    if (lastColonIndex == -1) {
+      key = option;
+      value = "";
+    } else {
+      key = option.slice(0, lastColonIndex);
+      value = option.slice(lastColonIndex + 1);
+    }
+    rollOptions[key] = value;
+  }
+  console.log(rollOptions);
+  const templateData = {
+    rollOption: Object.entries(rollOptions).map(([key, value]) => {
+      return { key: key, value: value };
+    }),
+    "message-id": message.uuid
+  }
+  const dialogHTML = await foundry.applications.handlebars.renderTemplate('systems/fantasy-hammer/html/sheets/common/rollOptionsAudit.hbs', templateData);
+  return new Promise((resolve) => {
+    new foundry.applications.api.DialogV2({
+      window: { title: game.i18n.localize("global.roll-option-audit.headerLabel") },
+      content: dialogHTML,
+      buttons: [
+        {
+          action: "close",
+          label: "close",
+          callback: () => resolve([])
+        }
+      ],
+      close: () => resolve([])
+    }).render(true);
+  });
+}
 export async function _rollAttackDialog(attacker, defender, weapon, distance = -1) {
   const weaponType = game.i18n.localize(`sys-const.weapontype.${weapon.system.type}`);
   const weaponClass = game.i18n.localize(`sys-const.weaponclass.${weapon.system.class}`)
@@ -230,8 +343,11 @@ export function _processAttackFormData(formElement) {
   const data = formData.object;
   const rollOptions = [];
   console.log(data);
-  if (data.rollModifier) {
-    rollOptions.push(`attack:modifier:rof:${data.rollModifier}`);
+  if (data.firemode) {
+    rollOptions.push(`attack:modifier:firemode:${data.firemode}`);
+  }
+  if (data.rangeincrement) {
+    rollOptions.push(`attack:modifier:range-increment:${data.rangeincrement}`)
   }
   if (Number(data.customModifier)) {
     rollOptions.push(`attack:modifier:custom:${Number(data.customModifier)}`);

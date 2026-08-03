@@ -25,9 +25,6 @@ export class WeaponSheet extends foundry.applications.api.HandlebarsApplicationM
       height: 330
     },
     actions: {
-      // Register custom actions for managing our dynamic array blocks
-      //addArrayEntry: this._onAddArrayEntry,
-      //deleteArrayEntry: this._onDeleteArrayEntry
       editImage: this.#onEditImage
     },
     form: {

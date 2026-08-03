@@ -1,6 +1,7 @@
-const { BooleanField, ArrayField, HTMLField, NumberField, SchemaField, StringField, MappingField, ObjectField } = foundry.data.fields;
+const { BooleanField, ArrayField, HTMLField, NumberField, SchemaField, StringField, MappingField, ObjectField, EmbeddedDataField } = foundry.data.fields;
 import { CHARACTERISTIC_MANIFEST, SKILL_MANIFEST } from "../../utils/sys-const.mjs";
 import { BaseItemDataModel } from "./ItemDataModel.mjs";
+import { TraitDataModel } from "./TraitDataModel.mjs";
 
 export class ArchetypeDataModel extends BaseItemDataModel {
     static defineSchema() {
@@ -42,6 +43,12 @@ export class ArchetypeDataModel extends BaseItemDataModel {
                     })
                 )
             ),
+            traitsGranted: new ArrayField(
+                new StringField({
+                    required:true,
+                    initial:""
+                })
+            ),
             talentsGranted: new ArrayField(
                 new StringField({
                     required: true,
@@ -55,6 +62,12 @@ export class ArchetypeDataModel extends BaseItemDataModel {
                         initial: ""
                     })
                 )
+            ),
+            traitsGranted: new ArrayField(
+                new StringField({
+                    required:true,
+                    initial: ""
+                })
             ),
             gearGranted: new ArrayField(
                 new StringField({
@@ -80,9 +93,9 @@ export class ArchetypeDataModel extends BaseItemDataModel {
     gatherRollOptions() {
         let set = new Set();
         const slug = this.slug ? this.slug : this.parent.name.slugify();
-        const id = this.parent.uuid.replaceAll(".", "-");
-        set.add(`item:slug:${slug}`);
-        set.add(`item:uuid:${id}`);
+        const id = this.parent.uuid;
+        set.add(`${id}`);
+        set.add(`${slug}`);
         return Array.from(set);
     }
 }

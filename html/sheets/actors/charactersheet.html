@@ -2,16 +2,18 @@
   <nav class="character-sheet-tabs tabs" data-group="characterTabs">
     {{#if isEditable}}
     <a class="item" data-action="tab" data-tab="attributes" data-group="characterTabs"><i class="fas fa-shield-alt"></i>
-      Attributes</a>
+      {{localize "sheets.character.labels.tabs.attributes.tabLabel"}}</a>
     <a class="item" data-action="tab" data-tab="combat" data-group="characterTabs"><i class="fas fa-swords"></i>
-      Combat</a>
-    <a class="item" data-action="tab" data-tab="psychic" data-group="characterTabs"><i class="fas fa-brain"></i>
-      Psychic</a>
-    <a class="item" data-action="tab" data-tab="advancements" data-group="characterTabs"><i
-        class="fas fa-chart-line"></i>
-      Progress</a>
+      {{localize "sheets.character.labels.tabs.combat.tabLabel"}}</a>
+      {{#if isPsychic}}
+      <a class="item" data-action="tab" data-tab="psychic" data-group="characterTabs"><i class="fas fa-brain"></i>
+        {{localize "sheets.character.labels.tabs.psychic.tabLabel"}}</a>
+      {{/if}}
+    <a class="item" data-action="tab" data-tab="advancements" data-group="characterTabs"><i class="fas fa-chart-line"></i>
+      {{localize "sheets.character.labels.tabs.advancements.tabLabel"}}</a>
+    <a class="item" data-action="tab" data-tab="inventory" data-group="characterTabs"><i class="fa-solid fa-box"></i>
+      {{localize "sheets.character.labels.tabs.inventory.tabLabel"}}</a>
     {{/if}}
-
     <a class="item" data-action="tab" data-tab="biography" data-group="characterTabs"><i class="fas fa-scroll"></i>
       Biography</a>
     {{#if (or isGM isCreationActive)}}
@@ -49,15 +51,14 @@
               </div>
               <div class="ledger-field flex-1">
                 <label class="ledger-label">Player Name</label>
-                <input type="text" name="system.playername" value="{{system.playername}}" class="ledger-input" />
+                <input type="text" name="system.playerName" value="{{system.playerName}}" class="ledger-input" />
               </div>
             </div>
-
             <!-- ROW 2: Archetype, Rank, & Warband Name -->
             <div class="ledger-row">
               <div class="ledger-field flex-3">
                 <label class="ledger-label">Archetype</label>
-                <input readonly type="text" name="system.archetype" value="{{system.archetype}}" class="ledger-input" />
+                <input readonly type="text" name="system.archetype" value="{{archetypeItem.name}}" class="ledger-input" />
               </div>
               <div class="ledger-field width-60">
                 <label class="ledger-label">Rank</label>
@@ -73,11 +74,11 @@
             <div class="ledger-row">
               <div class="ledger-field flex-1">
                 <label class="ledger-label">Pride</label>
-                <input readonly type="text" name="system.prideText" value="{{system.prideText}}" class="ledger-input" />
+                <input readonly type="text" name="system.pride" value="{{prideItem.name}}" class="ledger-input" />
               </div>
               <div class="ledger-field flex-1">
                 <label class="ledger-label">Disgrace</label>
-                <input readonly type="text" name="system.disgraceText" value="{{system.disgraceText}}"
+                <input readonly type="text" name="system.disgrace" value="{{disgraceItem.name}}"
                   class="ledger-input" />
               </div>
             </div>
@@ -86,7 +87,7 @@
             <div class="ledger-row">
               <div class="ledger-field flex-1">
                 <label class="ledger-label">Motivation</label>
-                <input readonly type="text" name="system.motivationText" value="{{system.motivationText}}"
+                <input readonly type="text" name="system.motivation" value="{{motivationItem.name}}"
                   class="ledger-input" />
               </div>
               <div class="ledger-field flex-2">
@@ -95,7 +96,6 @@
                   class="ledger-input" />
               </div>
             </div>
-
           </div>
         </section>
       </section>
@@ -117,14 +117,14 @@
             <label class="characteristic-short">({{this.short}})</label>
           </div>
           <div class="bonus-box read-only">
-            <span class="bonus-text">{{getStatDigit this.value 'bonus'}}</span>
+            <span class="bonus-text">{{this.bonus}}</span>
           </div>
           <div class="digit-container">
-            <div class="digit-display tens">{{getStatDigit this.value 'tens'}}</div>
-            <div class="digit-display ones">{{getStatDigit this.value 'ones'}}</div>
+            <div class="digit-display tens">{{getStatDigit this.displayValue 'tens'}}</div>
+            <div class="digit-display ones">{{getStatDigit this.displayValue 'ones'}}</div>
 
             <input class="invisible-stat-input" min="0" max="99" type="number"
-              name="system.characteristics.{{this.key}}.value" data-path="{{this.key}}" value="{{this.value}}" />
+              name="system.characteristics.{{this.key}}.value" data-path="{{this.key}}" value="{{this.baseValue}}" />
           </div>
         </div>
         {{/each}}
@@ -171,17 +171,14 @@
           <h3 class="panel-title-header">Talents & Traits</h3>
           <div class="talents-list-wrapper">
             {{#each actor.items}}
-            <!-- Use conditional tags to cleanly isolate talents and traits out of general inventory -->
             {{#if (or (eq this.type "talent") (eq this.type "trait"))}}
             <div class="talent-item-row item-row js-talent-card" data-item-id="{{this.id}}">
               <div class="talent-main-line" data-action="toggleTalentExpand">
-                <!-- Click to trigger our new open action method smoothly! -->
                 <a data-action="openEmbeddedItem" title="Click to view details" style="cursor: pointer;">
                   <i class="fas fa-bookmark"></i> <strong>{{this.name}}</strong>
                 </a>
                 <div class="talent-utility-controls"
                   style="margin-left: auto; display: flex; gap: 8px; align-items: center;">
-                  <!-- Optional Edit Button if you want to open the V13 window from the sheet -->
 
                   <a class="js-prevent-toggle" data-action="printToChat" title="Print To Chat"
                     style="cursor: pointer; color: #EDE8B2;">
@@ -383,5 +380,8 @@
       </div>
     </section>
     {{/if}}
+    <section class="tab {{tabs.inventory.cssClass}}" data-tab="inventory" data-group="characterTabs">
+      <p>Inventory Will Go Here...</p>
+    </section> 
   </section>
 </div>
