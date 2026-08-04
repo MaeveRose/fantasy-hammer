@@ -637,3 +637,14 @@ export const RELOADTIME_MANIFEST={
     option:["6-full"]
   }
 }
+export const ADVANCEMENT_MANIFEST={
+  skill:{
+    key:"skill"
+  },
+  talent:{
+    key:"talent"
+  },
+  characteristic:{
+    key:"characteristic"
+  },
+}

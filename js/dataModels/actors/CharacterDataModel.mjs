@@ -1,6 +1,6 @@
 const { JSONField, BooleanField, ArrayField, HTMLField, NumberField, SchemaField, StringField, MappingField, ObjectField } = foundry.data.fields;
 
-import { SKILL_MANIFEST, CHARACTERISTIC_MANIFEST, SIZE_MANIFEST } from "../../utils/sys-const.mjs";
+import { SKILL_MANIFEST, CHARACTERISTIC_MANIFEST, SIZE_MANIFEST, ADVANCEMENT_MANIFEST } from "../../utils/sys-const.mjs";
 import { BaseActorDataModel } from "./ActorDataModel.mjs";
 
 const skillBlueprint = (linkedCharacteristic, localizable) => new SchemaField({
@@ -65,7 +65,16 @@ export class CharacterDataModel extends BaseActorDataModel {
       characterModifiers: new ObjectField({
         required: true,
         initial: {}
-      })
+      }),
+      experience: new NumberField({required:true, initial:1000}),
+      advancements: new ArrayField(
+        new SchemaField({
+          type:new StringField({required:true, initial:"skill", choices:Object.keys(ADVANCEMENT_MANIFEST)}),
+          value:new NumberField({required:true, initial:0}),
+          identifier:new StringField({required:true, initial:""}),
+          level:new NumberField({required:true,initial:0,max:4})
+        })
+      )
     };
   }
   gatherRollOptions() {
@@ -89,11 +98,9 @@ export class CharacterDataModel extends BaseActorDataModel {
       const disgrace = this.parent.items.find(item => item.type === "disgrace");
       const traitItems = this.parent.items.filter(item => item.type === "trait");
       const talentItems = this.parent.items.filter(item => item.type === "talent");
-      console.log(archetype);
       if(!archetype){
         set.add(`actor:archetype:void`) 
       } else {
-        console.log(archetype);
         const [uuid, slug] = archetype.system.gatherRollOptions();
         set.add(`actor:archetype:uuid:${uuid}`);
         set.add(`actor:archetype:slug:${slug}`);

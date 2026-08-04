@@ -110,7 +110,7 @@
       <div class="characteristic-panel">
         <label class="title">Characteristics</label>
         {{#each characteristicsList}}
-        <div class="characteristic-block {{this.key}}">
+        <div class="characteristic-block {{this.key}}" data-value="{{this.displayValue}}">
           <div class="characteristic-header js-roll-stat" data-action="rollCharacteristic"
             data-path="system.characteristics.{{this.key}}.value" data-name="{{this.name}}" style="cursor: pointer;">
             <label class="characteristic-name">{{this.name}}</label>

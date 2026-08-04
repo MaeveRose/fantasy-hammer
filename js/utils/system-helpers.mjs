@@ -59,31 +59,53 @@ export async function executeD100Test(testName, baseTarget, actorDocument) {
   // 2. Fire the asynchronous d100 Roll transaction
   const roll = await new Roll("1d100").evaluate();
   const diceResult = roll.total;
-
+  
   // 3. THE UNIFIED WARHAMMER MATH ENGINE
-  const isSuccess = diceResult <= finalTargetNumber;
+  let isSuccess = diceResult <= finalTargetNumber;
+  if (diceResult <= 5) isSuccess = true;
+  if (diceResult >= 95) isSuccess = false;
   const degreeDelta = Math.abs(finalTargetNumber - diceResult);
-  const degreesCount = Math.floor(degreeDelta / 10);
-
+  let degreesCount = Math.floor(degreeDelta / 10);
+  if(isSuccess) {
+    if (diceResult > finalTargetNumber) {
+      degreesCount = 1;
+    } else {
+      degreesCount = Math.max(1, degreesCount);
+    }
+  } else {
+    if (diceResult <= finalTargetNumber) {
+      degreesCount = 1;
+    } else {
+      degreesCount = Math.max(1, degreesCount);
+    }
+  }
   let outcomeMessage = "";
   if (isSuccess) {
-    outcomeMessage = `<span style="color: #2b8a3e; font-weight: bold;">SUCCESS</span> with <strong>${degreesCount} Degrees</strong>`;
-  } else {
-    outcomeMessage = `<span style="color: #c92a2a; font-weight: bold;">FAILURE</span> with <strong>${degreesCount} Degrees</strong>`;
+    if (diceResult <= 5) {
+      outcomeMessage = `<span class = "critical-success">CRITICAL SUCCESS</span> with <strong>${degreesCount} Degrees</strong>`;
+    } else {
+      outcomeMessage = `<span class = "success">SUCCESS</span> with <strong>${degreesCount} Degrees</strong>`;
+    }
+  } else { 
+    if (diceResult >= 95) {
+      outcomeMessage = `<span class="critical-failure">CRITICAL FAILURE</span> with <strong>${degreesCount} Degrees</strong>`;
+    } else {
+      outcomeMessage = `<span class="failure">FAILURE</span> with <strong>${degreesCount} Degrees</strong>`;
+    }
   }
 
   // 4. THE MASTER CHAT CARD TEMPLATE
   const chatContent = `
-    <div class="fantasy-hammer-chat-content" style="border: 1px solid #5c4e43; background: rgba(0,0,0,0.4); padding: 8px; border-radius: 4px;">
-      <h3 style="border-bottom: 2px solid #5c4e43; margin: 0 0 6px 0; padding-bottom: 2px; font-weight: bold;">${testName} Test</h3>
-      <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 0.9rem;">
+    <div class="fantasy-hammer-chat-content">
+      <span class = "chat-box-test-result-header">${testName} Test</span]>
+      <div class = "target-modifier-wrapper">
         <span>Base Target: <strong>${baseTarget}</strong></span>
         <span>Modifier: <strong>${totalCombinedModifier >= 0 ? '+' : ''}${totalCombinedModifier}</strong></span>
       </div>
-      <div style="background: rgba(0,0,0,0.3); padding: 6px; text-align: center; border-radius: 3px; font-size: 1.1rem; margin-bottom: 6px; border: 1px solid rgba(255,255,255,0.05);">
+      <div class = "final-target-results">
         Final Target: <strong style="color: #ffbc00;">${finalTargetNumber}</strong> | Rolled: <strong style="color: #e0e0e0;">${diceResult}</strong>
       </div>
-      <div style="text-align: center; font-size: 0.95rem;">
+      <div class="outcome-message">
         ${outcomeMessage}
       </div>
     </div>
@@ -156,12 +178,11 @@ export async function _targetedAttack(attacker, defender, weaponItem, rollOption
   //executeD100Test(options);
   return true;
 }
-export async function _selector(chosen = [], value)
-{
+export async function _selector(chosen = [], value) {
   let chosenChars = chosen;
   const templateData = {
-    characteristicValue:value,
-    chosen:chosenChars
+    characteristicValue: value,
+    chosen: chosenChars
   }
   const title = game.i18n.localize("global.charselector.title");
   const dialogHTML = await foundry.applications.handlebars.renderTemplate('systems/fantasy-hammer/html/sheets/common/charselector.hbs', templateData);
@@ -190,30 +211,98 @@ export async function _selector(chosen = [], value)
     }).render(true);
   });
 }
-export async function calculateModifier(options){
-  if(!options) return 0;
+export async function _triggerChoice(entryArray, grantedItems, selectionType)
+{
+  let validOptions;
+  let isAdvancedOption;
+  if(selectionType === "skill"){
+    validOptions = entryArray.filter(option =>{
+    const alreadyHasSkill = grantedItems.some(b=>b.id === option.id);
+    if (option.isAdvanced) {isAdvancedOption = true; return true;}
+    return !alreadyHasSkill;
+  });
+  } else {
+    validOptions = entryArray.filter(uuid => {
+      const alreadyHasItem = grantedItems.some(b=>b.uuid === uuid);
+      return !alreadyHasItem;
+    })
+  }
+  if (validOptions.length === 0) {
+    console.log("No valid choices left in this pool. Auto-skipping.");
+    return "none"; // Or return a fallback string
+  }
+  const itemType = selectionType;
+  const isString = typeof validOptions[0] === "string";
+  const optionsWithLabels = validOptions.map(option =>{
+    if(isString){
+      const lastpart = option.split(".").pop();
+      const docname = fromUuidSync(option)?.name || option.split(".").pop();
+      return {
+        id:option,
+        label: docname
+      };
+    } else {
+      return {
+        ...option,
+        label: game.i18n.localize(`sys-const.skills.${option.id}`)
+      };
+    }
+  })
+  const templateData = {
+    isAdvanced: isAdvancedOption,
+    type: game.i18n.localize(`TYPES.Item.${itemType}.label`),
+    options: optionsWithLabels
+  };
+  const title = game.i18n.localize(`global.itemselector.${selectionType}.title`) || "Select a Thing";
+  const dialogHTML = await foundry.applications.handlebars.renderTemplate('systems/fantasy-hammer/html/sheets/common/itemselector.hbs', templateData);
+  return new Promise((resolve) => {
+    new foundry.applications.api.DialogV2({
+      window: { title: `${title}` },
+      content: dialogHTML,
+      buttons: [
+        {
+          action: "submit",
+          label: "Confirm",
+          class: "dialog-button-ok",
+          callback: (event, button, target) => {
+            const formdata = new foundry.applications.ux.FormDataExtended(button.form);
+            const choice = formdata.object.selectedSkill;
+            resolve(choice);
+          }
+        },
+        {
+          action: "cancel",
+          label: "Cancel",
+          callback: () => resolve("")
+        }
+      ],
+      close: () => resolve("")
+    }).render(true);
+  });
+}
+export async function calculateModifier(options) {
+  if (!options) return 0;
   console.log(options);
   let runningTotal = 0;
-  for(const option of options){
+  for (const option of options) {
     let prefix = "attack:modifier:"
-    if(option.includes(prefix)){
+    if (option.includes(prefix)) {
       let index = option.indexOf(prefix)
-      const substring = option.substring(index+prefix.length);
+      const substring = option.substring(index + prefix.length);
 
-      const key = substring.substring(0,substring.indexOf(":"));
-      const value = substring.substring(substring.indexOf(":")+1);
-      if(key == "firemode")
-      {
+      const key = substring.substring(0, substring.indexOf(":"));
+      const value = substring.substring(substring.indexOf(":") + 1);
+      if (key == "firemode") {
         console.log(FIREMODE_MANIFEST[value]);
         runningTotal += Number(FIREMODE_MANIFEST[value].value);
       }
-      if(key == "range-increment"){
+      if (key == "range-increment") {
         runningTotal += Number(RANGE_MANIFEST[value].value);
       }
     }
     prefix = "target:size:";
-    if(option.includes(prefix)){
-      const value = option.substring(option.indexOf(prefix)+prefix.length);
+    if (option.includes(prefix)) {
+      const value = option.substring(option.indexOf(prefix) + prefix.length);
       const manifest = SIZE_MANIFEST;
       console.log(manifest);
     }

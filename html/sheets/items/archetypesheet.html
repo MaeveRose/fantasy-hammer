@@ -63,7 +63,7 @@
                             </select>
                             <div class="rank-toggle-box" title="Check to mark choice option as Advanced (+10)">
                                 <input type="checkbox" name="system.skillBonus.{{poolIndex}}.isAdvanced" {{checked
-                                    skill.isAdvanced}} />
+                                    pool.isAdvanced}} />
                                 <span>+10</span>
                             </div>
                             {{#if @root.isEditable}}
@@ -124,8 +124,7 @@
                                 {{selectOptions @root.skillOptions selected=skill.id valueAttr="id" labelAttr="label"}}
                             </select>
                             <div class="rank-toggle-box" title="Check to mark choice option as Advanced (+10)">
-                                <input type="checkbox"
-                                    name="system.skillChoices.{{bonusIndex}}.{{skillindex}}.isAdvanced" {{checked
+                                <input type="checkbox" name="system.skillChoices.{{bonusIndex}}.{{skillindex}}.isAdvanced" {{checked
                                     skill.isAdvanced}} />
                                 <span>+10</span>
                             </div>
@@ -222,7 +221,7 @@
                 <div class="archetype-starting-trait-list">
                     {{#if isEditable}}
                     <div class="droppable archetype-talent-list trait-drop-zone">
-                        {{#if (eq system.traitssGranted.length 0)}}
+                        {{#if (eq system.traitsGranted.length 0)}}
                         <label class="drop-helper">{{localize "sheets.archetype.labels.drop-helper-trait"}}</label>
                         {{/if}}
                         <div class = "trait-list">                    

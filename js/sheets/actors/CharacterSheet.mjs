@@ -2,8 +2,9 @@ const { ActorSheetV2 } = foundry.applications.sheets;
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 
 
-import { executeD100Test, _targetedAttack, _rollAttackDialog, _selector } from "../../utils/system-helpers.mjs";
-import { SKILL_MANIFEST, CHARACTERISTIC_MANIFEST } from "../../utils/sys-const.mjs";
+import { executeD100Test, _targetedAttack, _rollAttackDialog, _selector, _triggerChoice } from "../../utils/system-helpers.mjs";
+import { SKILL_MANIFEST, CHARACTERISTIC_MANIFEST, SYSTEM_ID } from "../../utils/sys-const.mjs";
+import { AdvancementHandler } from "../../utils/system/advancementHandler.mjs";
 
 export class CharacterSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheetV2) {
   static DEFAULT_OPTIONS = {
@@ -87,7 +88,6 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
       return false;
     }
     const droppedItem = await Item.fromDropData(data);
-    console.log(droppedItem.type);
     if (droppedItem.type == "archetype") {
       this._handleArchetype(event, data, droppedItem);
     }
@@ -105,19 +105,130 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
     }
   }
   async _handleArchetype(event, data, droppedItem) {
-    const dropped = droppedItem;
-    if (!dropped) return false;
-    const currentArchetype = this.document.items.find(item => item.type === "archetype")
-    if (currentArchetype) {
-      await currentArchetype.update(dropped.toObject());
-    } else {
-      await this.document.createEmbeddedDocuments("Item", [dropped.toObject()]);
+    if(!this.document.system.characterCreationActive) {
+      const warning = game.i18n.localize("global.warning.archetype.postcreation");
+      ui.notifications.warn(`${this.document.name} ${warning}`);
+      return false;
     }
-    console.log(this.document.items.find(item => item.type === "archetype"));
+    const dropped = droppedItem;
+
+    const itemData = typeof droppedItem.toObject === 'function' ? droppedItem.toObject() : foundry.utils.deepClone(droppedItem);
+    const currentEntry = this.document.items.find(item => item.type === "archetype");
+    try{
+      for(const entryArray of itemData.system.skillChoices){
+        const choice = await _triggerChoice(entryArray, itemData.system.skillBonus, "skill");
+        if (!choice || choice.length == 0) return false;
+        const selectedSkillConfig = entryArray.find(s => s.id === choice)
+        const isAdvancedFlag = selectedSkillConfig?.isAdvanced ?? false;
+        itemData.system.skillBonus.push({id:choice,isAdvanced:isAdvancedFlag})
+      }
+      for(const entry of itemData.system.talentChoices){
+        const choice = await _triggerChoice(entry, itemData.system.talentsGranted, "talent");
+        if (!choice || choice.length == 0) return false;
+        itemData.system.talentsGranted.push(choice);
+        
+      }
+      for(const entry of itemData.system.gearChoices){
+        const choice = await _triggerChoice(entry, itemData.system.gearGranted, "gear");
+        if (!choice || choice.length == 0) return false;
+        itemData.system.gearGranted.push(choice);
+      }
+    } catch (error){
+
+    }
+    let pendingAdvancements = [];
+    let itemsToCreate =[];
+    const createdArchetypeDoc = await this.document.createEmbeddedDocuments("Item", [itemData]);
+    const trueArchetypeDoc = createdArchetypeDoc[0];
+    const trueArchetypeid = trueArchetypeDoc.id;
+
+    for(const entry of itemData.system.talentsGranted)
+    {
+      const compendiumItem = await fromUuid(entry);
+      if(!compendiumItem) throw new Error(`failed to resolve compendium item from uuid: ${entry}`);
+      const preppedItem = compendiumItem.toObject();
+      itemsToCreate.push(preppedItem);
+      preppedItem.flags = foundry.utils.mergeObject(preppedItem.flags || {}, {
+        [SYSTEM_ID]: { origin: trueArchetypeid }
+      });
+      pendingAdvancements.push({
+        type: "talent",
+        value: 0,
+        identifier: entry,
+        level: 1
+      });
+    }
+    for(const entry of itemData.system.traitsGranted)
+    {
+      const compendiumItem = await fromUuid(entry);
+      if(!compendiumItem) throw new Error(`failed to resolve compendium item from uuid: ${entry}`);
+      const preppedItem = compendiumItem.toObject();
+      itemsToCreate.push(preppedItem);
+      preppedItem.flags = foundry.utils.mergeObject(preppedItem.flags || {}, {
+        [SYSTEM_ID]: { origin: trueArchetypeid }
+      });
+    }
+    for(const entry of itemData.system.skillBonus){
+      pendingAdvancements.push({
+        type:"skill",
+        value:0,
+        identifier:`skill.${entry.id}`,
+        level: entry.isAdvanced? 2: 1
+      })
+    }
+    for(const entry of itemData.system.gearGranted){
+      const compendiumItem = await fromUuid(entry);
+      if(!compendiumItem) throw new Error(`failed to resolve compendium item from uuid: ${entry}`);
+      const preppedItem = compendiumItem.toObject();
+      preppedItem.flags = foundry.utils.mergeObject(preppedItem.flags || {}, {
+        [SYSTEM_ID]: { origin: trueArchetypeid }
+      });
+      itemsToCreate.push(preppedItem);
+    }
+    if (currentEntry) 
+    {
+      const documentInstance = currentEntry.value || currentEntry;
+      const oldItemData = documentInstance.system;
+      
+      let pendingunadvancements = [];
+      let pendingdeleteditems = [documentInstance.id];
+      for(const entry of oldItemData.skillBonus){
+        pendingunadvancements.push({
+        type:"skill",
+        value:0,
+        identifier:`skill.${entry.id}`,
+        level: entry.isAdvanced? 2: 1
+        })
+      }
+      for(const entry of oldItemData.talentsGranted || []){
+        pendingunadvancements.push({
+          type: "talent",
+          value: 0,
+          identifier: entry,
+          level: 1
+        });
+      }
+      for(const Item of this.document.items){
+        if(Item.type !== "talent" && Item.type !== "gear") continue;
+        const itemDoc = Item.value || Item;
+        const itemOrigin = itemDoc?.flags?.[SYSTEM_ID]?.origin;
+        if(itemOrigin === documentInstance.id){
+          pendingdeleteditems.push(itemDoc.id);
+        }
+      }
+      await AdvancementHandler.batchUnadvance(this.document, pendingunadvancements);
+      await this.document.deleteEmbeddedDocuments("Item",pendingdeleteditems);
+    }
+    await AdvancementHandler.batchAdvance(this.document, pendingAdvancements);
+    await this.document.createEmbeddedDocuments("Item", itemsToCreate);
     return true;
   }
   async _handlePassion(event, data, droppedItem) {
-    //const dropped = droppedItem;
+    if(!this.document.system.characterCreationActive) {
+      const warning = game.i18n.localize("global.warning.passion.postcreation");
+      ui.notifications.warn(`${this.document.name} ${warning}`);
+      return false;
+    }
     const itemData = typeof droppedItem.toObject === 'function' ? droppedItem.toObject() : foundry.utils.deepClone(droppedItem);
     if (!itemData) return false;
     const type = droppedItem.system.type;
@@ -125,7 +236,6 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
       const documentInstance = item.value || item;
       return documentInstance.system.type === type;
     });
-    console.log(currentEntry);
     let chosen = [];
     try {
       for (const entry of itemData.system.customJSON.modifiers) {
@@ -326,7 +436,7 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
     for (const item of this.document.items) {
       if (item.type == "passion") {
         if (item.system.type == "pride") { collectedPride = item.id; }
-        if (item.system.type == "motivation") { collectedMotivation = item.id; console.log(`this happened`); }
+        if (item.system.type == "motivation") { collectedMotivation = item.id;}
         if (item.system.type == "disgrace") { collectedDisgrace = item.id; }
         const data = item.system.customJSON;
         if (!data.modifiers || !Array.isArray(data.modifiers) || data.modifiers.length === 0) continue;
@@ -341,7 +451,10 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
             }
           }
           for (const skill of skillArray) {
-            console.log(skill);
+            for(const [key, value] of Object.entries(skill)){
+              if(calculatedSkills[key] === undefined) calculatedSkills[key] = 0;
+              calculatedSkills[key] += Number(value);
+            }
           }
           for (const mod of playermod) {
             if (mod === "corruption") {
@@ -372,9 +485,9 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
 
       if (item.type == "archetype") {
         collectedArchetype = item.id;
+        const data = item.system;
       }
     }
-    console.log(calculatedCharacteristics);
     context.archetypeItem = this.actor.items.get(collectedArchetype);
     context.prideItem = this.actor.items.get(collectedPride);
     context.motivationItem = this.actor.items.get(collectedMotivation);
@@ -414,8 +527,8 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
     let displaySkills = [];
     context.displaySkills = Object.entries(SKILL_MANIFEST).map(([skillkey, config]) => {
       const dbRecord = rawSkills[skillkey];
-      const currentValue = (dbRecord?.value + calculatedSkills[skillkey]) ?? 0;
-      const currentBonus = (dbRecord?.value + calculatedSkills[skillkey]) ?? 0;
+      const currentValue = (dbRecord?.value) ?? 0;
+      const currentBonus = ((dbRecord?.value || 0) + (calculatedSkills[skillkey] || 0)) ?? 0;
       const translatedName = game.i18n.localize(config.key);
 
       const shortLabel = CHARACTERISTIC_MANIFEST[config.char] ?
@@ -507,11 +620,6 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
   }
   static async _onDeleteSpecializedSkill(event, target) {
     event.preventDefault();
-    //const trashBtn = event.target.closest(".js-delete-specialized-skill");
-    //if (!trashBtn) return false; // Guard fallback
-
-    //event.preventDefault();
-    //event.stopPropagation();
 
     const customId = target.getAttribute("data-custom-id");
     const readableName = target.getAttribute("data-name");
@@ -564,7 +672,6 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
       rejectClose: false, // If they close the window without clicking OK, it safely returns null instead of crashing
       ok: { label: "Create Skill" }
     });
-    console.log(formData);
     if (!formData || !formData.subName || formData.subName.trim() === "") {
       ui.notifications.warn("Skill creation canceled or missing a name.");
       return true;
@@ -589,7 +696,6 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
     };
 
     currentList.push(freshSkillRecord);
-    console.log(this.document.system);
     // 7. Execute the transaction database update
     await this.document.update({ "system.skills.specializedSkills": currentList });
 
@@ -599,11 +705,7 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
   static async _onToggleSkillCheckbox(event, target) {
     event.stopPropagation();
 
-    console.log("event #onToggleSkillCheckbox Fired");
-
-    //get parent and the skill it represents
     const container = target.closest(".skill-training-boxes");
-    console.log(container);
     const isCustom = container.getAttribute("data-is-custom") === "true";
     if (!container) return false;
     const skillKey = container.getAttribute("data-skill");
@@ -653,10 +755,10 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
     event.preventDefault();
     event.preventDefault();
     const charName = target.getAttribute("data-name");
+    const targetdom = target.closest(".characteristic-block");
+    const targetValue = Number(targetdom.getAttribute("data-value"));
 
-    const targetScore = parseInt(target.closest(".characteristic-block").querySelector(".invisible-stat-input").value) || 0;
-
-    await executeD100Test(charName, targetScore, this.document);
+    await executeD100Test(charName, targetValue, this.document);
 
   }
   static async _onOpenEmbeddedItem(event, target) {
@@ -712,7 +814,6 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
     }
     const targeted = !attacktoken ? "void" : attacktoken?.actor;
     const options = await _rollAttackDialog(attacker, targeted, weapon, distance);
-    console.log(options);
     _targetedAttack(attacker, targeted, weapon, options);
   }
 }

@@ -1,28 +1,49 @@
 {
     "global":{
-        "tabLabels":{
-            "stats": "Statistics",
-            "description":"Description",
-            "json":"Custom JSON Entry"
-        },
-        "jsoneditor":{
-            "jsonLabel": "JSON Entry",
-            "jsonSave":"Save Configuration"
+        "charselector":{
+            "title":"Select a Characteristic",
+            "plead":"Select a characteristic for the required bonus of:"
         },
         "chat":{
             "options":{
                 "gatherRollOptions" : "Audit Roll Options"
             }
         },
-        "charselector":{
-            "title":"Select a Characteristic",
-            "plead":"Select a characteristic for the required bonus of:"
+        "itemselector":{
+            "skill":{
+                "title":"Select a Skill..."
+            },
+            "talent":{
+                "title":"Select a Talent..."
+            },
+            "gear":{
+                "title":"Select a piece of gear..."
+            },
+            "plead":"Please select a",
+            "isAdvanced":"This skill will receive a +10"
+        },
+        "jsoneditor":{
+            "jsonLabel": "JSON Entry",
+            "jsonSave":"Save Configuration"
         },
         "roll-option-audit":{
             "headerLabel":"Roll Options [Audit]",
             "tableheader":{
                 "option":"Roll Option Key",
                 "value":"Roll Option Value"
+            }
+        },
+        "tabLabels":{
+            "stats": "Statistics",
+            "description":"Description",
+            "json":"Custom JSON Entry"
+        },
+        "warning":{
+            "archetype":{
+                "postcreation":"is locked. You can no longer change your Archetype!"
+            },
+            "passion":{
+                "postcreation":"is locked. You can no longer change your Passions!"
             }
         }
     },
@@ -130,6 +151,7 @@
     },
     "sys-const": {
         "armortype":{
+            "label":"Armor Type",
             "primative":"Primative",
             "flak": "Flak",
             "mesh":"Mesh",
@@ -138,6 +160,7 @@
             "exotic":"Exotic"
         },
         "availability":{
+            "label":"Availability",
             "ubiquitous": "Ubiquitous",
             "abundant":"Abundant",
             "plentiful":"Plentiful",
@@ -151,6 +174,7 @@
             "unique":"Unique"
         },
         "characteristic":{
+            "label":"Characteristic",
             "weaponSkill":"Weapon Skill",
             "weaponSkill_short":"WS",
             "ballisticSkill":"Ballistic Skill",
@@ -173,6 +197,7 @@
             "infamy_short":"INF"
         },
         "damageType":{
+            "label":"Damage Type",
             "energy":{
                 "short":"E",
                 "full":"Energy"
@@ -216,6 +241,7 @@
             }
         },
         "skills":{
+            "label":"Skill",
             "acrobatics":"Acrobatics",
             "athletics":"Athletics",
             "awareness":"Awareness",
@@ -249,12 +275,14 @@
             "trade": "Trade"
         },
         "quality":{
+            "label":"Quality",
             "poor":"Poor",
             "common":"Common",
             "good":"Good",
             "best":"Best"
         },
         "weaponclass":{
+            "label":"Weapon Class",
             "melee":"Melee",
             "thrown":"Thrown",
             "pistol":"Pistol",
@@ -265,6 +293,7 @@
             "vehicle":"Vehicle"
         },
         "weapontype":{
+            "label":"Weapon Type",
             "las":"Las",
             "solid":"Solid",
             "bolt":"Bolt",
@@ -326,7 +355,8 @@
             "godgift":{"label":"Gift of the Gods"},
             "motivation":{"label":"Motivation"},
             "gear":{"label":"Gear"},
-            "archetype":{"label":"Archetype"}
+            "archetype":{"label":"Archetype"},
+            "skill":{"label":"Skill"}
         },
         "Actor":{
             "character":{

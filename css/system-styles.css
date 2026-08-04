@@ -93,6 +93,99 @@
   border-bottom: 2px solid #5c4e43;
   padding-left: 1em;
 }
+.fantasy-hammer-chat-content{
+  border: 1px solid #5c4e43;
+  background: rgba(0,0,0,0.4);
+  padding: 8px;
+  border-radius: 4px;
+}
+.fantasy-hammer-chat-content .chat-box-test-result-header {
+  border-bottom: 2px solid #5c4e43;
+  margin: 0 0 6px 0;
+  padding-bottom: 2px;
+  font-weight: bold;
+  color: #f1f1f1;
+  font-size: 2em;
+}
+.fantasy-hammer-chat-content  .target-modifier-wrapper {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+.fantasy-hammer-chat-content .final-target-results{
+  background: rgba(0,0,0,0.3);
+  padding: 6px;
+  text-align: center;
+  border-radius: 3px;
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.fantasy-hammer-chat-content .outcome-message {
+  text-align: center;
+  font-size: 0.95rem;
+}
+.fantasy-hammer-chat-content .outcome-message .success{
+color: #2b8a3e;
+font-weight: bold;
+}
+.fantasy-hammer-chat-content .outcome-message .failure {
+  color: #c92a2a;
+  font-weight: bold;
+}
+.fantasy-hammer-chat-content .critical-failure {
+   /* 1. Create a dark green text with a bright silver/white stripe in the middle */
+  background: linear-gradient(
+    to right, 
+    #c92a2a 0%, 
+    #c92a2a 40%, 
+    #ffffff 50%, 
+    #c92a2a 60%, 
+    #c92a2a 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  /* 3. Make the text bold so the effect is easy to see */
+  font-weight: bold;
+  
+  /* 4. Run the animation continuously loop every 3 seconds */
+  animation: shine 3s linear infinite;
+}
+.fantasy-hammer-chat-content .critical-success {
+  /* 1. Create a dark green text with a bright silver/white stripe in the middle */
+  background: linear-gradient(
+    to right, 
+    #2b8a3e 0%, 
+    #2b8a3e 40%, 
+    #ffffff 50%, 
+    #2b8a3e 60%, 
+    #2b8a3e 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  /* 3. Make the text bold so the effect is easy to see */
+  font-weight: bold;
+  
+  /* 4. Run the animation continuously loop every 3 seconds */
+  animation: shine 3s linear infinite;
+}
+
+/* The animation loop that slides the gradient across the text */
+@keyframes shine {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
 
 .stat-panel {
   position: relative;
@@ -270,51 +363,7 @@
   margin: 0;
 }
 
-.characteristic-panel {
-  font-family: 'WarhammerTitle', 'Courier New', monospace !important;
-  display: grid !important;
-  grid-template-columns: repeat(10, minmax(80px, 1fr)) !important;
-  gap: 12px !important;
-  width: 100% !important;
-  box-sizing: border-box;
-  padding: 10px;
-}
 
-.characteristic-panel .title {
-  text-align: center;
-  grid-column: 1 / -1;
-  display: block;
-  align-items: center;
-  font-weight: bold;
-  font-size: 1.5rem;
-  margin-bottom: 5px;
-  text-transform: uppercase;
-}
-
-.characteristic-block {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  /* Spans exactly 1 fractional unit of the row layout */
-  text-align: center;
-}
-
-.characteristic-name {
-  display: block !important;
-  font-size: 0.80rem;
-  font-weight: bold;
-  white-space: nowrap;
-  /* Prevents long labels from wrapping ugly mid-sentence */
-}
-
-.characteristic-short {
-  display: block !important;
-  font-size: 0.75rem;
-  font-weight: bold;
-  opacity: 0.8;
-  margin-bottom: 5px;
-}
 
 .skills-grid-container {
   font-family: 'WarhammerTitle', 'Courier New', monospace !important;
