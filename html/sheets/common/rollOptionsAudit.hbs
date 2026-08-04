@@ -1,18 +1,20 @@
 <div class="roll-option-audit-menu">
-    <header class = "header">
-        <label class = "roll-option-title">{{localize "global.roll-option-audit.headerLabel"}}</label>
-        <label class = "roll-option-uuid">{{message-id}}</label>
+    <header class="roll-option-audit-header">
+        <label class="roll-option-title">{{localize "global.roll-option-audit.headerLabel"}}</label>
+        <label class="roll-option-uuid">{{message-id}}</label>
     </header>
-    <table>
-        <tr>
-            <th>{{localize "global.roll-option-audit.tableheader.option"}}</th>
-            <th>{{localize "global.roll-option-audit.tableheader.value"}}</th>
-        </tr>
-        {{#each rollOption}}
-        <tr class = "roll-option-row">
-            <td class="roll-option-key">{{this.key}}</td>
-            <td class="roll-option-value">{{this.value}}</td>
-        </tr>
-        {{/each}}
-    </table>
+    <div class="roll-option-table-wrapper">
+        <table>
+            <tr>
+                <th>{{localize "global.roll-option-audit.tableheader.option"}}</th>
+                <th>{{localize "global.roll-option-audit.tableheader.value"}}</th>
+            </tr>
+            {{#each rollOption}}
+            <tr class="roll-option-row">
+                <td class="roll-option-key">{{this.key}}</td>
+                <td class="roll-option-value">{{this.value}}</td>
+            </tr>
+            {{/each}}
+        </table>
+    </div>
 </div>

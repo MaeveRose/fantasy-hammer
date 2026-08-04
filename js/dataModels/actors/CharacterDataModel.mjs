@@ -135,11 +135,13 @@ export class CharacterDataModel extends BaseActorDataModel {
         set.add(`actor:has-trait:slug:${traitSlug}`);
       }
       for (const item of talentItems) {
+        console.log(item);
+        console.log(this.parent.items);
         let talentID = item.uuid;
         let talentSlug = item.system.slug ? item.system.slug : item.name.slugify();
 
-        set.add(`actor:has-trait:uuid:${talentID}`);
-        set.add(`actor:has-trait:slug:${talentSlug}`);
+        set.add(`actor:has-talent:uuid:${talentID}`);
+        set.add(`actor:has-talent:slug:${talentSlug}`);
       }
     }
     return Array.from(set);

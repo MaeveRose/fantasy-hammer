@@ -22,6 +22,7 @@
   "styles": [
     "css/common/dialogs.css",
     "css/common/code.css",
+    "css/common/popupwindows.css",
     "css/system-styles.css",
     "css/passionsheet.css",
     "css/charactersheet.css",

@@ -411,6 +411,7 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
 
     context.actor = this.document;
     context.system = this.document.system;
+    context.advancements = this.document.system.advancements;
     const rawCharacteristics = this.document.system.characteristics;
     context.isGM = game.user.isGM;
     context.isPsycher = false;
@@ -485,7 +486,12 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
 
       if (item.type == "archetype") {
         collectedArchetype = item.id;
-        const data = item.system;
+        const data = item.system.characteristicsBonus;
+        console.log(data);
+        for(const entry of data)
+        {
+          calculatedCharacteristics[entry.characteristic] += entry.value;
+        }
       }
     }
     context.archetypeItem = this.actor.items.get(collectedArchetype);

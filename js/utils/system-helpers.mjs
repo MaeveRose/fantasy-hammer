@@ -321,9 +321,10 @@ export async function _displayAuditWindow(message, auditOptions, modifiers) {
   console.log(message);
   console.log(auditOptions);
   console.log(modifiers);
-  let rollOptions = {};
+  let rollOptions = [];
 
   for (const option of auditOptions) {
+    console.log(option);
     const lastColonIndex = option.lastIndexOf(":");
     let key;
     let value;
@@ -334,20 +335,23 @@ export async function _displayAuditWindow(message, auditOptions, modifiers) {
       key = option.slice(0, lastColonIndex);
       value = option.slice(lastColonIndex + 1);
     }
-    rollOptions[key] = value;
+    rollOptions.push({key: key, value: value});
   }
   console.log(rollOptions);
   const templateData = {
-    rollOption: Object.entries(rollOptions).map(([key, value]) => {
-      return { key: key, value: value };
-    }),
+    rollOption: rollOptions,
     "message-id": message.uuid
   }
+  console.log(templateData);
   const dialogHTML = await foundry.applications.handlebars.renderTemplate('systems/fantasy-hammer/html/sheets/common/rollOptionsAudit.hbs', templateData);
   return new Promise((resolve) => {
     new foundry.applications.api.DialogV2({
       window: { title: game.i18n.localize("global.roll-option-audit.headerLabel") },
       content: dialogHTML,
+      position: {
+        width: 555,  // Adjust width in pixels as needed
+        height: 400  // Adjust max default height in pixels as needed
+      },
       buttons: [
         {
           action: "close",
