@@ -72,25 +72,25 @@ export class CharacterDataModel extends BaseActorDataModel {
           type:new StringField({required:true, initial:"skill", choices:Object.keys(ADVANCEMENT_MANIFEST)}),
           value:new NumberField({required:true, initial:0}),
           identifier:new StringField({required:true, initial:""}),
-          level:new NumberField({required:true,initial:0,max:4})
+          level:new NumberField({required:true,initial:0,max:4}),
+          origin: new StringField({required:true, initial:"player"})
         })
       )
     };
   }
   gatherRollOptions() {
-    let set = new Set();
+    let option = [{}]
     if (!this.parent) {
       console.log(`no parent`);
       return;
     }
     for (const trait of this.traits) {
-      set.add(trait);
+      option.push({id:trait,value:true});
     }
     const id = this.parent.uuid;
-    set.add(`actor:uuid:${id}`);
-
-    set.add(`actor:chaos-marine:${this.crusade.isChaosMarine}`);
-    set.add(`size:${this.size}`);
+    option.push({id:`actor-uuid`,value:id});
+    option.push({id:`actor-chaos-marine`,value:this.crusade.isChaosMarine});
+    option.push({id:`size`,value:this.size});
     if (this.parent.items) {
       const archetype = this.parent.items.find(item => item.type === "archetype");
       const pride = this.parent.items.find(item => item.type === "pride")
@@ -99,51 +99,48 @@ export class CharacterDataModel extends BaseActorDataModel {
       const traitItems = this.parent.items.filter(item => item.type === "trait");
       const talentItems = this.parent.items.filter(item => item.type === "talent");
       if(!archetype){
-        set.add(`actor:archetype:void`) 
+        option.push({id:`actor-archetype`,value:undefined});
       } else {
         const [uuid, slug] = archetype.system.gatherRollOptions();
-        set.add(`actor:archetype:uuid:${uuid}`);
-        set.add(`actor:archetype:slug:${slug}`);
+        option.push({id:`actor-archetype-uuid` ,value:uuid});
+        option.push({id:`actor-archetype-slug` ,value:slug});
       }
       if(!pride){
-        set.add(`actor:pride:void`) 
+        option.push({id:`actor-pride`,value:undefined});
       } else {
         const [uuid, slug] = pride.gatherRollOptions();
-        set.add(`actor:pride:uuid:${uuid}`);
-        set.add(`actor:pride:slug:${slug}`);
+        option.push({id:`actor-pride-uuid` ,value:uuid});
+        option.push({id:`actor-pride-slug` ,value:slug});
       }
       if(!motivation){
-        set.add(`actor:motivation:void`) 
+        option.push({id:`actor-motivation` ,value:undefined});
       } else {
         const [uuid, slug] = motivation.gatherRollOptions();
-        set.add(`actor:motivation:uuid:${uuid}`);
-        set.add(`actor:motivation:slug:${slug}`);
+        option.push({id:`actor-motivation-uuid` ,value:uuid});
+        option.push({id:`actor-motivation-slug` ,value:slug});
       }
       if(!disgrace){
-        set.add(`actor:disgrace:void`) 
+        option.push({id:`actor-disgrace` ,value:undefined});
       } else {
         const [uuid, slug] = disgrace.gatherRollOptions();
-        set.add(`actor:disgrace:uuid:${uuid}`);
-        set.add(`actor:disgrace:slug:${slug}`);
+        option.push({id:`actor-disgrace-uuid` ,value:uuid});
+        option.push({id:`actor-disgrace-slug` ,value:slug});
       }
 
       for (const item of traitItems) {
         let traitID = item.uuid;
         let traitSlug = item.system.slug ? item.system.slug : item.name.slugify();
-
-        set.add(`actor:has-trait:uuid:${traitID}`);
-        set.add(`actor:has-trait:slug:${traitSlug}`);
+        option.push({id:`actor-has-trait-uuid` ,value:traitID});
+        option.push({id:`actor-has-trait-slug` ,value:traitSlug});
       }
       for (const item of talentItems) {
-        console.log(item);
-        console.log(this.parent.items);
         let talentID = item.uuid;
         let talentSlug = item.system.slug ? item.system.slug : item.name.slugify();
-
-        set.add(`actor:has-talent:uuid:${talentID}`);
-        set.add(`actor:has-talent:slug:${talentSlug}`);
+        option.push({id:`actor-has-talent-uuid` ,value:talentID});
+        option.push({id:`actor-has-talent-slug` ,value:talentSlug});
       }
     }
-    return Array.from(set);
+    console.log(option);
+    return option;
   }
 }

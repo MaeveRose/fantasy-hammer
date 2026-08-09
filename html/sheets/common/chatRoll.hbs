@@ -1,0 +1,21 @@
+<div class="fantasy-hammer-chat-content">
+    <span class = "chat-box-test-result-header">{{testName}}</span]>
+    <div class = "target-modifier-wrapper">
+        <span>{{localize "global.chat.rollchatmessage.base"}}<strong>{{baseTarget}}</strong></span>
+        <span>{{localize "global.chat.rollchatmessage.modifier"}}<strong>{{totalCombinedModifier}}</strong></span>
+    </div>
+    <div class = "final-target-results">
+        {{localize "global.chat.rollchatmessage.finalTarget"}}<strong style="color: #ffbc00;">{{finalTargetNumber}}</strong>{{localize "global.chat.rollchatmessage.rolled"}}<strong style="color: #e0e0e0;">{{diceResult}}</strong>
+    </div>
+    <div class="outcome-message">
+        {{#if (eq outcome "critical success")}}
+        <span class="critical-success">{{localize "sys-const.rollresults.critical-success"}} : {{degrees}} {{localize "sys-const.rollresults.degrees-success"}}</span>
+        {{else if (eq outcome "success")}}
+        <span class="success">{{localize "sys-const.rollresults.success"}} : {{degrees}} {{localize "sys-const.rollresults.degrees-success"}}</span>
+        {{else if (eq outcome "failure")}}
+        <span class="failure">{{localize "sys-const.rollresults.failure"}} : {{degrees}} {{localize "sys-const.rollresults.degrees-failure"}}</span>
+        {{else if (eq outcome "critical failure")}}
+        <span class="critical-failure">{{localize "sys-const.rollresults.critical-failure"}} : {{degrees}} {{localize "sys-const.rollresults.degrees-failure"}}</span>
+        {{/if}}
+    </div>
+</div>

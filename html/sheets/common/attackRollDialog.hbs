@@ -26,7 +26,7 @@
                 <label class="range-label">{{localize "sys-const.dialog.weaponAttackRoll.label.rof"}}</label>
                 <select name="firemode">
                     <option value="single" {{disabled (eq single "-")}}>{{semicombat}} [{{single}}]</option>
-                    <option value="semi" {{disabled (eq semi 0)}} selected>{{burstcombat}} [{{semi}}]</option>
+                    <option value="semi" {{disabled (eq semi 0)}}>{{burstcombat}} [{{semi}}]</option>
                     <option value="full" {{disabled (eq full 0)}}>{{fullcombat}} [{{full}}]</option>
                 </select>
             </div>
@@ -45,8 +45,7 @@
         {{/unless}}
     </div>
     <div style="display: flex; flex-direction: column; gap: 4px;">
-        <label style="font-weight: bold;">Additional Modifier:</label>
+        <label style="font-weight: bold;">{{localize "global.baserolldialog.label.difficultymodmisc"}}</label>
         <input type="number" name="customModifier" placeholder="e.g., +5, -15" value="0" style="text-align: center;" />
-        <small style="opacity: 0.6; font-style: italic;">Enter any situational bonuses or penalties here.</small>
     </div>
 </div>

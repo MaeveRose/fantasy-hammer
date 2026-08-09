@@ -22,7 +22,7 @@
   padding: 10px;
 }
 
-.fantasy-hammer.sheet.actor .characteristic-panel .title {
+.fantasy-hammer.sheet.actor .characteristic-panel-header {
   text-align: center;
   grid-column: 1 / -1;
   display: block;
@@ -516,4 +516,21 @@
   grid-template-rows: 1fr 1fr 1fr;
   gap: 25px;
   text-align:center;
+}
+.fantasy-hammer.sheet.actor .advancements-pane{
+  border: 1px solid #FFFFFF;
+}
+.fantasy-hammer.sheet.actor .advancements-pane .advancement-wrapper{
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+}
+.fantasy-hammer.sheet.actor .advancements-pane .advancement-wrapper .advancement-data-object{
+  display: grid;
+  gap: 5px;
+  grid-template-columns: 32px auto 6em;
+}
+.fantasy-hammer.sheet.actor .advancements-pane .advancement-wrapper .advancement-data-object img{
+  width: 32px;
+  height: 32px;
 }

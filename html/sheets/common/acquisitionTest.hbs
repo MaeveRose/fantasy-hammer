@@ -1,0 +1,31 @@
+<div class="gear-attaining-roll-dialog">
+    <div class="header-box">
+        <label class="header-dialog-title">{{localize "global.acquisitiondialog.title"}}</label>
+        <label class="header-dialog-itemName">{{itemName}}</label>
+        <label class="header-dialog-itemType">{{itemType}}</label>
+    </div>
+    <div class="gear-box">
+        <div class="availability">
+            <label>{{localize "global.acquisitiondialog.availability"}}</label>
+            <select name="availability">
+                {{selectOptions availOptions selected=baseAvail valueAttr="id" labelAttr="label"}}
+            </select>
+        </div>
+        <div class="craftsmanship">
+            <label>{{localize "global.acquisitiondialog.craftsmanship"}}</label>
+            <select name="craftsmanship">
+                {{selectOptions craftOptions selected=baseCraft valueAttr="id" lavelAttr="label"}}
+            </select>
+        </div>
+        <div class="amount">
+            <label>{{localize "global.acquisitiondialog.amount"}}</label>
+            <select name="amount">
+                {{selectOptions amountOptions valueAttr="id" labelAttr="label"}}
+            </select>
+        </div>
+    </div>
+    <div class="footer-box">
+        <label class="gear-modifier-label">{{localize "global.acquisitiondialog.misc"}}</label>
+        <input class="gear-modifier" type="number" name="miscmod" />
+    </div>
+</div>

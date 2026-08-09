@@ -1,0 +1,15 @@
+<div class = "specialized-skill-selector">
+    <div class = "parent-selector-wrapper">
+        <label class="parent-selector-label">{{localize "global.skillselector.parentskill"}}</label>
+        <input class="parent-label-name" type="text" value = "{{parentSkill}}" read-only />
+    </div>
+    <div class = "sub-selector-wrapper">
+        <label class="sub-selector-label" style="">{{localize "global.skillselector.specname"}}</label>
+        <input class="sub-selector-input" type="text" list="subname" name="tempStorage" value="{{this.subName}}" placeholder="Type or select specialization..." />
+        <datalist id="subname" name="subName">
+            {{#each options}}
+            <option data-id ="{{this.id}}" value = "{{this.label}}"></option>
+            {{/each}}
+        </datalist>
+    </div>
+</div>

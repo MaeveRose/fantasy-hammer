@@ -1,17 +1,19 @@
-.roll-option-audit-header{
+.roll-option-audit-header {
     position: sticky;
-    top:0;
+    top: 0;
     background: #111;
     padding: 5px;
-    text-align:center;
-    font-weight:bold;
-    font-size:1.1em;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1em;
 }
 
 .roll-options-table-wrapper {
     max-height: 100%;
-    overflow-y: auto;   /* Automatically adds vertical scrollbar when needed */
-    padding-right: 5px; /* Adds tiny breathing room for the scrollbar thumb */
+    overflow-y: auto;
+    /* Automatically adds vertical scrollbar when needed */
+    padding-right: 5px;
+    /* Adds tiny breathing room for the scrollbar thumb */
 }
 
 /* Optional styling to keep table headers locked at the top while scrolling */
@@ -23,14 +25,38 @@
 .roll-options-table-wrapper th {
     position: sticky;
     top: 0;
-    background: #111; /* Match your system theme header background color */
+    background: #111;
+    /* Match your system theme header background color */
     z-index: 1;
 }
-.roll-option-table-wrapper td{
-    overflow-x:auto;
-    padding-bottom:5px;
+
+.roll-option-table-wrapper td {
+    overflow-x: auto;
+    padding-bottom: 5px;
 }
-.form-footer{
-    display:sticky;
-    bottom:0;
+
+.form-footer {
+    display: sticky;
+    bottom: 0;
+}
+
+.specialized-skill-selector {
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.specialized-skill-selector .parent-selector-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.specialized-skill-selector .sub-selector-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.specialized-skill-selector .sub-selector-wrapper label,
+.specialized-skill-selector .parent-selector-wrapper label {
+    font-weight: bold;
 }

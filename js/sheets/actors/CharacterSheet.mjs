@@ -2,9 +2,11 @@ const { ActorSheetV2 } = foundry.applications.sheets;
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 
 
-import { executeD100Test, _targetedAttack, _rollAttackDialog, _selector, _triggerChoice } from "../../utils/system-helpers.mjs";
+import { executeD100Test, executeD100TestSilent } from "../../utils/system/rollEngine.mjs";
+import { _targetedAttack, _rollAttackDialog, _selector, _triggerChoice, _triggerSpecChoice, _getModifiers, _rollBaseDialog } from "../../utils/system-helpers.mjs";
 import { SKILL_MANIFEST, CHARACTERISTIC_MANIFEST, SYSTEM_ID } from "../../utils/sys-const.mjs";
 import { AdvancementHandler } from "../../utils/system/advancementHandler.mjs";
+import { InventoryHandler } from "../../utils/system/InventoryHandler.mjs";
 
 export class CharacterSheet extends foundry.applications.api.HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheetV2) {
   static DEFAULT_OPTIONS = {
@@ -105,7 +107,7 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
     }
   }
   async _handleArchetype(event, data, droppedItem) {
-    if(!this.document.system.characterCreationActive) {
+    if (!this.document.system.characterCreationActive) {
       const warning = game.i18n.localize("global.warning.archetype.postcreation");
       ui.notifications.warn(`${this.document.name} ${warning}`);
       return false;
@@ -114,38 +116,90 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
 
     const itemData = typeof droppedItem.toObject === 'function' ? droppedItem.toObject() : foundry.utils.deepClone(droppedItem);
     const currentEntry = this.document.items.find(item => item.type === "archetype");
-    try{
-      for(const entryArray of itemData.system.skillChoices){
+    let spec = {
+      parent: "",
+      name: "",
+      id: ""
+    };
+    let specSkills = itemData.system.skillBonus.filter(a => ["scholasticLore", "forbiddenLore", "commonLore"].includes(a.id));
+    let currentBonusSpecs = [];
+    let currentSpecs = foundry.utils.deepClone(this.document.system.skills.specializedSkills);
+    let postChoice = [];
+    for (const skillEntry of specSkills) {
+      let skillArray = [...currentBonusSpecs, ...currentSpecs];
+      spec = await _triggerSpecChoice(skillArray, skillEntry.id, skillEntry.isAdvanced ? 2 : 1)
+      if (!spec || !spec.id) return false;
+      const localized = game.i18n.localize(`sys-const.skills.${skillEntry.id}`);
+      currentBonusSpecs.push({
+        bonus: 0,
+        id: spec.id,
+        parentSkillName: skillEntry.id,
+        readable: `${localized} (${spec.name})`,
+        subSpecialtyName: spec.name,
+        value: skillEntry.isAdvanced ? 2 : 1
+      });
+      postChoice.push({
+        id: skillEntry.id,
+        isAdvanced: skillEntry.isAdvanced,
+        specialization: spec
+      });
+    }
+    try {
+      for (const entryArray of itemData.system.skillChoices) {
         const choice = await _triggerChoice(entryArray, itemData.system.skillBonus, "skill");
         if (!choice || choice.length == 0) return false;
+
         const selectedSkillConfig = entryArray.find(s => s.id === choice)
         const isAdvancedFlag = selectedSkillConfig?.isAdvanced ?? false;
-        itemData.system.skillBonus.push({id:choice,isAdvanced:isAdvancedFlag})
+
+        if (["scholasticLore", "forbiddenLore", "commonLore"].includes(choice)) {
+          let skillChoices = [...this.document.system.skills.specializedSkills, ...choice];
+          spec = await _triggerSpecChoice(skillChoices, choice, isAdvancedFlag ? 2 : 1);
+          if (!spec || !spec.id) return false;
+          choice = { id: choice, isAdvanced: isAdvancedFlag }
+          postChoice.push({
+            id: choice,
+            isAdvanced: isAdvancedFlag,
+            specialization: spec
+          });
+          continue;
+        }
+        postChoice.push({
+          id: choice,
+          isAdvanced: isAdvancedFlag,
+        })
       }
-      for(const entry of itemData.system.talentChoices){
+      for (const entry of itemData.system.talentChoices) {
         const choice = await _triggerChoice(entry, itemData.system.talentsGranted, "talent");
         if (!choice || choice.length == 0) return false;
         itemData.system.talentsGranted.push(choice);
-        
+
       }
-      for(const entry of itemData.system.gearChoices){
+      for (const entry of itemData.system.gearChoices) {
         const choice = await _triggerChoice(entry, itemData.system.gearGranted, "gear");
         if (!choice || choice.length == 0) return false;
         itemData.system.gearGranted.push(choice);
       }
-    } catch (error){
-
+    } catch (error) {
+      console.log(`ERROR`);
     }
+
+
+    itemData.system.skillBonus = itemData.system.skillBonus.filter(a => !["scholasticLore", "forbiddenLore", "commonLore"].includes(a.id))
+    itemData.system.skillBonus = [...itemData.system.skillBonus, ...postChoice];
+
+
     let pendingAdvancements = [];
-    let itemsToCreate =[];
+    let itemsToCreate = [];
+    let skillspectocreate = [];
+
     const createdArchetypeDoc = await this.document.createEmbeddedDocuments("Item", [itemData]);
     const trueArchetypeDoc = createdArchetypeDoc[0];
     const trueArchetypeid = trueArchetypeDoc.id;
 
-    for(const entry of itemData.system.talentsGranted)
-    {
+    for (const entry of itemData.system.talentsGranted) {
       const compendiumItem = await fromUuid(entry);
-      if(!compendiumItem) throw new Error(`failed to resolve compendium item from uuid: ${entry}`);
+      if (!compendiumItem) throw new Error(`failed to resolve compendium item from uuid: ${entry}`);
       const preppedItem = compendiumItem.toObject();
       itemsToCreate.push(preppedItem);
       preppedItem.flags = foundry.utils.mergeObject(preppedItem.flags || {}, {
@@ -155,52 +209,76 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
         type: "talent",
         value: 0,
         identifier: entry,
-        level: 1
+        level: 1,
+        origin: trueArchetypeid
       });
     }
-    for(const entry of itemData.system.traitsGranted)
-    {
+    for (const entry of itemData.system.traitsGranted) {
       const compendiumItem = await fromUuid(entry);
-      if(!compendiumItem) throw new Error(`failed to resolve compendium item from uuid: ${entry}`);
+      if (!compendiumItem) throw new Error(`failed to resolve compendium item from uuid: ${entry}`);
       const preppedItem = compendiumItem.toObject();
       itemsToCreate.push(preppedItem);
       preppedItem.flags = foundry.utils.mergeObject(preppedItem.flags || {}, {
         [SYSTEM_ID]: { origin: trueArchetypeid }
       });
     }
-    for(const entry of itemData.system.skillBonus){
+    for (const entry of itemData.system.skillBonus) {
+      if (entry.specialization) {
+        const skill = currentBonusSpecs.filter(a => a.id === entry.specialization.id);
+        const localizedSkillname = game.i18n.localize(`sys-const.skills.${entry.specialization.parent}`);
+        skillspectocreate.push({
+          bonus: 0,
+          id: entry.specialization.id,
+          parentSkillname: entry.specialization.parent,
+          readable: `${localizedSkillname} (${entry.specialization.name})`,
+          subSpecialtyName: entry.specialization.name,
+          value: entry.isAdvanced ? 2 : 1,
+          origin: trueArchetypeid // <-- Tag it here!
+        });
+        pendingAdvancements.push({
+          type: "skill",
+          value: 0,
+          identifier: `skill.${entry.id}.${entry.specialization.name}`,
+          level: entry.isAdvanced ? 2 : 1,
+          origin: trueArchetypeid
+        });
+        continue;
+      }
       pendingAdvancements.push({
-        type:"skill",
-        value:0,
-        identifier:`skill.${entry.id}`,
-        level: entry.isAdvanced? 2: 1
-      })
+        type: "skill",
+        value: 0,
+        identifier: `skill.${entry.id}`,
+        level: entry.isAdvanced ? 2 : 1,
+        origin: trueArchetypeid
+      });
     }
-    for(const entry of itemData.system.gearGranted){
+    for (const entry of itemData.system.gearGranted) {
       const compendiumItem = await fromUuid(entry);
-      if(!compendiumItem) throw new Error(`failed to resolve compendium item from uuid: ${entry}`);
+      if (!compendiumItem) throw new Error(`failed to resolve compendium item from uuid: ${entry}`);
       const preppedItem = compendiumItem.toObject();
       preppedItem.flags = foundry.utils.mergeObject(preppedItem.flags || {}, {
         [SYSTEM_ID]: { origin: trueArchetypeid }
       });
       itemsToCreate.push(preppedItem);
     }
-    if (currentEntry) 
-    {
+    if (currentEntry) {
       const documentInstance = currentEntry.value || currentEntry;
       const oldItemData = documentInstance.system;
-      
+      const currentSpecializedSkills = foundry.utils.deepClone(this.document.skills.specializedSkills);
+
       let pendingunadvancements = [];
+      let pendingSkillChanges = [];
       let pendingdeleteditems = [documentInstance.id];
-      for(const entry of oldItemData.skillBonus){
+      for (const entry of oldItemData.skillBonus) {
+        //hunt through skills to check for old skill ranks.
         pendingunadvancements.push({
-        type:"skill",
-        value:0,
-        identifier:`skill.${entry.id}`,
-        level: entry.isAdvanced? 2: 1
-        })
+          type: "skill",
+          value: 0,
+          identifier: `skill.${entry.id}`,
+          level: entry.isAdvanced ? 2 : 1
+        });
       }
-      for(const entry of oldItemData.talentsGranted || []){
+      for (const entry of oldItemData.talentsGranted || []) {
         pendingunadvancements.push({
           type: "talent",
           value: 0,
@@ -208,23 +286,40 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
           level: 1
         });
       }
-      for(const Item of this.document.items){
-        if(Item.type !== "talent" && Item.type !== "gear") continue;
+      for (const Item of this.document.items) {
+        if (Item.type !== "talent" && Item.type !== "gear") continue;
         const itemDoc = Item.value || Item;
         const itemOrigin = itemDoc?.flags?.[SYSTEM_ID]?.origin;
-        if(itemOrigin === documentInstance.id){
+        if (itemOrigin === documentInstance.id) {
           pendingdeleteditems.push(itemDoc.id);
         }
       }
-      await AdvancementHandler.batchUnadvance(this.document, pendingunadvancements);
-      await this.document.deleteEmbeddedDocuments("Item",pendingdeleteditems);
+      await this.document.update({ "system.skills.specializedSkills": newHighs });
+      await AdvancementHandler.batchUnadvanceID(this.document, currentEntry.id);
+      await this.document.deleteEmbeddedDocuments("Item", pendingdeleteditems);
     }
+
+    const updatedspecs = [...currentSpecs, ...skillspectocreate];
+    const highestValueSpecs = Object.values(
+      updatedspecs.reduce((acc, currentItem) => {
+        const existingItem = acc[currentItem.id];
+        // If the id isn't in our accumulator yet, or if this new one has a higher value, keep it
+        if (!existingItem || currentItem.value > existingItem.value) {
+          acc[currentItem.id] = currentItem;
+        }
+
+        return acc;
+      }, {})
+    );
+    //console.log(highestValueSpecs);
+    await this.document.update({ "system.skills.specializedSkills": highestValueSpecs });
+    console.log(pendingAdvancements);
     await AdvancementHandler.batchAdvance(this.document, pendingAdvancements);
     await this.document.createEmbeddedDocuments("Item", itemsToCreate);
     return true;
   }
   async _handlePassion(event, data, droppedItem) {
-    if(!this.document.system.characterCreationActive) {
+    if (!this.document.system.characterCreationActive) {
       const warning = game.i18n.localize("global.warning.passion.postcreation");
       ui.notifications.warn(`${this.document.name} ${warning}`);
       return false;
@@ -253,8 +348,7 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
     } catch (error) {
 
     }
-    if (currentEntry) 
-    {
+    if (currentEntry) {
       const documentInstance = currentEntry.value || currentEntry;
       await this.document.deleteEmbeddedDocuments("Item", [documentInstance.id]);
     }
@@ -319,8 +413,11 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
     await gaineditem.update(updates);
   }
   async _handleInventoryDrop(event, data, item) {
+    
     const dropped = await Item.fromDropData(item);
     if (!dropped) return false;
+    const successfultest = await InventoryHandler._HandleDrop(this.document,item)
+    if(!successfultest) return false;
     await this.document.createEmbeddedDocuments("Item", [dropped.toObject()]);
     ui.notifications.info(`Successfully added item: ${dropped.name} to inventory`);
     return true;
@@ -414,7 +511,18 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
     context.advancements = this.document.system.advancements;
     const rawCharacteristics = this.document.system.characteristics;
     context.isGM = game.user.isGM;
-    context.isPsycher = false;
+    const psycherTrait = this.document.items.find(e => {
+      if (e.type !== "trait") return false;
+      const json = e.system.customJSON;
+      if(!json || !json.flags) return false;
+      const flagObj = json.flags.find(f=> f && Object.hasOwn(f,"isPsyker"));
+      if(flagObj){
+        return true;
+      }
+      return json.flags.some(f=> f && Object.hasOwn(f,"isPysker"));
+    });
+    context.isPsyker = psycherTrait ? Boolean(psycherTrait.system.customJSON.flags.find(f => Object.hasOwn(f, "isPsyker"))?.isPsyker) : false;
+    context.itemList = this.document.items;
     let calculatedCharacteristics = [];
     let calculatedSkills = [];
     let charBonusBonus = [];
@@ -437,7 +545,7 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
     for (const item of this.document.items) {
       if (item.type == "passion") {
         if (item.system.type == "pride") { collectedPride = item.id; }
-        if (item.system.type == "motivation") { collectedMotivation = item.id;}
+        if (item.system.type == "motivation") { collectedMotivation = item.id; }
         if (item.system.type == "disgrace") { collectedDisgrace = item.id; }
         const data = item.system.customJSON;
         if (!data.modifiers || !Array.isArray(data.modifiers) || data.modifiers.length === 0) continue;
@@ -452,8 +560,8 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
             }
           }
           for (const skill of skillArray) {
-            for(const [key, value] of Object.entries(skill)){
-              if(calculatedSkills[key] === undefined) calculatedSkills[key] = 0;
+            for (const [key, value] of Object.entries(skill)) {
+              if (calculatedSkills[key] === undefined) calculatedSkills[key] = 0;
               calculatedSkills[key] += Number(value);
             }
           }
@@ -487,9 +595,8 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
       if (item.type == "archetype") {
         collectedArchetype = item.id;
         const data = item.system.characteristicsBonus;
-        console.log(data);
-        for(const entry of data)
-        {
+        for (const entry of data) {
+          if (calculatedCharacteristics[entry.characteristic] === undefined) calculatedCharacteristics[entry.characteristic] = 0;
           calculatedCharacteristics[entry.characteristic] += entry.value;
         }
       }
@@ -528,42 +635,88 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
         bonus: Math.floor(finalValue / 10) + (charBonusBonus[charkey] || 0)
       }
     });
+    let advancements = [];
+    for (const entry of this.document.system.advancements) {
+      if (entry.type === "talent") {
+        let talent = await fromUuid(entry.identifier);
+        if (!talent) continue;
+        const origin = entry.value == 0 ? " (CC)" : "";
+        let name = `${talent.name} to Level ${entry.level}${origin}.`
+        advancements.push({
+          type: entry.type,
+          name: name,
+          value: entry.value
+        });
 
+      } else if (entry.type === "characteristic") {
+        let characteristic = entry.identifier.split(".").pop();
+        const origin = entry.value == 0 ? " (CC)" : "";
+        let level = AdvancementHandler.calculateLevel(entry.level, "characteristic");
+        let previous = AdvancementHandler.calculateLevel(entry.level - 1, "characteristic");
+        let name = `${skill} advanced from ${previous} to ${level}${origin}`;
+        advancements.push({
+          type: entry.type,
+          name: name,
+          value: entry.value
+        });
+
+      } else if (entry.type === "skill") {
+        let skill = entry.identifier.split(".").pop();
+        const origin = entry.value == 0 ? " (CC)" : "";
+        let level = AdvancementHandler.calculateLevel(entry.level, "skill");
+        let previous = AdvancementHandler.calculateLevel(entry.level - 1, "skill");
+        let name = `${skill} advanced from ${previous} to ${level}${origin}`;
+        advancements.push({
+          type: entry.type,
+          name: name,
+          value: entry.value
+        });
+
+      } else {
+        console.log(`malformed advancement in sheet ${this.document}`);
+        continue;
+      }
+      //console.log(entry);
+    }
+    context.advancements = advancements;
     const rawSkills = this.document.system.skills;
     let displaySkills = [];
-    context.displaySkills = Object.entries(SKILL_MANIFEST).map(([skillkey, config]) => {
-      const dbRecord = rawSkills[skillkey];
-      const currentValue = (dbRecord?.value) ?? 0;
-      const currentBonus = ((dbRecord?.value || 0) + (calculatedSkills[skillkey] || 0)) ?? 0;
-      const translatedName = game.i18n.localize(config.key);
+    context.displaySkills = Object.entries(SKILL_MANIFEST)
+      .filter(([skillkey]) => !["forbiddenLore", "scholasticLore", "commonLore"].includes(skillkey))
+      .map(([skillkey, config]) => {
+        const dbRecord = rawSkills[skillkey];
+        const currentValue = (dbRecord?.value) ?? 0;
+        const currentBonus = ((dbRecord?.value || 0) + (calculatedSkills[skillkey] || 0)) ?? 0;
+        const translatedName = game.i18n.localize(config.key);
 
-      const shortLabel = CHARACTERISTIC_MANIFEST[config.char] ?
-        game.i18n.localize(CHARACTERISTIC_MANIFEST[config.char].short) :
-        "-";
+        const shortLabel = CHARACTERISTIC_MANIFEST[config.char] ?
+          game.i18n.localize(CHARACTERISTIC_MANIFEST[config.char].short) :
+          "-";
 
-      const checkBoxList = [];
-      for (let i = 1; i <= 4; i++) {
-        checkBoxList.push({
-          level: i,
-          isChecked: i <= currentValue
-        })
-      }
-      let baseScore = (config.char === "none") ? 0 : context.system.characteristics[config.char]?.value ?? 0;
-      let trainingBonus = (currentValue > 1) ? (currentValue - 1) * 10 : (currentValue === 0 ? -20 : 0);
-      const computedTarget = baseScore + trainingBonus + currentBonus;
-      return {
-        propertyKey: skillkey,
-        label: translatedName,
-        isCustom: false,
-        customId: null,
-        characteristic: config.char,
-        shortCharacteristic: shortLabel,
-        value: currentValue,
-        bonus: currentBonus,
-        checkboxes: checkBoxList,
-        targetNumber: Math.max(1, Math.min(100, computedTarget))
-      }
-    });
+        const checkBoxList = [];
+        for (let i = 1; i <= 4; i++) {
+          checkBoxList.push({
+            level: i,
+            isChecked: i <= currentValue
+          })
+        }
+        let baseScore = (config.char === "none") ? 0 : context.system.characteristics[config.char]?.value ?? 0;
+        let trainingBonus = (currentValue > 1) ? (currentValue - 1) * 10 : (currentValue === 0 ? -20 : 0);
+        const computedTarget = baseScore + trainingBonus + currentBonus;
+        return {
+          propertyKey: skillkey,
+          parent:skillkey,
+          label: translatedName,
+          isCustom: false,
+          customId: null,
+          characteristic: config.char,
+          shortCharacteristic: shortLabel,
+          value: currentValue,
+          bonus: currentBonus,
+          checkboxes: checkBoxList,
+          targetNumber: Math.max(1, Math.min(100, computedTarget))
+        }
+      });
 
     const customSkills = rawSkills.specializedSkills || [];
     for (let customSkill of customSkills) {
@@ -605,6 +758,8 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
       // Push your custom skill right into the unified array!
       context.displaySkills.push({
         propertyKey: compositeKey,
+        parent:parentKey,
+        subname:customSkill.subSpecialtyName,
         label: friendlyLabel,
         isCustom: true,
         customId: customSkill.id,
@@ -753,19 +908,32 @@ export class CharacterSheet extends foundry.applications.api.HandlebarsApplicati
   static async _onRollSkill(event, target) {
     event.preventDefault();
     const skillName = target.getAttribute("data-name");
-    const targetScore = parseInt(target.getAttribute("data-target-number")) || 0;
-
-    await executeD100Test(skillName, targetScore, this.document);
+    const isCustom = Boolean(target.getAttribute("data-is-custom"));
+    const parentSkill = target.getAttribute("data-parent");
+    const subName = target.getAttribute("data-subName");
+    console.log(skillName,isCustom,parentSkill,subName);
+    let modifiers = [];
+    let testName;
+    if(!isCustom){
+      modifiers = await _getModifiers(this.document,{type:"skill",id:`${parentSkill}`});
+      testName = `skill:${parentSkill}`;
+    } else {
+      modifiers = await _getModifiers(this.document, {type:"skill",id:`${parentSkill}.${subName}`});
+      testName = `skill:${parentSkill}:${subName}`;
+    }
+    const premods = await _rollBaseDialog(this.document,`${skillName}`);
+    modifiers = [...modifiers,...premods];
+    await executeD100TestSilent(this.document,testName,modifiers);
   }
   static async _onRollCharacteristic(event, target) {
     event.preventDefault();
-    event.preventDefault();
     const charName = target.getAttribute("data-name");
-    const targetdom = target.closest(".characteristic-block");
-    const targetValue = Number(targetdom.getAttribute("data-value"));
-
-    await executeD100Test(charName, targetValue, this.document);
-
+    console.log(charName);
+    const premods = await _rollBaseDialog(this.document,charName);
+    if(!premods || premods.length === 0) return false;
+    let modifiers = await _getModifiers(this.document,{type:"characteristic",id:charName});
+    modifiers = [...modifiers, ...premods];
+    await executeD100TestSilent(this.document,`char:${charName}`,modifiers);
   }
   static async _onOpenEmbeddedItem(event, target) {
     event.preventDefault();

@@ -1,0 +1,27 @@
+<div class = "base-roll-dialog">
+    <div class="dialog-header">
+        <span class = "header-label">{{header-label}}</p>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 4px;">
+        <label style="font-weight: bold;">{{localize "global.baserolldialog.label.difficultymod"}}</label>
+        <select name="rollModifier">
+            <option value="60">{{localize "sys-const.difficulty.trivial"}}</option>
+            <option value="50">{{localize "sys-const.difficulty.elementary"}}</option>
+            <option value="40">{{localize "sys-const.difficulty.simple"}}</option>
+            <option value="30">{{localize "sys-const.difficulty.easy"}}</option>
+            <option value="20">{{localize "sys-const.difficulty.routine"}}</option>
+            <option value="10">{{localize "sys-const.difficulty.ordinary"}}</option>
+            <option value="0" selected>{{localize "sys-const.difficulty.challenging"}}</option>
+            <option value="-10">{{localize "sys-const.difficulty.difficult"}}</option>
+            <option value="-20">{{localize "sys-const.difficulty.hard"}}</option>
+            <option value="-30">{{localize "sys-const.difficulty.veryhard"}}</option>
+            <option value="-40">{{localize "sys-const.difficulty.arduous"}}</option>
+            <option value="-50">{{localize "sys-const.difficulty.punishing"}}</option>
+            <option value="-60">{{localize "sys-const.difficulty.hellish"}}</option>
+        </select>
+    </div>
+    <div class="dialog-footer">
+        <label class="footer-label">{{localize "global.baserolldialog.label.difficultymodmisc"}}</label>
+        <input type="number" name="customModifier" placeholder="e.g., +5, -15" value="0" class = "footer-input" />
+    </div>
+</div>

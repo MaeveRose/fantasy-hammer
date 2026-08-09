@@ -5,7 +5,7 @@
       {{localize "sheets.character.labels.tabs.attributes.tabLabel"}}</a>
     <a class="item" data-action="tab" data-tab="combat" data-group="characterTabs"><i class="fas fa-swords"></i>
       {{localize "sheets.character.labels.tabs.combat.tabLabel"}}</a>
-      {{#if isPsychic}}
+      {{#if isPsyker}}
       <a class="item" data-action="tab" data-tab="psychic" data-group="characterTabs"><i class="fas fa-brain"></i>
         {{localize "sheets.character.labels.tabs.psychic.tabLabel"}}</a>
       {{/if}}
@@ -26,8 +26,7 @@
   <section class="character-sheet-body">
     {{#if (and isGM isCreationActive)}}
     <header class="creation-mode-header">
-      <label class="creation-mode-warning"><i class="fa-solid fa-triangle-exclamation"></i>THIS SHEET IS IN CREATION
-        MODE</label>
+      <label class="creation-mode-warning"><i class="fa-solid fa-triangle-exclamation"></i>{{localize "sheets.character.labels.GMCreationLabel"}} </label>
     </header>
     {{/if}}
     <section class="tab {{tabs.biography.cssClass}}" data-tab="biography" data-group="characterTabs">
@@ -46,26 +45,26 @@
             <!-- ROW 1: Character Name & Player Name -->
             <div class="ledger-row">
               <div class="ledger-field flex-2">
-                <label class="ledger-label">Character Name</label>
+                <label class="ledger-label">{{localize "sheets.character.labels.header.cname"}}</label>
                 <input type="text" name="name" value="{{actor.name}}" class="ledger-input" />
               </div>
               <div class="ledger-field flex-1">
-                <label class="ledger-label">Player Name</label>
+                <label class="ledger-label">{{localize "sheets.character.labels.header.pname"}}</label>
                 <input type="text" name="system.playerName" value="{{system.playerName}}" class="ledger-input" />
               </div>
             </div>
             <!-- ROW 2: Archetype, Rank, & Warband Name -->
             <div class="ledger-row">
               <div class="ledger-field flex-3">
-                <label class="ledger-label">Archetype</label>
+                <label class="ledger-label">{{localize "sheets.character.labels.header.arche"}}</label>
                 <input readonly type="text" name="system.archetype" value="{{archetypeItem.name}}" class="ledger-input" />
               </div>
               <div class="ledger-field width-60">
-                <label class="ledger-label">Rank</label>
+                <label class="ledger-label">{{localize "sheets.character.labels.header.rank"}}</label>
                 <input type="number" name="system.rank" value="{{system.rank}}" class="ledger-input center-text" />
               </div>
               <div class="ledger-field flex-3">
-                <label class="ledger-label">Warband Name</label>
+                <label class="ledger-label">{{localize "sheets.character.labels.header.wname"}}</label>
                 <input type="text" name="system.warbandName" value="{{system.warbandName}}" class="ledger-input" />
               </div>
             </div>
@@ -73,11 +72,11 @@
             <!-- ROW 3: Pride & Disgrace (Your new manifest types!) -->
             <div class="ledger-row">
               <div class="ledger-field flex-1">
-                <label class="ledger-label">Pride</label>
+                <label class="ledger-label">{{localize "sheets.character.labels.header.pride"}}</label>
                 <input readonly type="text" name="system.pride" value="{{prideItem.name}}" class="ledger-input" />
               </div>
               <div class="ledger-field flex-1">
-                <label class="ledger-label">Disgrace</label>
+                <label class="ledger-label">{{localize "sheets.character.labels.header.disgrace"}}</label>
                 <input readonly type="text" name="system.disgrace" value="{{disgraceItem.name}}"
                   class="ledger-input" />
               </div>
@@ -86,12 +85,12 @@
             <!-- ROW 4: Motivation & Description Snippet Line -->
             <div class="ledger-row">
               <div class="ledger-field flex-1">
-                <label class="ledger-label">Motivation</label>
+                <label class="ledger-label">{{localize "sheets.character.labels.header.motivation"}}</label>
                 <input readonly type="text" name="system.motivation" value="{{motivationItem.name}}"
                   class="ledger-input" />
               </div>
               <div class="ledger-field flex-2">
-                <label class="ledger-label">Description</label>
+                <label class="ledger-label">{{localize "sheets.character.labels.header.shortdisc"}}</label>
                 <input type="text" name="system.shortDescription" value="{{system.shortDescription}}"
                   class="ledger-input" />
               </div>
@@ -107,12 +106,16 @@
           <input type="number" name="system.wounds.max" value="{{system.wounds.max}}" />
         </div>-->
       </div>
+      <div class="characteristic-panel-header">
+        <a data-action="showCharBonuses" style="column-span:all;" class="js-show-char-bonuses" title="{{localize "sheets.character.helpers.showCharBonus"}}">
+          <label class="title">{{localize "sheets.character.labels.characteristics.title"}}</label>
+        </a>
+      </div>
       <div class="characteristic-panel">
-        <label class="title">Characteristics</label>
         {{#each characteristicsList}}
         <div class="characteristic-block {{this.key}}" data-value="{{this.displayValue}}">
           <div class="characteristic-header js-roll-stat" data-action="rollCharacteristic"
-            data-path="system.characteristics.{{this.key}}.value" data-name="{{this.name}}" style="cursor: pointer;">
+            data-path="system.characteristics.{{this.key}}.value" data-name="{{this.key}}" style="cursor: pointer;">
             <label class="characteristic-name">{{this.name}}</label>
             <label class="characteristic-short">({{this.short}})</label>
           </div>
@@ -143,7 +146,7 @@
             {{#each displaySkills}}
             <div class="skill-flex-row">
               <div class="skill-name-col">
-                <a class="js-roll-skill" data-action="rollSkill" data-name="{{this.label}}"
+                <a class="js-roll-skill" data-is-custom="{{this.isCustom}}" data-subName="{{this.subname}}" data-name="{{this.propertyKey}}" data-parent="{{this.parent}} "data-action="rollSkill"
                   data-target="system.skills.{{this.propertyKey}}.targetNumber">
                   <strong>{{this.label}}</strong>
                 </a>
@@ -376,12 +379,47 @@
     <section class="tab {{tabs.advancements.cssClass}}" data-tab="advancements" data-group="characterTabs">
       <div class="advancements-pane">
         <h3>Character Advancements & Chaos Alignment</h3>
-        <!-- (Tracks earned XP expenditures or pride/disgrace metrics!) -->
+        <div class = "advancement-wrapper">
+          {{#each advancements}}
+            <div class = "advancement-data-object" data-id="{{this.identifier}}">
+              <div class = "advancement-type-img">
+                <img src="{{calculateAdvancementType this}}" />
+              </div>
+              <div class = "advancement-name">
+                <input type="text" value="{{this.name}}" read-only />
+              </div>
+              <div class = "advancement-xp">
+                <input type="text" value="{{this.value}}" read-only/>
+              </div>
+            </div>
+          {{/each}}
+        </div>
       </div>
     </section>
     {{/if}}
+    {{#if isEditable}}
     <section class="tab {{tabs.inventory.cssClass}}" data-tab="inventory" data-group="characterTabs">
       <p>Inventory Will Go Here...</p>
-    </section> 
+      <div class = "inventory-block">
+        <div class = "inventory-header">
+          <label>{{localize "sheets.character.labels.inventory."}}</label>
+        </div>
+        <div class = "inventory-list">
+        {{#each actor.items}}
+        {{#if (or (eq this.type "gear") (eq this.type "weapon") (eq this.type "armor"))}}
+        <div class = "inventory-item">
+          <label>{{this.name}}</label>
+        </div>
+        {{/if}}
+        {{/each}}
+        </div>
+        <div class = "inventory-footer">
+          <div class = "rollButton" data-action="rollForItem">
+            <label>{{localize "sheets.character.labels.inventory."}}</label>
+          </div>
+        </div>
+      </div>
+    </section>
+    {{/if}}
   </section>
 </div>

@@ -56,3 +56,72 @@
     padding: 0 5px 0 5px;
     text-align:center;
 }
+.gear-attaining-roll-dialog .header-box{
+    display:flex;
+    flex-direction:column;
+    text-align:center;
+    margin-bottom: 10px;
+}
+.gear-attaining-roll-dialog .header-box .header-dialog-title{
+    width:100%;
+    display:block;
+    font-weight:bold;
+    border-bottom: 1px solid #313122;
+    margin-bottom:10px;
+}
+.gear-attaining-roll-dialog .header-box .header-dialog-itemName,
+.gear-attaining-roll-dialog .header-box .header-dialog-itemType{
+    display:block;
+    width: auto;
+    font-style: italic;
+    font-size: 0.9em;
+}
+.gear-attaining-roll-dialog .gear-box {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:5px;
+    margin-top:5px;
+    margin-bottom:5px;
+}
+.gear-attaining-roll-dialog .gear-box .availability,
+.gear-attaining-roll-dialog .gear-box .craftsmanship{
+    display:grid;
+    gap: 5px;
+    grid-template-columns: max-content auto;
+    align-items: center;
+}
+.gear-attaining-roll-dialog .gear-box .amount{
+    column-span: all;
+    grid-column: 1 / -1;
+    display:grid;
+    gap: 5px;
+    grid-template-columns: max-content auto;
+    align-items: center;
+}
+.gear-attaining-roll-dialog .footer-box {
+    display:grid;
+    grid-template-columns: max-content auto;
+    gap:5px;
+    align-items:center;
+}
+.base-roll-dialog{
+    padding: 6px;
+    display: flex;
+    flex-direction:
+    column; gap: 8px;
+}
+.base-roll-dialog .header-label{
+    margin: 0;
+    font-size: 0.9rem;
+}
+.base-roll-dialog .dialog-footer{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.base-roll-dialog .dialog-footer .footer-label{
+    font-weight: bold;
+}
+.base-roll-dialog .dialog-footer .footer-input{
+    text-align:center;
+}

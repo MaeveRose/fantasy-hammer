@@ -1,129 +1,10 @@
-import { FIREMODE_MANIFEST, RANGE_MANIFEST, SIZE_MANIFEST } from "./sys-const.mjs";
+import { CHARACTERISTIC_MANIFEST, FIREMODE_MANIFEST, RANGE_MANIFEST, SIZE_MANIFEST, SKILL_MANIFEST } from "./sys-const.mjs";
 
-export async function executeD100Test(testName, baseTarget, actorDocument) {
-  // 1. Launch Foundry's native ApplicationV2 Dialog input window
-  const dialogHtml = `
-    <div style="padding: 6px; display: flex; flex-direction: column; gap: 8px;">
-      <p style="margin: 0; font-size: 0.9rem;">Select the active difficulty adjustment for this <strong>${testName}</strong> test:</p>
-      <div style="display: flex; flex-direction: column; gap: 4px;">
-        <label style="font-weight: bold;">Difficulty Modifier:</label>
-        <select name="rollModifier">
-          <option value="30">+30 (Trivial)</option>
-          <option value="20">+20 (Easy)</option>
-          <option value="10">+10 (Routine)</option>
-          <option value="0" selected>+0 (Ordinary)</option>
-          <option value="-10">-10 (Challenging)</option>
-          <option value="-20">-20 (Difficult)</option>
-          <option value="-30">-30 (Hard)</option>
-        </select>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 4px;">
-        <label style="font-weight: bold;">Additional Modifier:</label>
-        <input type="number" 
-               name="customModifier" 
-               placeholder="e.g., +5, -15" 
-               value="0" 
-               style="text-align: center;" />
-        <small style="opacity: 0.6; font-style: italic;">Enter any situational bonuses or penalties here.</small>
-      </div>
-    </div>
-  `;
-  const traits = actorDocument.system.gatherRollOptions();
-  const formData = await foundry.applications.api.DialogV2.input({
-    window: { title: `${testName} Test Modifiers` },
-    content: dialogHtml,
-    rejectClose: false,
-    ok: { label: "Execute Roll" }
-  });
-
-  if (!formData) return; // Exit cleanly if they cancel or close the window
-
-  const chosenModifier = parseInt(formData.rollModifier) || 0;
-
-  const customModifier = parseInt(formData.customModifier) || 0;
-  const rawCombinedModifier = chosenModifier + customModifier;
-  // Clamp the final score safely between standard 1 and 100 game rule boundaries
-  const totalCombinedModifier = Math.max(-60, Math.min(60, rawCombinedModifier));
-
-  const hitModifierCap = rawCombinedModifier !== totalCombinedModifier;
-
-  if (hitModifierCap) {
-    // Displays a sleek, native warning card in the upper right corner of the screen
-    ui.notifications.warn(
-      `Total test modifier (${rawCombinedModifier >= 0 ? '+' : ''}${rawCombinedModifier}) exceeded rule limits. Clamped to ${totalCombinedModifier >= 0 ? '+' : ''}${totalCombinedModifier}.`
-    );
-  }
-
-  const finalTargetNumber = Math.max(1, Math.min(100, baseTarget + totalCombinedModifier));
-
-  // 2. Fire the asynchronous d100 Roll transaction
-  const roll = await new Roll("1d100").evaluate();
-  const diceResult = roll.total;
-  
-  // 3. THE UNIFIED WARHAMMER MATH ENGINE
-  let isSuccess = diceResult <= finalTargetNumber;
-  if (diceResult <= 5) isSuccess = true;
-  if (diceResult >= 95) isSuccess = false;
-  const degreeDelta = Math.abs(finalTargetNumber - diceResult);
-  let degreesCount = Math.floor(degreeDelta / 10);
-  if(isSuccess) {
-    if (diceResult > finalTargetNumber) {
-      degreesCount = 1;
-    } else {
-      degreesCount = Math.max(1, degreesCount);
-    }
-  } else {
-    if (diceResult <= finalTargetNumber) {
-      degreesCount = 1;
-    } else {
-      degreesCount = Math.max(1, degreesCount);
-    }
-  }
-  let outcomeMessage = "";
-  if (isSuccess) {
-    if (diceResult <= 5) {
-      outcomeMessage = `<span class = "critical-success">CRITICAL SUCCESS</span> with <strong>${degreesCount} Degrees</strong>`;
-    } else {
-      outcomeMessage = `<span class = "success">SUCCESS</span> with <strong>${degreesCount} Degrees</strong>`;
-    }
-  } else { 
-    if (diceResult >= 95) {
-      outcomeMessage = `<span class="critical-failure">CRITICAL FAILURE</span> with <strong>${degreesCount} Degrees</strong>`;
-    } else {
-      outcomeMessage = `<span class="failure">FAILURE</span> with <strong>${degreesCount} Degrees</strong>`;
-    }
-  }
-
-  // 4. THE MASTER CHAT CARD TEMPLATE
-  const chatContent = `
-    <div class="fantasy-hammer-chat-content">
-      <span class = "chat-box-test-result-header">${testName} Test</span]>
-      <div class = "target-modifier-wrapper">
-        <span>Base Target: <strong>${baseTarget}</strong></span>
-        <span>Modifier: <strong>${totalCombinedModifier >= 0 ? '+' : ''}${totalCombinedModifier}</strong></span>
-      </div>
-      <div class = "final-target-results">
-        Final Target: <strong style="color: #ffbc00;">${finalTargetNumber}</strong> | Rolled: <strong style="color: #e0e0e0;">${diceResult}</strong>
-      </div>
-      <div class="outcome-message">
-        ${outcomeMessage}
-      </div>
-    </div>
-  `;
-
-  // 5. Broadcast out to the global chat logs using the passed actor document instance
-  await ChatMessage.create({
-    user: game.user.id,
-    speaker: ChatMessage.getSpeaker({ actor: actorDocument }),
-    content: chatContent,
-    roll: roll,
-    flags: {
-      "fantasy-hammer": {
-        rollOptions: traits
-      }
-    }
-  });
-}
+/**
+ * @typedef {Object} RollOption
+ * @property {string} id - The unique identifier.
+ * @property {*} value - The value assigned to the option.
+ */
 export async function _printToChat(item, actorDocument) {
   //probably wont be used?
 }
@@ -132,12 +13,12 @@ export async function _printToChat(item, actorDocument) {
 * @param {import("foundry-vtt").Actor|uuid} attacker
 * @param {import("foundry-vtt").Actor|uuid} defender
 * @param {import("foundry-vtt").Weapon|uuid} weaponItem
-* @param {string[]} [rollOptions =[]]
+* @param {RollOption[]} [rollOptions=[{}]]
 * @returns {Promise<void>} 
 * @throws {Error} if the attacker or defender type cannot resolve to an Actor, or if the weapon cannot resolve to a Weapon
 *
 **/
-export async function _targetedAttack(attacker, defender, weaponItem, rollOptions = []) {
+export async function _targetedAttack(attacker, defender, weaponItem, rollOptions = [{}]) {
   let attacking = attacker;
   if (!attacker.type || attacker.documentName !== "Actor") {
     attacking = await fromUuid(attacker);
@@ -266,7 +147,7 @@ export async function _triggerChoice(entryArray, grantedItems, selectionType)
           class: "dialog-button-ok",
           callback: (event, button, target) => {
             const formdata = new foundry.applications.ux.FormDataExtended(button.form);
-            const choice = formdata.object.selectedSkill;
+            const choice = formdata.object.selectedItem;
             resolve(choice);
           }
         },
@@ -280,63 +161,121 @@ export async function _triggerChoice(entryArray, grantedItems, selectionType)
     }).render(true);
   });
 }
+/**
+ * @param {Array} arrayofdata the list of specialized skills already on the character.
+ * @param {String} choice the parent skill
+ * @param {Number} Level defaults to 1. the new level for the skill spec (should be 1 or 2 for adv skills)
+ * @returns {Promise<String>} either returns the ID of the old skill concat with "id:", or a string of the new choice.
+ */
+export async function _triggerSpecChoice(arrayofdata, choice, level = 1)
+{
+  if(level < 0 || level > 4) return;
+  //if(!arrayofdata) return;
+  if(!choice || (choice !== "scholasticLore" && choice !== "forbiddenLore" && choice !== "commonLore")) return false;
+
+  const currentSpecialized = arrayofdata.filter(a => (a.parentSkillName && a.parentSkillName === choice));
+  console.log(currentSpecialized);
+  // this should filter out anything that wouldnt be able to take the level up.
+  const levelFiltered = currentSpecialized.filter(a => (a.value + 1) == level);
+  console.log(level, levelFiltered);
+  const optionsWithLabels = levelFiltered.map(option =>({id: option.id, label: option.readable, sub: option.subSpecialtyName}));
+  const title = game.i18n.localize("global.skillselector.title");
+  const templateData = {
+    options: optionsWithLabels,
+    parentSkill: game.i18n.localize(`sys-const.skills.${choice}`)
+  }
+  const dialogHTML = await foundry.applications.handlebars.renderTemplate('systems/fantasy-hammer/html/sheets/common/specializedskillselector.hbs', templateData);
+  return new Promise((resolve) => {
+    new foundry.applications.api.DialogV2({
+      window: { title: `${title}` },
+      content: dialogHTML,
+      buttons: [
+        {
+          action: "submit",
+          label: "Confirm",
+          class: "dialog-button-ok",
+          callback: (event, button, target) => {
+            const formdata = new foundry.applications.ux.FormDataExtended(button.form);
+            console.log(formdata);
+            const submittedLabel = formdata.object.tempStorage;
+            const matchedOption = optionsWithLabels.find(opt => opt.label === submittedLabel);
+            let skillData = {
+              parent: "",
+              name: "",
+              id: ""
+            };
+            let Id = "";
+            if(matchedOption)
+            {
+              Id = matchedOption.id;
+              skillData = {
+                parent: choice,
+                name: matchedOption.sub,
+                id: Id
+              }
+            } else {
+              Id = foundry.utils.randomID();
+              skillData = {
+                parent: choice,
+                name: submittedLabel,
+                id: Id
+              };
+            }
+
+            resolve(skillData);
+          }
+        },
+        {
+          action: "cancel",
+          label: "Cancel",
+          callback: () => resolve({})
+        }
+      ],
+      close: () => resolve({})
+    }).render(true);
+  });
+}
+/**
+ * THIS FUNCTION DOES NOT CLAMP THE TOTAL MODIFIER
+ * @param {RollOption[]} options list of RollOptions 
+ * @returns 
+ */
 export async function calculateModifier(options) {
   if (!options) return 0;
   console.log(options);
   let runningTotal = 0;
   for (const option of options) {
     let prefix = "attack:modifier:"
-    if (option.includes(prefix)) {
-      let index = option.indexOf(prefix)
-      const substring = option.substring(index + prefix.length);
-
-      const key = substring.substring(0, substring.indexOf(":"));
-      const value = substring.substring(substring.indexOf(":") + 1);
-      if (key == "firemode") {
-        console.log(FIREMODE_MANIFEST[value]);
-        runningTotal += Number(FIREMODE_MANIFEST[value].value);
-      }
-      if (key == "range-increment") {
-        runningTotal += Number(RANGE_MANIFEST[value].value);
+    let option = options.find(e=> "attack-modifier".includes(e.id))
+    if(option)
+    {
+      const key = option.id;
+      const value = option.value;
+      if(option.includes("firemode")) {
+        runningTotal += Number(FIREMODE_MANIFEST[value].value)
+      } else if (option.includes("range-increment")){
+        runningTotal += Number(RANGE_MANIFEST[value].value)
       }
     }
-    prefix = "target:size:";
-    if (option.includes(prefix)) {
-      const value = option.substring(option.indexOf(prefix) + prefix.length);
-      const manifest = SIZE_MANIFEST;
-      console.log(manifest);
+    option = options.find(e=>e.id.includes('target-size'));
+    if(option)
+    {
+      const value = option.value;
+      runningTotal += Number(SIZE_MANIFEST[value].value);
     }
   }
   return runningTotal;
 }
 /**
  * 
- * @param {import ("foundry-vtt").Actor } attacker 
- * @param {import ("foundry-vtt").Actor } defender
- * @param {import ("foundry-vtt").weapon } weapon 
- * @param {Number} distance
+ * @param {String} message id of the chat message
+ * @param {RollOption[]} auditOptions array of Objects representing the id-value pairs fo the auditable roll options
  * @returns {Promise<string[]>} of rollOptions
  */
-export async function _displayAuditWindow(message, auditOptions, modifiers) {
+export async function _displayAuditWindow(message, auditOptions) {
   console.log(message);
   console.log(auditOptions);
-  console.log(modifiers);
-  let rollOptions = [];
-
-  for (const option of auditOptions) {
-    console.log(option);
-    const lastColonIndex = option.lastIndexOf(":");
-    let key;
-    let value;
-    if (lastColonIndex == -1) {
-      key = option;
-      value = "";
-    } else {
-      key = option.slice(0, lastColonIndex);
-      value = option.slice(lastColonIndex + 1);
-    }
-    rollOptions.push({key: key, value: value});
-  }
+  const rollOptions = auditOptions;
   console.log(rollOptions);
   const templateData = {
     rollOption: rollOptions,
@@ -356,6 +295,49 @@ export async function _displayAuditWindow(message, auditOptions, modifiers) {
         {
           action: "close",
           label: "close",
+          callback: () => resolve([])
+        }
+      ],
+      close: () => resolve([])
+    }).render(true);
+  });
+}
+export async function _rollBaseDialog(Actor, testName, defaultmod = 0)
+{
+  let testNameLocal = testName;
+  if(CHARACTERISTIC_MANIFEST[testName])
+  {
+    testNameLocal = game.i18n.localize(CHARACTERISTIC_MANIFEST[testName].key);
+  } else if (SKILL_MANIFEST[testName]) {
+    testNameLocal = game.i18n.localize(SKILL_MANIFEST[testName].key);
+  }
+  const headlabel = `${game.i18n.localize("global.baserolldialog.label.headerlabel")} ${testNameLocal}`;
+  const templateData = {
+    "header-label": headlabel,
+  }
+  const dialogHTML = await foundry.applications.handlebars.renderTemplate(`systems/fantasy-hammer/html/sheets/common/baseRollDialog.hbs`, templateData);
+  console.log(dialogHTML);
+  return new Promise((resolve) => {
+    new foundry.applications.api.DialogV2({
+      window: { title: headlabel },
+      content: dialogHTML,
+      buttons: [
+        {
+          action: "roll",
+          label: "Roll",
+          class: "dialog-button-ok",
+          callback: (event, button, target) => {
+            const formData = new foundry.applications.ux.FormDataExtended(button.form);
+            const results = [];
+            console.log(formData, formData.object.rollModifier, formData.object.customModifier);
+            results.push({id:`player-difficulty-band-modifier`,value:Number(formData.object.rollModifier)});
+            results.push({id:`gm-difficulty-misc-modifier`,value:Number(formData.object.customModifier)});
+            resolve(results);
+          }
+        },
+        {
+          action: "cancel",
+          label: "Cancel",
           callback: () => resolve([])
         }
       ],
@@ -406,7 +388,7 @@ export async function _rollAttackDialog(attacker, defender, weapon, distance = -
     burstcombat: game.i18n.localize(`sys-const.dialog.weaponAttackRoll.label.semi`),
     semicombat: game.i18n.localize(`sys-const.dialog.weaponAttackRoll.label.single`)
   }
-  const dialogHTML = await foundry.applications.handlebars.renderTemplate('systems/fantasy-hammer/html/sheets/common/rollDialog.hbs', templateData);
+  const dialogHTML = await foundry.applications.handlebars.renderTemplate('systems/fantasy-hammer/html/sheets/common/AttackRollDialog.hbs', templateData);
   return new Promise((resolve) => {
     new foundry.applications.api.DialogV2({
       window: { title: `${weapon.name} ${skillTest} Test` },
@@ -447,3 +429,144 @@ export function _processAttackFormData(formElement) {
   }
   return rollOptions;
 }
+/**
+ * iterates through every item on the provided actor, for any modifications to the provided characteristic, sums them all topgether, and returns it.
+ * @param {String} characteristic to check for
+ * @param {import("foundry-vtt").Actor} Actor to check on
+ * @returns 
+ */
+export async function _getSkillModifiers(skill, Actor)
+{
+  for (const item of Actor.items)
+  {
+    if(item.system.customJSON)
+    {
+      try{
+        const config = typeof item.system.customJSON === "string" ? JSON.parse(item.system.customJSON) : item.system.customJSON;
+        const skillBlock = config.modifiers.find(e=>"skill" in e)
+        if(skillBlock && Array.isArray(skillBlock)){
+          const specSkill = skillBlock.skill.find(e => skill in e)
+          if(specSkill)
+          {
+            const skillValue = specSkill[skill];
+            const predicate = specSkill.predicate;
+            if(predicate) console.log(predicate);
+            totalmodifier =+ Number(skillValue);
+          }
+        }
+      } catch (error)
+      {
+
+      }
+    }
+  }
+  return 0;
+}
+/**
+ * 
+ * @param {import("foundry-vtt").Actor} Actor the actor to search for modifiers
+ * @param {Object} thing the skill or characteristic to get the modifiers of in { type:"<string>", id:"<string>"}
+ */
+export async function _getModifiers(Actor, thing){
+  //each thing is formatted like this 
+  //{
+  // type:skill
+  // id:forbiddenLore.Daemonology
+  //}
+  let modifierArray = [];
+  const id = thing.id;
+  for(const item of Actor.items){
+    if(thing.type === "characteristic"){
+      modifierArray = _getCharMods(id, Actor);
+    } else if(thing.type === "skill"){
+      modifierArray = _getSkillMods(id, Actor);
+    }
+  }
+  return modifierArray;
+}
+export async function _getCharMods(characteristic, Actor)
+{
+  let totalmodifier = [];
+  for(const item of Actor.items){
+    if(item.type === "talent") {
+      //shouldnt modifiy characteristics, but imma leave this if just in case that changes in the future.
+    } else if (item.type === "passion" || item.type === "weapon" || item.type === "armor" || item.type === "trait"){
+      if(item.system.customJSON)
+      {
+        try{
+          const config = typeof item.system.customJSON === "string" ? JSON.parse(item.system.customJSON) : item.system.customJSON;
+          if(!config.modifiers) continue;
+          const charBlock = config.modifiers.find(e => "characteristic" in e);
+     
+          if(charBlock.characteristic && Array.isArray(charBlock.characteristic)){
+            
+            const specchar = charBlock.characteristic.find(e => characteristic in e)
+            if(specchar)
+            {
+              totalmodifier.push({
+                id:`item-${item.type}-${item.system.customJSON.id}-modifier-${characteristic}`,
+                value:specchar[characteristic]
+              });
+            }
+          }
+        } catch (error)
+        {
+          console.log(error);
+        }
+      }
+    } else if (item.type === "archetype"){
+      const archBonus = item.system.characteristicsBonus.find(e => characteristic in e)
+      if(archBonus) totalmodifier.push({id:`item-archetype-${item.name}-modifier-${characteristic}`,value:Number(archBonus.value)});
+    }
+  }
+  return totalmodifier;
+} 
+export async function _getSkillMods(skill, Actor)
+{
+  let exactSkill = [];
+  const parsed = skill.split(".");
+  if(parsed.length == 1)
+  {
+    exactSkill[0] = parsed[0].trim();
+  } else {
+    exactSkill[0] = parsed[0].trim();
+    exactSkill[1] = parsed[1].trim();
+  }
+  let totalmodifier = [];
+  for(const item of Actor.items){
+    if(item.type === "talent") {
+      if(item.system.modifiers.length === 0) continue;
+      const mod = item.system.modifiers.find(e => e.targetKey === exactSkill[0]);
+      if(mod)
+      {
+        totalmodifier.push({id:`talent-${item.name}-${skill}-modifier`,value:mod.modifierValue});
+      }
+      //shouldnt modifiy characteristics, but imma leave this if just in case that changes in the future.
+    } else if (item.type === "passion" || item.type === "weapon" || item.type === "armor" || item.type === "trait"){
+      if(item.system.customJSON)
+      {
+        try{
+          const config = typeof item.system.customJSON === "string" ? JSON.parse(item.system.customJSON) : item.system.customJSON;
+          const skillBlock = config.modifiers.find(e => "skill" in e);
+          if(skillBlock && Array.isArray(skillBlock)){
+            const thisSkill = skillBlock.skill.find(e => exactSkill[0] in e)
+            if(thisSkill)
+            {
+              if(!thisSkill.special || thisSkill.special === exactSkill[1] || thisSkill.special === "all")
+              {
+                totalmodifier.push({
+                  id: thisSkill.key,
+                  value: thisSkill.value
+                })
+              }
+            }
+          }
+        } catch (error)
+        {
+
+        }
+      }
+    }
+  }
+  return totalmodifier;
+} 

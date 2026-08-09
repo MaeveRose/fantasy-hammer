@@ -551,22 +551,26 @@ export const QUALITY_MANIFEST = {
   poor:{
     key:"sys-const.quality.poor",
     option:["quality:poor"],
-    color: "#808080"
+    color: "#808080",
+    availValue: 10
   },
   common:{
     key:"sys-const.quality.common",
     option:["quality:common"],
-    color:"#1eff00"
+    color:"#1eff00",
+    availValue: 0
   },
   good:{
     key:"sys-const.quality.good",
     option:["quality:good"],
-    color:"#0070dd"
+    color:"#0070dd",
+    availValue: -10
   },
   best:{
     key:"sys-const.quality.best",
     option:["quality:best"],
-    color:"#a335ee"
+    color:"#a335ee",
+    availValue: -20
   }
 }
 export const ARMORTYPE_MANIFEST = {
@@ -646,5 +650,37 @@ export const ADVANCEMENT_MANIFEST={
   },
   characteristic:{
     key:"characteristic"
+  },
+}
+export const AMOUNT_MANIFEST={
+  single:{
+    key: "sys-const.itemAmount.single.label",
+    disc: "sys-const.itemAmount.single.disc",
+    value: 10
+  },
+  minor:{
+    key: "sys-const.itemAmount.minor.label",
+    disc: "sys-const.itemAmount.minor.disc",
+    value:0
+  },
+  significant:{
+    key: "sys-const.itemAmount.significant.label",
+    disc: "sys-const.itemAmount.significant.disc",
+    value:-10
+  },
+  vast:{
+    key: "sys-const.itemAmount.vast.label",
+    disc: "sys-const.itemAmount.vast.disc",
+    value:-20
+  },
+  legion:{
+    key: "sys-const.itemAmount.legion.label",
+    disc: "sys-const.itemAmount.legion.disc",
+    value:-40
+  },
+  impossible:{
+    key: "sys-const.itemAmount.impossible.label",
+    disc: "sys-const.itemAmount.impossible.disc",
+    value: -60
   },
 }

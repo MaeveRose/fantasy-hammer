@@ -1,5 +1,26 @@
 {
     "global":{
+        "acquisitiondialog":{
+            "amount":"Quantity Band",
+            "availability":"Availability",
+            "craftsmanship":"Craftsmanship",
+
+            "title":"Determine Acquisition Requirements...",
+            "geartype":{
+                "weapon":"Weapon",
+                "armor":"Armor",
+                "gear":"Gear"
+            },
+            "misc" : "Miscellaneous Modifiers..."
+        },
+        "baserolldialog":{
+            "label":{
+                
+                "difficultymod": "Difficulty Modifier:",
+                "difficultymodmisc":"Additional Modifier:",
+                "headerlabel":"Select difficulty Modifiers |"
+            }
+        },
         "charselector":{
             "title":"Select a Characteristic",
             "plead":"Select a characteristic for the required bonus of:"
@@ -7,6 +28,12 @@
         "chat":{
             "options":{
                 "gatherRollOptions" : "Audit Roll Options"
+            },
+            "rollchatmessage":{
+                "base":"Base Target: ",
+                "finalTarget":"Final Target:",
+                "modifier":"Modifier: ",
+                "rolled":" | Rolled: "
             }
         },
         "itemselector":{
@@ -33,6 +60,12 @@
                 "value":"Roll Option Value"
             }
         },
+        "skillselector":{
+            "title":"Select a Specialization",
+            "parentskill":"Parent Skill:",
+            "specname":"Specialization Name:",
+            "specex": "e.g., Daemonology, Armourer, Underworld"
+        },
         "tabLabels":{
             "stats": "Statistics",
             "description":"Description",
@@ -50,6 +83,25 @@
     "sheets":{
         "character":{
             "labels":{
+                "characteristics":{
+                    "title":"Characteristics"
+                },
+                "header":{
+                    "arche":"Archetype",
+                    "cnam":"Character Name",
+                    "shortdisc":"Short Discription",
+                    "disgrace":"Disgrace",
+                    "motivation":"Motivation",
+                    "pname":"Player Name",
+                    "pride":"Pride",
+                    "rank":"Rank",
+                    "wname":"Warband Name"
+                },
+                "inventory":{
+                    "header":"Inventory Contents",
+                    "footer":"",
+                    "roll":"Roll Infamy Test for Acquisition..."
+                },
                 "tabs":{
                     "advancements":{
                         "tabLabel":"Advancements"
@@ -240,6 +292,51 @@
                 }
             }
         },
+        "difficulty":{
+            "trivial":"Trivial (+60)",
+            "elementary":"Elementary (+50)",
+            "simple":"Simple (+40)",
+            "easy":"Easy (+30)",
+            "routine":"Routine (+20)",
+            "ordinary":"Ordinary (+10)",
+            "challenging":"Challenging (0)",
+            "difficult":"Difficult (-10)",
+            "hard":"Hard (-20)",
+            "veryhard":"Very Hard (-30)",
+            "arduous": "Arduous (-40)",
+            "punishing": "Punishing (-50)",
+            "hellish":"Hellish (-60)"
+        },
+        "itemAmount":{
+            "single":{
+                "label":"Single",
+                "disc":"1 item"
+            },
+            "minor":{
+                "label":"Minor",
+                "disc":"2-4 items"
+            },
+            "significant":{
+                "label":"Significant",
+                "disc":"5-10 items"
+            },
+            "vast":{
+                "label":"Vast",
+                "disc":"11-100 items"
+            },
+            "legion":{
+                "label":"Legion",
+                "disc":"101-1000 items"
+            },
+            "impossible":{
+                "label":"Impossible",
+                "disc":"1001+ items"
+            }
+        },
+        "settings":{
+            "critwindow":"How large is the Critical Window",
+            "disablemodifiercap": "Allow Modifiers to go beyond +/-60"
+        },
         "skills":{
             "label":"Skill",
             "acrobatics":"Acrobatics",
@@ -280,6 +377,19 @@
             "common":"Common",
             "good":"Good",
             "best":"Best"
+        },
+        "roll":{
+            "modcappedhigh":"Provided Modifiers combine to a value over 60, Clamped to ",
+            "modcappedlow":"Provided Modifiers combine to a value under -60, Clamped to "
+        },
+        "rollresults":{
+            "critical-failure":"Critical Failure",
+            "critical-success":"Critical Success",
+            "degrees-failure":"degrees of Failure",
+            "degrees-success":"Degrees of Success",
+            "failure":"Failure",
+            "success":"Success",
+            "TEST":"Test"
         },
         "weaponclass":{
             "label":"Weapon Class",
